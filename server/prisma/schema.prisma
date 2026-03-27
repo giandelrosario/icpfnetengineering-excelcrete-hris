@@ -1,0 +1,145 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../prisma/generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model StatutoryBeneficial {
+  id Int @id @default(autoincrement())
+
+  sss_er_share_rate Float @default(10)
+  sss_ec_amount Float @default(10)
+  sss_mpf_amount Float @default(0)
+
+  philhealth_er_rate Float @default(5)
+
+  pagibig_er_share_rate Float @default(2)
+
+  bir_er_share_rate Float @default(0) 
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+
+model Employee {
+  id           Int      @id @default(autoincrement())
+  first_name   String
+  middle_name  String?
+  last_name    String
+  civil_status String
+  citizenship  String
+  religion     String
+  birth_date   DateTime
+  birth_place  String
+  email        String?
+  contact_no   String?
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+  relatives     EmployeeRelative[]
+  salary_history SalaryHistory[]
+  sss_settings SSSSettings?
+  philhealth_settings PhilhealthSettings?
+  pagibig_settings PagIBIGSettings?
+  bir_settings BIRSettings?
+  payroll_logs PayrollLogs[]
+}
+
+model EmployeeRelative {
+  id           Int      @id @default(autoincrement())
+  employee_id  Int
+  first_name   String
+  middle_name  String?
+  last_name    String
+  relationship String
+  contact_no   String?
+  address      String
+  occupation   String @default("UNEMLOYED")
+  birth_date   DateTime
+  birth_place  String
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+  employee     Employee   @relation(fields: [employee_id], references: [id])
+}
+
+model SalaryHistory {
+  id Int @id @default(autoincrement())
+  employee_id Int
+  amount Float @default(0)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  employee Employee @relation(fields: [employee_id], references: [id])
+}
+
+model SSSSettings {
+  id Int @id @default(autoincrement())
+  employee_id Int @unique
+  sss_no String?
+  ee_share_rate Float?
+  mpf_amount Float?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  employee Employee @relation(fields: [employee_id], references: [id])
+}
+
+model PhilhealthSettings {
+  id Int @id @default(autoincrement())
+  employee_id Int @unique
+  philhealth_no String?
+  ee_share_rate Float?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  employee Employee @relation(fields: [employee_id], references: [id])
+}
+
+model PagIBIGSettings {
+  id Int @id @default(autoincrement())
+  employee_id Int @unique
+  pagibig_no String?
+  ee_share_rate Float?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  employee Employee @relation(fields: [employee_id], references: [id])
+}
+
+model BIRSettings {
+  id Int @id @default(autoincrement())
+  employee_id Int @unique
+  tin_no String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  employee Employee @relation(fields: [employee_id], references: [id])
+}
+
+model PayrollLogs {
+  id Int @id @default(autoincrement())
+  employee_id Int
+  title String
+  gross_pay Float
+  net_pay Float
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  employee Employee @relation(fields: [employee_id], references: [id])
+  benefits PayrollLogsBenefits[]
+}
+
+model PayrollLogsBenefits {
+  id Int @id @default(autoincrement())
+  payroll_logs_id Int  
+  benefit_title String
+  benefit_key String
+  amount Float
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  payroll_logs PayrollLogs @relation(fields: [payroll_logs_id], references: [id])
+}
+
+
