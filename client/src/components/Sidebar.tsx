@@ -15,12 +15,6 @@ const filtered_links = [
 		href: '/dashboard/payroll',
 		icon: <Tickets size={16} />,
 	},
-	{
-		id: 3,
-		name: 'Settings',
-		href: '/dashboard/settings',
-		icon: <Settings2 size={16} />,
-	},
 ];
 
 const Sidebar = () => {

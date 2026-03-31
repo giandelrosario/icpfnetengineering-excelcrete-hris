@@ -680,7 +680,7 @@ const Employee = () => {
 		});
 	};
 
-	if (employee_query.isPending && benefits_query.isPending) {
+	if (employee_query.isPending || benefits_query.isPending) {
 		return <EmployeeSkeleton />;
 	}
 

@@ -60,11 +60,17 @@ const Employees = () => {
 			return fullName.includes(searchLower) || employee.email?.toLowerCase().includes(searchLower) || false;
 		}) || [];
 
+	const totalPages = Math.max(1, Math.ceil(filteredEmployees.length / itemsPerPage));
+	const safeCurrentPage = Math.min(currentPage, totalPages);
+	const paginatedEmployees = filteredEmployees.slice((safeCurrentPage - 1) * itemsPerPage, safeCurrentPage * itemsPerPage);
+	const pageStart = filteredEmployees.length ? (safeCurrentPage - 1) * itemsPerPage + 1 : 0;
+	const pageEnd = filteredEmployees.length ? Math.min(safeCurrentPage * itemsPerPage, filteredEmployees.length) : 0;
+
 	// Pagination calculations
-	const totalPages = Math.ceil(filteredEmployees.length / itemsPerPage);
-	const startIndex = (currentPage - 1) * itemsPerPage;
-	const endIndex = startIndex + itemsPerPage;
-	const paginatedEmployees = filteredEmployees.slice(startIndex, endIndex);
+	// const totalPages = Math.ceil(filteredEmployees.length / itemsPerPage);
+	// const startIndex = (currentPage - 1) * itemsPerPage;
+	// const endIndex = startIndex + itemsPerPage;
+	// const paginatedEmployees = filteredEmployees.slice(startIndex, endIndex);
 
 	// Reset to page 1 when search changes
 	const handleSearch = (value: string) => {
@@ -200,36 +206,32 @@ const Employees = () => {
 										))}
 									</tbody>
 								</table>
-							</div>
-
-							<div className="flex items-center justify-between rounded-lg border border-slate-200 bg-white px-6 py-2">
-								<div className="text-sm text-slate-600">
-									Showing {filteredEmployees.length === 0 ? 0 : startIndex + 1} to {Math.min(endIndex, filteredEmployees.length)} of {filteredEmployees.length}{' '}
-									employees
-								</div>
-								<div className="flex items-center gap-2">
-									<Button theme="outline" text="Previous" onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))} disabled={currentPage === 1} />
-
-									<div className="flex items-center gap-1">
-										{Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+								{filteredEmployees.length > 0 && (
+									<div className="flex items-center justify-between border-t border-slate-200 px-6 py-3 text-xs text-slate-600">
+										<span>
+											Showing {pageStart} - {pageEnd} of {filteredEmployees.length}
+										</span>
+										<div className="flex items-center gap-2">
 											<button
-												key={page}
-												onClick={() => setCurrentPage(page)}
-												className={`rounded px-3 py-2 text-sm font-medium transition ${
-													currentPage === page ? 'bg-slate-900 text-white' : 'border border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
-												}`}
+												disabled={safeCurrentPage === 1}
+												onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+												className="rounded border border-slate-200 px-2 py-1 text-xs text-slate-700 disabled:opacity-50"
 											>
-												{page}
+												Previous
 											</button>
-										))}
+											<span className="text-xs text-slate-600">
+												Page {safeCurrentPage} of {totalPages}
+											</span>
+											<button
+												disabled={safeCurrentPage === totalPages}
+												onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+												className="rounded border border-slate-200 px-2 py-1 text-xs text-slate-700 disabled:opacity-50"
+											>
+												Next
+											</button>
+										</div>
 									</div>
-									<Button
-										text="Next"
-										onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
-										disabled={currentPage === totalPages}
-										theme="outline"
-									/>
-								</div>
+								)}
 							</div>
 						</div>
 					)}
