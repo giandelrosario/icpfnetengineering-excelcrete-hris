@@ -29,20 +29,17 @@ export type AggregatePagIBIGSettings = {
 export type PagIBIGSettingsAvgAggregateOutputType = {
   id: number | null
   employee_id: number | null
-  ee_share_rate: number | null
 }
 
 export type PagIBIGSettingsSumAggregateOutputType = {
   id: number | null
   employee_id: number | null
-  ee_share_rate: number | null
 }
 
 export type PagIBIGSettingsMinAggregateOutputType = {
   id: number | null
   employee_id: number | null
   pagibig_no: string | null
-  ee_share_rate: number | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -51,7 +48,6 @@ export type PagIBIGSettingsMaxAggregateOutputType = {
   id: number | null
   employee_id: number | null
   pagibig_no: string | null
-  ee_share_rate: number | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -60,7 +56,6 @@ export type PagIBIGSettingsCountAggregateOutputType = {
   id: number
   employee_id: number
   pagibig_no: number
-  ee_share_rate: number
   created_at: number
   updated_at: number
   _all: number
@@ -70,20 +65,17 @@ export type PagIBIGSettingsCountAggregateOutputType = {
 export type PagIBIGSettingsAvgAggregateInputType = {
   id?: true
   employee_id?: true
-  ee_share_rate?: true
 }
 
 export type PagIBIGSettingsSumAggregateInputType = {
   id?: true
   employee_id?: true
-  ee_share_rate?: true
 }
 
 export type PagIBIGSettingsMinAggregateInputType = {
   id?: true
   employee_id?: true
   pagibig_no?: true
-  ee_share_rate?: true
   created_at?: true
   updated_at?: true
 }
@@ -92,7 +84,6 @@ export type PagIBIGSettingsMaxAggregateInputType = {
   id?: true
   employee_id?: true
   pagibig_no?: true
-  ee_share_rate?: true
   created_at?: true
   updated_at?: true
 }
@@ -101,7 +92,6 @@ export type PagIBIGSettingsCountAggregateInputType = {
   id?: true
   employee_id?: true
   pagibig_no?: true
-  ee_share_rate?: true
   created_at?: true
   updated_at?: true
   _all?: true
@@ -197,7 +187,6 @@ export type PagIBIGSettingsGroupByOutputType = {
   id: number
   employee_id: number
   pagibig_no: string | null
-  ee_share_rate: number | null
   created_at: Date
   updated_at: Date
   _count: PagIBIGSettingsCountAggregateOutputType | null
@@ -229,7 +218,6 @@ export type PagIBIGSettingsWhereInput = {
   id?: Prisma.IntFilter<"PagIBIGSettings"> | number
   employee_id?: Prisma.IntFilter<"PagIBIGSettings"> | number
   pagibig_no?: Prisma.StringNullableFilter<"PagIBIGSettings"> | string | null
-  ee_share_rate?: Prisma.FloatNullableFilter<"PagIBIGSettings"> | number | null
   created_at?: Prisma.DateTimeFilter<"PagIBIGSettings"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"PagIBIGSettings"> | Date | string
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
@@ -239,7 +227,6 @@ export type PagIBIGSettingsOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   employee_id?: Prisma.SortOrder
   pagibig_no?: Prisma.SortOrderInput | Prisma.SortOrder
-  ee_share_rate?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   employee?: Prisma.EmployeeOrderByWithRelationInput
@@ -252,7 +239,6 @@ export type PagIBIGSettingsWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.PagIBIGSettingsWhereInput[]
   NOT?: Prisma.PagIBIGSettingsWhereInput | Prisma.PagIBIGSettingsWhereInput[]
   pagibig_no?: Prisma.StringNullableFilter<"PagIBIGSettings"> | string | null
-  ee_share_rate?: Prisma.FloatNullableFilter<"PagIBIGSettings"> | number | null
   created_at?: Prisma.DateTimeFilter<"PagIBIGSettings"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"PagIBIGSettings"> | Date | string
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
@@ -262,7 +248,6 @@ export type PagIBIGSettingsOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   employee_id?: Prisma.SortOrder
   pagibig_no?: Prisma.SortOrderInput | Prisma.SortOrder
-  ee_share_rate?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   _count?: Prisma.PagIBIGSettingsCountOrderByAggregateInput
@@ -279,14 +264,12 @@ export type PagIBIGSettingsScalarWhereWithAggregatesInput = {
   id?: Prisma.IntWithAggregatesFilter<"PagIBIGSettings"> | number
   employee_id?: Prisma.IntWithAggregatesFilter<"PagIBIGSettings"> | number
   pagibig_no?: Prisma.StringNullableWithAggregatesFilter<"PagIBIGSettings"> | string | null
-  ee_share_rate?: Prisma.FloatNullableWithAggregatesFilter<"PagIBIGSettings"> | number | null
   created_at?: Prisma.DateTimeWithAggregatesFilter<"PagIBIGSettings"> | Date | string
   updated_at?: Prisma.DateTimeWithAggregatesFilter<"PagIBIGSettings"> | Date | string
 }
 
 export type PagIBIGSettingsCreateInput = {
   pagibig_no?: string | null
-  ee_share_rate?: number | null
   created_at?: Date | string
   updated_at?: Date | string
   employee: Prisma.EmployeeCreateNestedOneWithoutPagibig_settingsInput
@@ -296,14 +279,12 @@ export type PagIBIGSettingsUncheckedCreateInput = {
   id?: number
   employee_id: number
   pagibig_no?: string | null
-  ee_share_rate?: number | null
   created_at?: Date | string
   updated_at?: Date | string
 }
 
 export type PagIBIGSettingsUpdateInput = {
   pagibig_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  ee_share_rate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutPagibig_settingsNestedInput
@@ -313,7 +294,6 @@ export type PagIBIGSettingsUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   employee_id?: Prisma.IntFieldUpdateOperationsInput | number
   pagibig_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  ee_share_rate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -322,14 +302,12 @@ export type PagIBIGSettingsCreateManyInput = {
   id?: number
   employee_id: number
   pagibig_no?: string | null
-  ee_share_rate?: number | null
   created_at?: Date | string
   updated_at?: Date | string
 }
 
 export type PagIBIGSettingsUpdateManyMutationInput = {
   pagibig_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  ee_share_rate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -338,7 +316,6 @@ export type PagIBIGSettingsUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   employee_id?: Prisma.IntFieldUpdateOperationsInput | number
   pagibig_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  ee_share_rate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -352,7 +329,6 @@ export type PagIBIGSettingsCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   employee_id?: Prisma.SortOrder
   pagibig_no?: Prisma.SortOrder
-  ee_share_rate?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -360,14 +336,12 @@ export type PagIBIGSettingsCountOrderByAggregateInput = {
 export type PagIBIGSettingsAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
   employee_id?: Prisma.SortOrder
-  ee_share_rate?: Prisma.SortOrder
 }
 
 export type PagIBIGSettingsMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   employee_id?: Prisma.SortOrder
   pagibig_no?: Prisma.SortOrder
-  ee_share_rate?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -376,7 +350,6 @@ export type PagIBIGSettingsMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   employee_id?: Prisma.SortOrder
   pagibig_no?: Prisma.SortOrder
-  ee_share_rate?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -384,7 +357,6 @@ export type PagIBIGSettingsMinOrderByAggregateInput = {
 export type PagIBIGSettingsSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
   employee_id?: Prisma.SortOrder
-  ee_share_rate?: Prisma.SortOrder
 }
 
 export type PagIBIGSettingsCreateNestedOneWithoutEmployeeInput = {
@@ -421,7 +393,6 @@ export type PagIBIGSettingsUncheckedUpdateOneWithoutEmployeeNestedInput = {
 
 export type PagIBIGSettingsCreateWithoutEmployeeInput = {
   pagibig_no?: string | null
-  ee_share_rate?: number | null
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -429,7 +400,6 @@ export type PagIBIGSettingsCreateWithoutEmployeeInput = {
 export type PagIBIGSettingsUncheckedCreateWithoutEmployeeInput = {
   id?: number
   pagibig_no?: string | null
-  ee_share_rate?: number | null
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -452,7 +422,6 @@ export type PagIBIGSettingsUpdateToOneWithWhereWithoutEmployeeInput = {
 
 export type PagIBIGSettingsUpdateWithoutEmployeeInput = {
   pagibig_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  ee_share_rate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -460,7 +429,6 @@ export type PagIBIGSettingsUpdateWithoutEmployeeInput = {
 export type PagIBIGSettingsUncheckedUpdateWithoutEmployeeInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   pagibig_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  ee_share_rate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -471,7 +439,6 @@ export type PagIBIGSettingsSelect<ExtArgs extends runtime.Types.Extensions.Inter
   id?: boolean
   employee_id?: boolean
   pagibig_no?: boolean
-  ee_share_rate?: boolean
   created_at?: boolean
   updated_at?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
@@ -481,7 +448,6 @@ export type PagIBIGSettingsSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   id?: boolean
   employee_id?: boolean
   pagibig_no?: boolean
-  ee_share_rate?: boolean
   created_at?: boolean
   updated_at?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
@@ -491,7 +457,6 @@ export type PagIBIGSettingsSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   id?: boolean
   employee_id?: boolean
   pagibig_no?: boolean
-  ee_share_rate?: boolean
   created_at?: boolean
   updated_at?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
@@ -501,12 +466,11 @@ export type PagIBIGSettingsSelectScalar = {
   id?: boolean
   employee_id?: boolean
   pagibig_no?: boolean
-  ee_share_rate?: boolean
   created_at?: boolean
   updated_at?: boolean
 }
 
-export type PagIBIGSettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employee_id" | "pagibig_no" | "ee_share_rate" | "created_at" | "updated_at", ExtArgs["result"]["pagIBIGSettings"]>
+export type PagIBIGSettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employee_id" | "pagibig_no" | "created_at" | "updated_at", ExtArgs["result"]["pagIBIGSettings"]>
 export type PagIBIGSettingsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
 }
@@ -526,7 +490,6 @@ export type $PagIBIGSettingsPayload<ExtArgs extends runtime.Types.Extensions.Int
     id: number
     employee_id: number
     pagibig_no: string | null
-    ee_share_rate: number | null
     created_at: Date
     updated_at: Date
   }, ExtArgs["result"]["pagIBIGSettings"]>
@@ -956,7 +919,6 @@ export interface PagIBIGSettingsFieldRefs {
   readonly id: Prisma.FieldRef<"PagIBIGSettings", 'Int'>
   readonly employee_id: Prisma.FieldRef<"PagIBIGSettings", 'Int'>
   readonly pagibig_no: Prisma.FieldRef<"PagIBIGSettings", 'String'>
-  readonly ee_share_rate: Prisma.FieldRef<"PagIBIGSettings", 'Float'>
   readonly created_at: Prisma.FieldRef<"PagIBIGSettings", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"PagIBIGSettings", 'DateTime'>
 }

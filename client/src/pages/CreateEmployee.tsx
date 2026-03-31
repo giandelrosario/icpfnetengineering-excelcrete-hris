@@ -1,12 +1,13 @@
 import Button from '@/components/Button';
+import LoadingModal from '@/components/LoadingModal';
 import api from '@/config/api';
 import { CIVIL_STATUS } from '@/utils/lib';
 import { useGSAP } from '@gsap/react';
 import { useMutation } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
 import gsap from 'gsap';
-import { ArrowLeft, ArrowRight, Edit2, Grid2x2, IdCard, Plus, Trash2, Users } from 'lucide-react';
-import React from 'react';
+import { ArrowLeft, ArrowRight, Edit2, Grid2x2, IdCard, Plus, Trash2, Users, XCircle } from 'lucide-react';
+import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router';
 
 type TEmployeeRelative = {
@@ -27,12 +28,9 @@ type TSalaryHistory = {
 
 type TSSSSettings = {
 	sss_no: string;
-	ee_share_rate: number;
-	mpf_amount: number;
 };
 type TPhilhealthSettings = {
 	philhealth_no: string;
-	ee_share_rate: number;
 };
 type TPagIBIGSettings = {
 	pagibig_no: string;
@@ -81,28 +79,37 @@ const initialEmployeeDetails: TEmployeeDetails = {
 };
 
 const CreateEmployee = () => {
-	const [step, setStep] = React.useState(1);
-	const [showSummaryModal, setShowSummaryModal] = React.useState(false);
+	const [step, setStep] = useState(1);
+	const [showSummaryModal, setShowSummaryModal] = useState(false);
+	const [validationModal, setValidationModal] = useState({
+		isOpen: false,
+		title: 'Incomplete Details',
+		message: 'Please complete the required fields before continuing.',
+		items: [] as string[],
+	});
 
 	const navigate = useNavigate();
 
 	// Step 1: Employee Details
-	const [employeeDetails, setEmployeeDetails] = React.useState<TEmployeeDetails>({ ...initialEmployeeDetails });
+	const [employeeDetails, setEmployeeDetails] = useState<TEmployeeDetails>({ ...initialEmployeeDetails });
 
 	// Step 2: Relatives
-	const [relatives, setRelatives] = React.useState<TEmployeeRelative[]>([]);
-	const [relativeFormData, setRelativeFormData] = React.useState<TEmployeeRelative>({ ...initialRelative });
-	const [editingIndex, setEditingIndex] = React.useState<number | null>(null);
+	const [relatives, setRelatives] = useState<TEmployeeRelative[]>([]);
+	const [relativeFormData, setRelativeFormData] = useState<TEmployeeRelative>({ ...initialRelative });
+	const [editingIndex, setEditingIndex] = useState<number | null>(null);
 
 	// Step 3: Statutory Benefits Form Data
-	const [salaryHistory, setSalaryHistory] = React.useState<TSalaryHistory>({ amount: 0 });
-	const [sssSettings, setSSSSettings] = React.useState<TSSSSettings>({ sss_no: '', ee_share_rate: 0, mpf_amount: 0 });
-	const [philhealthSettings, setPhilhealthSettings] = React.useState<TPhilhealthSettings>({ philhealth_no: '', ee_share_rate: 0 });
-	const [pagibigSettings, setPagIBIGSettings] = React.useState<TPagIBIGSettings>({ pagibig_no: '', ee_share_rate: 0 });
-	const [birSettings, setBIRSettings] = React.useState<TBIRSettings>({ tin_no: '' });
+	const [salaryHistory, setSalaryHistory] = useState<TSalaryHistory>({ amount: 0 });
+	const [sssSettings, setSSSSettings] = useState<TSSSSettings>({ sss_no: '' });
+	const [philhealthSettings, setPhilhealthSettings] = useState<TPhilhealthSettings>({ philhealth_no: '' });
+	const [pagibigSettings, setPagIBIGSettings] = React.useState<TPagIBIGSettings>({ pagibig_no: '', ee_share_rate: 2 });
+	const [birSettings, setBIRSettings] = useState<TBIRSettings>({ tin_no: '' });
+
+	const [showErrorModal, setShowErrorModal] = useState(false);
+	const [errorMessage, setErrorMessage] = useState('Something went wrong. Please try again later.');
 
 	// Benefit selections (checkboxes)
-	const [selectedBenefits, setSelectedBenefits] = React.useState({
+	const [selectedBenefits, setSelectedBenefits] = useState({
 		hasSalary: false,
 		hasSSS: false,
 		hasPhilHealth: false,
@@ -110,8 +117,8 @@ const CreateEmployee = () => {
 		hasBIR: false,
 	});
 
-	const sectionRef = React.useRef<HTMLElement>(null);
-	const stepIndicatorsRef = React.useRef<(HTMLLIElement | null)[]>([]);
+	const sectionRef = useRef<HTMLElement>(null);
+	const stepIndicatorsRef = useRef<(HTMLLIElement | null)[]>([]);
 
 	const create_employee_mutation = useMutation({
 		mutationFn: async (
@@ -133,6 +140,8 @@ const CreateEmployee = () => {
 		onError: (error) => {
 			if (isAxiosError(error)) {
 				const message = error.response?.data?.message || 'An error occurred while creating the employee.';
+				setErrorMessage(message);
+				setShowErrorModal(true);
 			}
 		},
 		onSettled: () => {
@@ -148,8 +157,8 @@ const CreateEmployee = () => {
 				hasBIR: false,
 			});
 			setSalaryHistory({ amount: 0 });
-			setSSSSettings({ sss_no: '', ee_share_rate: 0, mpf_amount: 0 });
-			setPhilhealthSettings({ philhealth_no: '', ee_share_rate: 0 });
+			setSSSSettings({ sss_no: '' });
+			setPhilhealthSettings({ philhealth_no: '' });
 			setPagIBIGSettings({ pagibig_no: '', ee_share_rate: 0 });
 			setBIRSettings({ tin_no: '' });
 			setShowSummaryModal(false);
@@ -188,6 +197,46 @@ const CreateEmployee = () => {
 	}, [step]);
 
 	const handleStepChange = (newStep: number) => {
+		if (newStep > step) {
+			if (step === 1) {
+				const requiredFields: { key: keyof TEmployeeDetails; label: string }[] = [
+					{ key: 'first_name', label: 'First Name' },
+					{ key: 'last_name', label: 'Last Name' },
+					{ key: 'citizenship', label: 'Citizenship' },
+					{ key: 'civil_status', label: 'Civil Status' },
+					{ key: 'religion', label: 'Religion' },
+					{ key: 'email', label: 'Email' },
+					{ key: 'contact_no', label: 'Contact No.' },
+					{ key: 'birth_date', label: 'Birth Date' },
+					{ key: 'birth_place', label: 'Birth Place' },
+				];
+
+				const missingFields = requiredFields.filter(({ key }) => !employeeDetails[key].trim()).map(({ label }) => label);
+
+				if (missingFields.length > 0) {
+					setValidationModal({
+						isOpen: true,
+						title: 'Complete Employee Details',
+						message: 'Please complete the following fields before continuing:',
+						items: missingFields,
+					});
+					return;
+				}
+			}
+
+			if (step === 2) {
+				if (relatives.length < 1 || relatives.length > 2) {
+					setValidationModal({
+						isOpen: true,
+						title: 'Relatives Required',
+						message: 'Please add 1 or 2 relatives before continuing.',
+						items: [],
+					});
+					return;
+				}
+			}
+		}
+
 		// Animate button click
 		gsap.to('button', {
 			scale: 0.95,
@@ -255,14 +304,14 @@ const CreateEmployee = () => {
 	const handleSSSChange = (field: keyof TSSSSettings, value: string) => {
 		setSSSSettings((prev) => ({
 			...prev,
-			[field]: ['ee_share_rate', 'mpf_amount'].includes(field) ? parseFloat(value) : value,
+			[field]: value,
 		}));
 	};
 
 	const handlePhilhealthChange = (field: keyof TPhilhealthSettings, value: string) => {
 		setPhilhealthSettings((prev) => ({
 			...prev,
-			[field]: field === 'ee_share_rate' ? parseFloat(value) : value,
+			[field]: value,
 		}));
 	};
 
@@ -331,7 +380,7 @@ const CreateEmployee = () => {
 			payload.philhealth_settings = philhealthSettings;
 		}
 		if (selectedBenefits.hasPagIBIG) {
-			payload.pagibig_settings = pagibigSettings;
+			payload.pagibig_settings = { ...pagibigSettings, ee_share_rate: 2 };
 		}
 		if (selectedBenefits.hasBIR) {
 			payload.bir_settings = birSettings;
@@ -350,7 +399,7 @@ const CreateEmployee = () => {
 		<main className="bg-slate-50 min-h-screen w-full">
 			<div className="container mx-auto p-4 space-y-4">
 				<div>
-					<button onClick={() => navigate('/employees')} className="rounded-full bg-white p-2 border border-slate-200 hover:bg-slate-50">
+					<button onClick={() => navigate(-1)} className="rounded-full bg-white p-2 border border-slate-200 hover:bg-slate-50">
 						<ArrowLeft size={20} className="text-slate-600 hover:text-slate-900 transition-colors" />
 					</button>
 				</div>
@@ -865,34 +914,6 @@ const CreateEmployee = () => {
 												className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
 											/>
 										</div>
-										<div className="flex flex-col gap-2">
-											<label htmlFor="sss_ee_share" className="block text-sm font-medium text-slate-700">
-												Employee Share Rate (%)
-											</label>
-											<input
-												type="number"
-												id="sss_ee_share"
-												value={sssSettings.ee_share_rate}
-												onChange={(e) => handleSSSChange('ee_share_rate', e.target.value)}
-												placeholder="10"
-												step="0.01"
-												className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
-											/>
-										</div>
-										<div className="flex flex-col gap-2">
-											<label htmlFor="sss_mpf" className="block text-sm font-medium text-slate-700">
-												MPF Amount
-											</label>
-											<input
-												type="number"
-												id="sss_mpf"
-												value={sssSettings.mpf_amount}
-												onChange={(e) => handleSSSChange('mpf_amount', e.target.value)}
-												placeholder="0.00"
-												step="0.01"
-												className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-blue-300"
-											/>
-										</div>
 									</div>
 								</div>
 							)}
@@ -912,20 +933,6 @@ const CreateEmployee = () => {
 												value={philhealthSettings.philhealth_no}
 												onChange={(e) => handlePhilhealthChange('philhealth_no', e.target.value)}
 												placeholder="12-XXXXXXXXXXXX-X"
-												className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
-											/>
-										</div>
-										<div className="flex flex-col gap-2">
-											<label htmlFor="philhealth_ee_share" className="block text-sm font-medium text-slate-700">
-												Employee Share Rate (%)
-											</label>
-											<input
-												type="number"
-												id="philhealth_ee_share"
-												value={philhealthSettings.ee_share_rate}
-												onChange={(e) => handlePhilhealthChange('ee_share_rate', e.target.value)}
-												placeholder="5"
-												step="0.01"
 												className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
 											/>
 										</div>
@@ -961,7 +968,8 @@ const CreateEmployee = () => {
 												value={pagibigSettings.ee_share_rate}
 												onChange={(e) => handlePagIBIGChange('ee_share_rate', e.target.value)}
 												placeholder="2"
-												step="0.01"
+												step="1"
+												min={0}
 												className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
 											/>
 										</div>
@@ -1196,14 +1204,6 @@ const CreateEmployee = () => {
 														<p className="text-slate-500">SSS No.</p>
 														<p className="text-slate-900 font-medium">{sssSettings.sss_no || '—'}</p>
 													</div>
-													<div>
-														<p className="text-slate-500">EE Share Rate</p>
-														<p className="text-slate-900 font-medium">{sssSettings.ee_share_rate}% </p>
-													</div>
-													<div>
-														<p className="text-slate-500">MPF Amount</p>
-														<p className="text-slate-900 font-medium">₱{sssSettings.mpf_amount}</p>
-													</div>
 												</div>
 											</div>
 										)}
@@ -1214,10 +1214,6 @@ const CreateEmployee = () => {
 													<div>
 														<p className="text-slate-500">PhilHealth No.</p>
 														<p className="text-slate-900 font-medium">{philhealthSettings.philhealth_no || '—'}</p>
-													</div>
-													<div>
-														<p className="text-slate-500">EE Share Rate</p>
-														<p className="text-slate-900 font-medium">{philhealthSettings.ee_share_rate}%</p>
 													</div>
 												</div>
 											</div>
@@ -1269,6 +1265,61 @@ const CreateEmployee = () => {
 					</div>
 				</div>
 			)}
+
+			{showErrorModal && (
+				<div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+					<div className="bg-white rounded-lg shadow-lg max-w-md w-full p-6">
+						<div className="flex items-center gap-3 mb-4">
+							<XCircle className="w-6 h-6 text-red-600" />
+							<h3 className="text-lg font-bold text-slate-800">Error</h3>
+						</div>
+						<p className="text-slate-600">{errorMessage}</p>
+						<button
+							onClick={() => {
+								setShowErrorModal(false);
+								setErrorMessage('');
+							}}
+							className="mt-2 px-4 py-2 text-sm font-semibold text-white bg-slate-800 rounded-lg hover:bg-slate-700 transition-colors"
+						>
+							Close
+						</button>
+					</div>
+				</div>
+			)}
+
+			{validationModal.isOpen && (
+				<div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+					<div className="bg-white rounded-lg shadow-lg max-w-md w-full p-6">
+						<div className="flex items-center gap-3 mb-4">
+							<XCircle className="w-6 h-6 text-amber-600" />
+							<h3 className="text-lg font-bold text-slate-800">{validationModal.title}</h3>
+						</div>
+						<p className="text-slate-600">{validationModal.message}</p>
+						{validationModal.items.length > 0 && (
+							<ul className="mt-3 list-disc list-inside text-sm text-slate-700 space-y-1">
+								{validationModal.items.map((item) => (
+									<li key={item}>{item}</li>
+								))}
+							</ul>
+						)}
+						<button
+							onClick={() =>
+								setValidationModal({
+									isOpen: false,
+									title: 'Incomplete Details',
+									message: 'Please complete the required fields before continuing.',
+									items: [],
+								})
+							}
+							className="mt-4 px-4 py-2 text-sm font-semibold text-white bg-slate-800 rounded-lg hover:bg-slate-700 transition-colors"
+						>
+							Close
+						</button>
+					</div>
+				</div>
+			)}
+
+			<LoadingModal open={create_employee_mutation.isPending} message="Creating employee, please wait..." />
 		</main>
 	);
 };

@@ -1,0 +1,368 @@
+[
+	{
+		"salary_range": [0, 5249.99],
+		"msc": { "ss": 5000, "mpf": 0 },
+		"employer": { "mpf": 0, "ec": 10 },
+		"employee": { "mpf": 0 }
+	},
+	{
+		"salary_range": [5250, 5749.99],
+		"msc": { "ss": 5500, "mpf": 0 },
+		"employer": { "mpf": 0, "ec": 10 },
+		"employee": { "mpf": 0 }
+	},
+	{
+		"salary_range": [5750, 6249.99],
+		"msc": { "ss": 6000, "mpf": 0 },
+		"employer": { "mpf": 0, "ec": 10 },
+		"employee": { "mpf": 0 }
+	},
+	{
+		"salary_range": [6250, 6749.99],
+		"msc": { "ss": 6500, "mpf": 0 },
+		"employer": { "mpf": 0, "ec": 10 },
+		"employee": { "mpf": 0 }
+	},
+	{
+		"salary_range": [6750, 7249.99],
+		"msc": { "ss": 7000, "mpf": 0 },
+		"employer": { "mpf": 0, "ec": 10 },
+		"employee": { "mpf": 0 }
+	},
+	{
+		"salary_range": [7250, 7749.99],
+		"msc": { "ss": 7500, "mpf": 0 },
+		"employer": { "mpf": 0, "ec": 10 },
+		"employee": { "mpf": 0 }
+	},
+	{
+		"salary_range": [7750, 8249.99],
+		"msc": { "ss": 8000, "mpf": 0 },
+		"employer": { "mpf": 0, "ec": 10 },
+		"employee": { "mpf": 0 }
+	},
+	{
+		"salary_range": [8250, 8749.99],
+		"msc": { "ss": 8500, "mpf": 0 },
+		"employer": { "mpf": 0, "ec": 10 },
+		"employee": { "mpf": 0 }
+	},
+	{
+		"salary_range": [8750, 9249.99],
+		"msc": { "ss": 9000, "mpf": 0 },
+		"employer": { "mpf": 0, "ec": 10 },
+		"employee": { "mpf": 0 }
+	},
+	{
+		"salary_range": [9250, 9749.99],
+		"msc": { "ss": 9500, "mpf": 0 },
+		"employer": { "mpf": 0, "ec": 10 },
+		"employee": { "mpf": 0 }
+	},
+	{
+		"salary_range": [9750, 10249.99],
+		"msc": { "ss": 10000, "mpf": 0 },
+		"employer": { "mpf": 0, "ec": 10 },
+		"employee": { "mpf": 0 }
+	},
+	{
+		"salary_range": [10250, 10749.99],
+		"msc": { "ss": 10500, "mpf": 0 },
+		"employer": { "mpf": 0, "ec": 10 },
+		"employee": { "mpf": 0 }
+	},
+	{
+		"salary_range": [10750, 11249.99],
+		"msc": { "ss": 11000, "mpf": 0 },
+		"employer": { "mpf": 0, "ec": 10 },
+		"employee": { "mpf": 0 }
+	},
+	{
+		"salary_range": [11250, 11749.99],
+		"msc": { "ss": 11500, "mpf": 0 },
+		"employer": { "mpf": 0, "ec": 10 },
+		"employee": { "mpf": 0 }
+	},
+	{
+		"salary_range": [11750, 12249.99],
+		"msc": { "ss": 12000, "mpf": 0 },
+		"employer": { "mpf": 0, "ec": 10 },
+		"employee": { "mpf": 0 }
+	},
+	{
+		"salary_range": [12250, 12749.99],
+		"msc": { "ss": 12500, "mpf": 0 },
+		"employer": { "mpf": 0, "ec": 10 },
+		"employee": { "mpf": 0 }
+	},
+	{
+		"salary_range": [12750, 13249.99],
+		"msc": { "ss": 13000, "mpf": 0 },
+		"employer": { "mpf": 0, "ec": 10 },
+		"employee": { "mpf": 0 }
+	},
+	{
+		"salary_range": [13250, 13749.99],
+		"msc": { "ss": 13500, "mpf": 0 },
+		"employer": { "mpf": 0, "ec": 10 },
+		"employee": { "mpf": 0 }
+	},
+	{
+		"salary_range": [13750, 14249.99],
+		"msc": { "ss": 14000, "mpf": 0 },
+		"employer": { "mpf": 0, "ec": 10 },
+		"employee": { "mpf": 0 }
+	},
+	{
+		"salary_range": [14250, 14749.99],
+		"msc": { "ss": 14500, "mpf": 0 },
+		"employer": { "mpf": 0, "ec": 10 },
+		"employee": { "mpf": 0 }
+	},
+	{
+		"salary_range": [14750, 15249.99],
+		"msc": { "ss": 15000, "mpf": 0 },
+		"employer": { "mpf": 0, "ec": 30 },
+		"employee": { "mpf": 0 }
+	},
+	{
+		"salary_range": [15250, 15749.99],
+		"msc": { "ss": 15500, "mpf": 0 },
+		"employer": { "mpf": 0, "ec": 30 },
+		"employee": { "mpf": 0 }
+	},
+	{
+		"salary_range": [15750, 16249.99],
+		"msc": { "ss": 16000, "mpf": 0 },
+		"employer": { "mpf": 0, "ec": 30 },
+		"employee": { "mpf": 0 }
+	},
+	{
+		"salary_range": [16250, 16749.99],
+		"msc": { "ss": 16500, "mpf": 0 },
+		"employer": { "mpf": 0, "ec": 30 },
+		"employee": { "mpf": 0 }
+	},
+	{
+		"salary_range": [16750, 17249.99],
+		"msc": { "ss": 17000, "mpf": 0 },
+		"employer": { "mpf": 0, "ec": 30 },
+		"employee": { "mpf": 0 }
+	},
+	{
+		"salary_range": [17250, 17749.99],
+		"msc": { "ss": 17500, "mpf": 0 },
+		"employer": { "mpf": 0, "ec": 30 },
+		"employee": { "mpf": 0 }
+	},
+	{
+		"salary_range": [17750, 18249.99],
+		"msc": { "ss": 18000, "mpf": 0 },
+		"employer": { "mpf": 0, "ec": 30 },
+		"employee": { "mpf": 0 }
+	},
+	{
+		"salary_range": [18250, 18749.99],
+		"msc": { "ss": 18500, "mpf": 0 },
+		"employer": { "mpf": 0, "ec": 30 },
+		"employee": { "mpf": 0 }
+	},
+	{
+		"salary_range": [18750, 19249.99],
+		"msc": { "ss": 19000, "mpf": 0 },
+		"employer": { "mpf": 0, "ec": 30 },
+		"employee": { "mpf": 0 }
+	},
+	{
+		"salary_range": [19250, 19749.99],
+		"msc": { "ss": 19500, "mpf": 0 },
+		"employer": { "mpf": 0, "ec": 30 },
+		"employee": { "mpf": 0 }
+	},
+	{
+		"salary_range": [19750, 20249.99],
+		"msc": { "ss": 20000, "mpf": 0 },
+		"employer": { "mpf": 0, "ec": 30 },
+		"employee": { "mpf": 0 }
+	},
+	{
+		"salary_range": [20250, 20749.99],
+		"msc": { "ss": 20000, "mpf": 500 },
+		"employer": { "mpf": 50, "ec": 30 },
+		"employee": { "mpf": 25 }
+	},
+	{
+		"salary_range": [20750, 21249.99],
+		"msc": { "ss": 20000, "mpf": 1000 },
+		"employer": { "mpf": 100, "ec": 30 },
+		"employee": { "mpf": 50 }
+	},
+	{
+		"salary_range": [21250, 21749.99],
+		"msc": { "ss": 20000, "mpf": 1500 },
+		"employer": { "mpf": 150, "ec": 30 },
+		"employee": { "mpf": 75 }
+	},
+	{
+		"salary_range": [21750, 22249.99],
+		"msc": { "ss": 20000, "mpf": 2000 },
+		"employer": { "mpf": 200, "ec": 30 },
+		"employee": { "mpf": 100 }
+	},
+	{
+		"salary_range": [22250, 22749.99],
+		"msc": { "ss": 20000, "mpf": 2500 },
+		"employer": { "mpf": 250, "ec": 30 },
+		"employee": { "mpf": 125 }
+	},
+	{
+		"salary_range": [22750, 23249.99],
+		"msc": { "ss": 20000, "mpf": 3000 },
+		"employer": { "mpf": 300, "ec": 30 },
+		"employee": { "mpf": 150 }
+	},
+	{
+		"salary_range": [23250, 23749.99],
+		"msc": { "ss": 20000, "mpf": 3500 },
+		"employer": { "mpf": 350, "ec": 30 },
+		"employee": { "mpf": 175 }
+	},
+	{
+		"salary_range": [23750, 24249.99],
+		"msc": { "ss": 20000, "mpf": 4000 },
+		"employer": { "mpf": 400, "ec": 30 },
+		"employee": { "mpf": 200 }
+	},
+	{
+		"salary_range": [24250, 24749.99],
+		"msc": { "ss": 20000, "mpf": 4500 },
+		"employer": { "mpf": 450, "ec": 30 },
+		"employee": { "mpf": 225 }
+	},
+	{
+		"salary_range": [24750, 25249.99],
+		"msc": { "ss": 20000, "mpf": 5000 },
+		"employer": { "mpf": 500, "ec": 30 },
+		"employee": { "mpf": 250 }
+	},
+	{
+		"salary_range": [25250, 25749.99],
+		"msc": { "ss": 20000, "mpf": 5500 },
+		"employer": { "mpf": 550, "ec": 30 },
+		"employee": { "mpf": 275 }
+	},
+	{
+		"salary_range": [25750, 26249.99],
+		"msc": { "ss": 20000, "mpf": 6000 },
+		"employer": { "mpf": 600, "ec": 30 },
+		"employee": { "mpf": 300 }
+	},
+	{
+		"salary_range": [26250, 26749.99],
+		"msc": { "ss": 20000, "mpf": 6500 },
+		"employer": { "mpf": 650, "ec": 30 },
+		"employee": { "mpf": 325 }
+	},
+	{
+		"salary_range": [26750, 27249.99],
+		"msc": { "ss": 20000, "mpf": 7000 },
+		"employer": { "mpf": 700, "ec": 30 },
+		"employee": { "mpf": 350 }
+	},
+	{
+		"salary_range": [27250, 27749.99],
+		"msc": { "ss": 20000, "mpf": 7500 },
+		"employer": { "mpf": 750, "ec": 30 },
+		"employee": { "mpf": 375 }
+	},
+	{
+		"salary_range": [27750, 28249.99],
+		"msc": { "ss": 20000, "mpf": 8000 },
+		"employer": { "mpf": 800, "ec": 30 },
+		"employee": { "mpf": 400 }
+	},
+	{
+		"salary_range": [28250, 28749.99],
+		"msc": { "ss": 20000, "mpf": 8500 },
+		"employer": { "mpf": 850, "ec": 30 },
+		"employee": { "mpf": 425 }
+	},
+	{
+		"salary_range": [28750, 29249.99],
+		"msc": { "ss": 20000, "mpf": 9000 },
+		"employer": { "mpf": 900, "ec": 30 },
+		"employee": { "mpf": 450 }
+	},
+	{
+		"salary_range": [29250, 29749.99],
+		"msc": { "ss": 20000, "mpf": 9500 },
+		"employer": { "mpf": 950, "ec": 30 },
+		"employee": { "mpf": 475 }
+	},
+	{
+		"salary_range": [29750, 30249.99],
+		"msc": { "ss": 20000, "mpf": 10000 },
+		"employer": { "mpf": 1000, "ec": 30 },
+		"employee": { "mpf": 500 }
+	},
+	{
+		"salary_range": [30250, 30749.99],
+		"msc": { "ss": 20000, "mpf": 10500 },
+		"employer": { "mpf": 1050, "ec": 30 },
+		"employee": { "mpf": 525 }
+	},
+	{
+		"salary_range": [30750, 31249.99],
+		"msc": { "ss": 20000, "mpf": 11000 },
+		"employer": { "mpf": 1100, "ec": 30 },
+		"employee": { "mpf": 550 }
+	},
+	{
+		"salary_range": [31250, 31749.99],
+		"msc": { "ss": 20000, "mpf": 11500 },
+		"employer": { "mpf": 1150, "ec": 30 },
+		"employee": { "mpf": 575 }
+	},
+	{
+		"salary_range": [31750, 32249.99],
+		"msc": { "ss": 20000, "mpf": 12000 },
+		"employer": { "mpf": 1200, "ec": 30 },
+		"employee": { "mpf": 600 }
+	},
+	{
+		"salary_range": [32250, 32749.99],
+		"msc": { "ss": 20000, "mpf": 12500 },
+		"employer": { "mpf": 1250, "ec": 30 },
+		"employee": { "mpf": 625 }
+	},
+	{
+		"salary_range": [32750, 33249.99],
+		"msc": { "ss": 20000, "mpf": 13000 },
+		"employer": { "mpf": 1300, "ec": 30 },
+		"employee": { "mpf": 650 }
+	},
+	{
+		"salary_range": [33250, 33749.99],
+		"msc": { "ss": 20000, "mpf": 13500 },
+		"employer": { "mpf": 1350, "ec": 30 },
+		"employee": { "mpf": 675 }
+	},
+	{
+		"salary_range": [33750, 34249.99],
+		"msc": { "ss": 20000, "mpf": 14000 },
+		"employer": { "mpf": 1400, "ec": 30 },
+		"employee": { "mpf": 700 }
+	},
+	{
+		"salary_range": [34250, 34749.99],
+		"msc": { "ss": 20000, "mpf": 14500 },
+		"employer": { "mpf": 1450, "ec": 30 },
+		"employee": { "mpf": 725 }
+	},
+	{
+		"salary_range": [34750, null],
+		"msc": { "ss": 20000, "mpf": 15000 },
+		"employer": { "mpf": 1500, "ec": 30 },
+		"employee": { "mpf": 750 }
+	}
+]

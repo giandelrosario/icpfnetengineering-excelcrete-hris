@@ -412,6 +412,14 @@ export type SalaryHistoryUncheckedUpdateManyWithoutEmployeeNestedInput = {
   deleteMany?: Prisma.SalaryHistoryScalarWhereInput | Prisma.SalaryHistoryScalarWhereInput[]
 }
 
+export type FloatFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
 export type SalaryHistoryCreateWithoutEmployeeInput = {
   amount?: number
   created_at?: Date | string

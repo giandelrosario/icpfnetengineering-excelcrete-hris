@@ -1,4 +1,4 @@
-import { LayoutDashboard, PanelRightClose } from 'lucide-react';
+import { LayoutDashboard, PanelRightClose, Settings2, Tickets } from 'lucide-react';
 import React from 'react';
 import { Link, useLocation } from 'react-router';
 
@@ -8,6 +8,18 @@ const filtered_links = [
 		name: 'Employees',
 		href: '/dashboard/employees',
 		icon: <LayoutDashboard size={16} />,
+	},
+	{
+		id: 2,
+		name: 'Payroll',
+		href: '/dashboard/payroll',
+		icon: <Tickets size={16} />,
+	},
+	{
+		id: 3,
+		name: 'Settings',
+		href: '/dashboard/settings',
+		icon: <Settings2 size={16} />,
 	},
 ];
 

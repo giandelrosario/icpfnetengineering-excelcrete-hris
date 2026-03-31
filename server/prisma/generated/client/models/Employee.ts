@@ -46,6 +46,7 @@ export type EmployeeMinAggregateOutputType = {
   birth_place: string | null
   email: string | null
   contact_no: string | null
+  status: string | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -62,6 +63,7 @@ export type EmployeeMaxAggregateOutputType = {
   birth_place: string | null
   email: string | null
   contact_no: string | null
+  status: string | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -78,6 +80,7 @@ export type EmployeeCountAggregateOutputType = {
   birth_place: number
   email: number
   contact_no: number
+  status: number
   created_at: number
   updated_at: number
   _all: number
@@ -104,6 +107,7 @@ export type EmployeeMinAggregateInputType = {
   birth_place?: true
   email?: true
   contact_no?: true
+  status?: true
   created_at?: true
   updated_at?: true
 }
@@ -120,6 +124,7 @@ export type EmployeeMaxAggregateInputType = {
   birth_place?: true
   email?: true
   contact_no?: true
+  status?: true
   created_at?: true
   updated_at?: true
 }
@@ -136,6 +141,7 @@ export type EmployeeCountAggregateInputType = {
   birth_place?: true
   email?: true
   contact_no?: true
+  status?: true
   created_at?: true
   updated_at?: true
   _all?: true
@@ -239,6 +245,7 @@ export type EmployeeGroupByOutputType = {
   birth_place: string
   email: string | null
   contact_no: string | null
+  status: string
   created_at: Date
   updated_at: Date
   _count: EmployeeCountAggregateOutputType | null
@@ -278,6 +285,7 @@ export type EmployeeWhereInput = {
   birth_place?: Prisma.StringFilter<"Employee"> | string
   email?: Prisma.StringNullableFilter<"Employee"> | string | null
   contact_no?: Prisma.StringNullableFilter<"Employee"> | string | null
+  status?: Prisma.StringFilter<"Employee"> | string
   created_at?: Prisma.DateTimeFilter<"Employee"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Employee"> | Date | string
   relatives?: Prisma.EmployeeRelativeListRelationFilter
@@ -301,6 +309,7 @@ export type EmployeeOrderByWithRelationInput = {
   birth_place?: Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
   contact_no?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   relatives?: Prisma.EmployeeRelativeOrderByRelationAggregateInput
@@ -327,6 +336,7 @@ export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
   birth_place?: Prisma.StringFilter<"Employee"> | string
   email?: Prisma.StringNullableFilter<"Employee"> | string | null
   contact_no?: Prisma.StringNullableFilter<"Employee"> | string | null
+  status?: Prisma.StringFilter<"Employee"> | string
   created_at?: Prisma.DateTimeFilter<"Employee"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Employee"> | Date | string
   relatives?: Prisma.EmployeeRelativeListRelationFilter
@@ -350,6 +360,7 @@ export type EmployeeOrderByWithAggregationInput = {
   birth_place?: Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
   contact_no?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   _count?: Prisma.EmployeeCountOrderByAggregateInput
@@ -374,6 +385,7 @@ export type EmployeeScalarWhereWithAggregatesInput = {
   birth_place?: Prisma.StringWithAggregatesFilter<"Employee"> | string
   email?: Prisma.StringNullableWithAggregatesFilter<"Employee"> | string | null
   contact_no?: Prisma.StringNullableWithAggregatesFilter<"Employee"> | string | null
+  status?: Prisma.StringWithAggregatesFilter<"Employee"> | string
   created_at?: Prisma.DateTimeWithAggregatesFilter<"Employee"> | Date | string
   updated_at?: Prisma.DateTimeWithAggregatesFilter<"Employee"> | Date | string
 }
@@ -389,6 +401,7 @@ export type EmployeeCreateInput = {
   birth_place: string
   email?: string | null
   contact_no?: string | null
+  status?: string
   created_at?: Date | string
   updated_at?: Date | string
   relatives?: Prisma.EmployeeRelativeCreateNestedManyWithoutEmployeeInput
@@ -412,6 +425,7 @@ export type EmployeeUncheckedCreateInput = {
   birth_place: string
   email?: string | null
   contact_no?: string | null
+  status?: string
   created_at?: Date | string
   updated_at?: Date | string
   relatives?: Prisma.EmployeeRelativeUncheckedCreateNestedManyWithoutEmployeeInput
@@ -434,6 +448,7 @@ export type EmployeeUpdateInput = {
   birth_place?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contact_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   relatives?: Prisma.EmployeeRelativeUpdateManyWithoutEmployeeNestedInput
@@ -457,6 +472,7 @@ export type EmployeeUncheckedUpdateInput = {
   birth_place?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contact_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   relatives?: Prisma.EmployeeRelativeUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -480,6 +496,7 @@ export type EmployeeCreateManyInput = {
   birth_place: string
   email?: string | null
   contact_no?: string | null
+  status?: string
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -495,6 +512,7 @@ export type EmployeeUpdateManyMutationInput = {
   birth_place?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contact_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -511,6 +529,7 @@ export type EmployeeUncheckedUpdateManyInput = {
   birth_place?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contact_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -527,6 +546,7 @@ export type EmployeeCountOrderByAggregateInput = {
   birth_place?: Prisma.SortOrder
   email?: Prisma.SortOrder
   contact_no?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -547,6 +567,7 @@ export type EmployeeMaxOrderByAggregateInput = {
   birth_place?: Prisma.SortOrder
   email?: Prisma.SortOrder
   contact_no?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -563,6 +584,7 @@ export type EmployeeMinOrderByAggregateInput = {
   birth_place?: Prisma.SortOrder
   email?: Prisma.SortOrder
   contact_no?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -582,6 +604,18 @@ export type StringFieldUpdateOperationsInput = {
 
 export type NullableStringFieldUpdateOperationsInput = {
   set?: string | null
+}
+
+export type DateTimeFieldUpdateOperationsInput = {
+  set?: Date | string
+}
+
+export type IntFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
 }
 
 export type EmployeeCreateNestedOneWithoutRelativesInput = {
@@ -693,6 +727,7 @@ export type EmployeeCreateWithoutRelativesInput = {
   birth_place: string
   email?: string | null
   contact_no?: string | null
+  status?: string
   created_at?: Date | string
   updated_at?: Date | string
   salary_history?: Prisma.SalaryHistoryCreateNestedManyWithoutEmployeeInput
@@ -715,6 +750,7 @@ export type EmployeeUncheckedCreateWithoutRelativesInput = {
   birth_place: string
   email?: string | null
   contact_no?: string | null
+  status?: string
   created_at?: Date | string
   updated_at?: Date | string
   salary_history?: Prisma.SalaryHistoryUncheckedCreateNestedManyWithoutEmployeeInput
@@ -752,6 +788,7 @@ export type EmployeeUpdateWithoutRelativesInput = {
   birth_place?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contact_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   salary_history?: Prisma.SalaryHistoryUpdateManyWithoutEmployeeNestedInput
@@ -774,6 +811,7 @@ export type EmployeeUncheckedUpdateWithoutRelativesInput = {
   birth_place?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contact_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   salary_history?: Prisma.SalaryHistoryUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -795,6 +833,7 @@ export type EmployeeCreateWithoutSalary_historyInput = {
   birth_place: string
   email?: string | null
   contact_no?: string | null
+  status?: string
   created_at?: Date | string
   updated_at?: Date | string
   relatives?: Prisma.EmployeeRelativeCreateNestedManyWithoutEmployeeInput
@@ -817,6 +856,7 @@ export type EmployeeUncheckedCreateWithoutSalary_historyInput = {
   birth_place: string
   email?: string | null
   contact_no?: string | null
+  status?: string
   created_at?: Date | string
   updated_at?: Date | string
   relatives?: Prisma.EmployeeRelativeUncheckedCreateNestedManyWithoutEmployeeInput
@@ -854,6 +894,7 @@ export type EmployeeUpdateWithoutSalary_historyInput = {
   birth_place?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contact_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   relatives?: Prisma.EmployeeRelativeUpdateManyWithoutEmployeeNestedInput
@@ -876,6 +917,7 @@ export type EmployeeUncheckedUpdateWithoutSalary_historyInput = {
   birth_place?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contact_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   relatives?: Prisma.EmployeeRelativeUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -897,6 +939,7 @@ export type EmployeeCreateWithoutSss_settingsInput = {
   birth_place: string
   email?: string | null
   contact_no?: string | null
+  status?: string
   created_at?: Date | string
   updated_at?: Date | string
   relatives?: Prisma.EmployeeRelativeCreateNestedManyWithoutEmployeeInput
@@ -919,6 +962,7 @@ export type EmployeeUncheckedCreateWithoutSss_settingsInput = {
   birth_place: string
   email?: string | null
   contact_no?: string | null
+  status?: string
   created_at?: Date | string
   updated_at?: Date | string
   relatives?: Prisma.EmployeeRelativeUncheckedCreateNestedManyWithoutEmployeeInput
@@ -956,6 +1000,7 @@ export type EmployeeUpdateWithoutSss_settingsInput = {
   birth_place?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contact_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   relatives?: Prisma.EmployeeRelativeUpdateManyWithoutEmployeeNestedInput
@@ -978,6 +1023,7 @@ export type EmployeeUncheckedUpdateWithoutSss_settingsInput = {
   birth_place?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contact_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   relatives?: Prisma.EmployeeRelativeUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -999,6 +1045,7 @@ export type EmployeeCreateWithoutPhilhealth_settingsInput = {
   birth_place: string
   email?: string | null
   contact_no?: string | null
+  status?: string
   created_at?: Date | string
   updated_at?: Date | string
   relatives?: Prisma.EmployeeRelativeCreateNestedManyWithoutEmployeeInput
@@ -1021,6 +1068,7 @@ export type EmployeeUncheckedCreateWithoutPhilhealth_settingsInput = {
   birth_place: string
   email?: string | null
   contact_no?: string | null
+  status?: string
   created_at?: Date | string
   updated_at?: Date | string
   relatives?: Prisma.EmployeeRelativeUncheckedCreateNestedManyWithoutEmployeeInput
@@ -1058,6 +1106,7 @@ export type EmployeeUpdateWithoutPhilhealth_settingsInput = {
   birth_place?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contact_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   relatives?: Prisma.EmployeeRelativeUpdateManyWithoutEmployeeNestedInput
@@ -1080,6 +1129,7 @@ export type EmployeeUncheckedUpdateWithoutPhilhealth_settingsInput = {
   birth_place?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contact_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   relatives?: Prisma.EmployeeRelativeUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -1101,6 +1151,7 @@ export type EmployeeCreateWithoutPagibig_settingsInput = {
   birth_place: string
   email?: string | null
   contact_no?: string | null
+  status?: string
   created_at?: Date | string
   updated_at?: Date | string
   relatives?: Prisma.EmployeeRelativeCreateNestedManyWithoutEmployeeInput
@@ -1123,6 +1174,7 @@ export type EmployeeUncheckedCreateWithoutPagibig_settingsInput = {
   birth_place: string
   email?: string | null
   contact_no?: string | null
+  status?: string
   created_at?: Date | string
   updated_at?: Date | string
   relatives?: Prisma.EmployeeRelativeUncheckedCreateNestedManyWithoutEmployeeInput
@@ -1160,6 +1212,7 @@ export type EmployeeUpdateWithoutPagibig_settingsInput = {
   birth_place?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contact_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   relatives?: Prisma.EmployeeRelativeUpdateManyWithoutEmployeeNestedInput
@@ -1182,6 +1235,7 @@ export type EmployeeUncheckedUpdateWithoutPagibig_settingsInput = {
   birth_place?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contact_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   relatives?: Prisma.EmployeeRelativeUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -1203,6 +1257,7 @@ export type EmployeeCreateWithoutBir_settingsInput = {
   birth_place: string
   email?: string | null
   contact_no?: string | null
+  status?: string
   created_at?: Date | string
   updated_at?: Date | string
   relatives?: Prisma.EmployeeRelativeCreateNestedManyWithoutEmployeeInput
@@ -1225,6 +1280,7 @@ export type EmployeeUncheckedCreateWithoutBir_settingsInput = {
   birth_place: string
   email?: string | null
   contact_no?: string | null
+  status?: string
   created_at?: Date | string
   updated_at?: Date | string
   relatives?: Prisma.EmployeeRelativeUncheckedCreateNestedManyWithoutEmployeeInput
@@ -1262,6 +1318,7 @@ export type EmployeeUpdateWithoutBir_settingsInput = {
   birth_place?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contact_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   relatives?: Prisma.EmployeeRelativeUpdateManyWithoutEmployeeNestedInput
@@ -1284,6 +1341,7 @@ export type EmployeeUncheckedUpdateWithoutBir_settingsInput = {
   birth_place?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contact_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   relatives?: Prisma.EmployeeRelativeUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -1305,6 +1363,7 @@ export type EmployeeCreateWithoutPayroll_logsInput = {
   birth_place: string
   email?: string | null
   contact_no?: string | null
+  status?: string
   created_at?: Date | string
   updated_at?: Date | string
   relatives?: Prisma.EmployeeRelativeCreateNestedManyWithoutEmployeeInput
@@ -1327,6 +1386,7 @@ export type EmployeeUncheckedCreateWithoutPayroll_logsInput = {
   birth_place: string
   email?: string | null
   contact_no?: string | null
+  status?: string
   created_at?: Date | string
   updated_at?: Date | string
   relatives?: Prisma.EmployeeRelativeUncheckedCreateNestedManyWithoutEmployeeInput
@@ -1364,6 +1424,7 @@ export type EmployeeUpdateWithoutPayroll_logsInput = {
   birth_place?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contact_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   relatives?: Prisma.EmployeeRelativeUpdateManyWithoutEmployeeNestedInput
@@ -1386,6 +1447,7 @@ export type EmployeeUncheckedUpdateWithoutPayroll_logsInput = {
   birth_place?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contact_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   relatives?: Prisma.EmployeeRelativeUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -1457,6 +1519,7 @@ export type EmployeeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   birth_place?: boolean
   email?: boolean
   contact_no?: boolean
+  status?: boolean
   created_at?: boolean
   updated_at?: boolean
   relatives?: boolean | Prisma.Employee$relativesArgs<ExtArgs>
@@ -1481,6 +1544,7 @@ export type EmployeeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   birth_place?: boolean
   email?: boolean
   contact_no?: boolean
+  status?: boolean
   created_at?: boolean
   updated_at?: boolean
 }, ExtArgs["result"]["employee"]>
@@ -1497,6 +1561,7 @@ export type EmployeeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   birth_place?: boolean
   email?: boolean
   contact_no?: boolean
+  status?: boolean
   created_at?: boolean
   updated_at?: boolean
 }, ExtArgs["result"]["employee"]>
@@ -1513,11 +1578,12 @@ export type EmployeeSelectScalar = {
   birth_place?: boolean
   email?: boolean
   contact_no?: boolean
+  status?: boolean
   created_at?: boolean
   updated_at?: boolean
 }
 
-export type EmployeeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "first_name" | "middle_name" | "last_name" | "civil_status" | "citizenship" | "religion" | "birth_date" | "birth_place" | "email" | "contact_no" | "created_at" | "updated_at", ExtArgs["result"]["employee"]>
+export type EmployeeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "first_name" | "middle_name" | "last_name" | "civil_status" | "citizenship" | "religion" | "birth_date" | "birth_place" | "email" | "contact_no" | "status" | "created_at" | "updated_at", ExtArgs["result"]["employee"]>
 export type EmployeeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   relatives?: boolean | Prisma.Employee$relativesArgs<ExtArgs>
   salary_history?: boolean | Prisma.Employee$salary_historyArgs<ExtArgs>
@@ -1554,6 +1620,7 @@ export type $EmployeePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     birth_place: string
     email: string | null
     contact_no: string | null
+    status: string
     created_at: Date
     updated_at: Date
   }, ExtArgs["result"]["employee"]>
@@ -1997,6 +2064,7 @@ export interface EmployeeFieldRefs {
   readonly birth_place: Prisma.FieldRef<"Employee", 'String'>
   readonly email: Prisma.FieldRef<"Employee", 'String'>
   readonly contact_no: Prisma.FieldRef<"Employee", 'String'>
+  readonly status: Prisma.FieldRef<"Employee", 'String'>
   readonly created_at: Prisma.FieldRef<"Employee", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"Employee", 'DateTime'>
 }

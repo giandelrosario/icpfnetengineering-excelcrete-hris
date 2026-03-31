@@ -384,7 +384,6 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 
 export const ModelName = {
-  StatutoryBeneficial: 'StatutoryBeneficial',
   Employee: 'Employee',
   EmployeeRelative: 'EmployeeRelative',
   SalaryHistory: 'SalaryHistory',
@@ -409,84 +408,10 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "statutoryBeneficial" | "employee" | "employeeRelative" | "salaryHistory" | "sSSSettings" | "philhealthSettings" | "pagIBIGSettings" | "bIRSettings" | "payrollLogs" | "payrollLogsBenefits"
+    modelProps: "employee" | "employeeRelative" | "salaryHistory" | "sSSSettings" | "philhealthSettings" | "pagIBIGSettings" | "bIRSettings" | "payrollLogs" | "payrollLogsBenefits"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
-    StatutoryBeneficial: {
-      payload: Prisma.$StatutoryBeneficialPayload<ExtArgs>
-      fields: Prisma.StatutoryBeneficialFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.StatutoryBeneficialFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$StatutoryBeneficialPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.StatutoryBeneficialFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$StatutoryBeneficialPayload>
-        }
-        findFirst: {
-          args: Prisma.StatutoryBeneficialFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$StatutoryBeneficialPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.StatutoryBeneficialFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$StatutoryBeneficialPayload>
-        }
-        findMany: {
-          args: Prisma.StatutoryBeneficialFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$StatutoryBeneficialPayload>[]
-        }
-        create: {
-          args: Prisma.StatutoryBeneficialCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$StatutoryBeneficialPayload>
-        }
-        createMany: {
-          args: Prisma.StatutoryBeneficialCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.StatutoryBeneficialCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$StatutoryBeneficialPayload>[]
-        }
-        delete: {
-          args: Prisma.StatutoryBeneficialDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$StatutoryBeneficialPayload>
-        }
-        update: {
-          args: Prisma.StatutoryBeneficialUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$StatutoryBeneficialPayload>
-        }
-        deleteMany: {
-          args: Prisma.StatutoryBeneficialDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.StatutoryBeneficialUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.StatutoryBeneficialUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$StatutoryBeneficialPayload>[]
-        }
-        upsert: {
-          args: Prisma.StatutoryBeneficialUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$StatutoryBeneficialPayload>
-        }
-        aggregate: {
-          args: Prisma.StatutoryBeneficialAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateStatutoryBeneficial>
-        }
-        groupBy: {
-          args: Prisma.StatutoryBeneficialGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.StatutoryBeneficialGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.StatutoryBeneficialCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.StatutoryBeneficialCountAggregateOutputType> | number
-        }
-      }
-    }
     Employee: {
       payload: Prisma.$EmployeePayload<ExtArgs>
       fields: Prisma.EmployeeFieldRefs
@@ -1192,21 +1117,6 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
-export const StatutoryBeneficialScalarFieldEnum = {
-  id: 'id',
-  sss_er_share_rate: 'sss_er_share_rate',
-  sss_ec_amount: 'sss_ec_amount',
-  sss_mpf_amount: 'sss_mpf_amount',
-  philhealth_er_rate: 'philhealth_er_rate',
-  pagibig_er_share_rate: 'pagibig_er_share_rate',
-  bir_er_share_rate: 'bir_er_share_rate',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
-} as const
-
-export type StatutoryBeneficialScalarFieldEnum = (typeof StatutoryBeneficialScalarFieldEnum)[keyof typeof StatutoryBeneficialScalarFieldEnum]
-
-
 export const EmployeeScalarFieldEnum = {
   id: 'id',
   first_name: 'first_name',
@@ -1219,6 +1129,7 @@ export const EmployeeScalarFieldEnum = {
   birth_place: 'birth_place',
   email: 'email',
   contact_no: 'contact_no',
+  status: 'status',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -1260,8 +1171,6 @@ export const SSSSettingsScalarFieldEnum = {
   id: 'id',
   employee_id: 'employee_id',
   sss_no: 'sss_no',
-  ee_share_rate: 'ee_share_rate',
-  mpf_amount: 'mpf_amount',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -1273,7 +1182,6 @@ export const PhilhealthSettingsScalarFieldEnum = {
   id: 'id',
   employee_id: 'employee_id',
   philhealth_no: 'philhealth_no',
-  ee_share_rate: 'ee_share_rate',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -1285,7 +1193,6 @@ export const PagIBIGSettingsScalarFieldEnum = {
   id: 'id',
   employee_id: 'employee_id',
   pagibig_no: 'pagibig_no',
-  ee_share_rate: 'ee_share_rate',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -1375,16 +1282,16 @@ export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
 
 
 /**
- * Reference to a field of type 'Float'
+ * Reference to a field of type 'String'
  */
-export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+export type StringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String'>
     
 
 
 /**
- * Reference to a field of type 'Float[]'
+ * Reference to a field of type 'String[]'
  */
-export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String[]'>
     
 
 
@@ -1403,16 +1310,16 @@ export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
 
 
 /**
- * Reference to a field of type 'String'
+ * Reference to a field of type 'Float'
  */
-export type StringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String'>
+export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
     
 
 
 /**
- * Reference to a field of type 'String[]'
+ * Reference to a field of type 'Float[]'
  */
-export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String[]'>
+export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
 
 /**
@@ -1510,7 +1417,6 @@ export type PrismaClientOptions = ({
   comments?: runtime.SqlCommenterPlugin[]
 }
 export type GlobalOmitConfig = {
-  statutoryBeneficial?: Prisma.StatutoryBeneficialOmit
   employee?: Prisma.EmployeeOmit
   employeeRelative?: Prisma.EmployeeRelativeOmit
   salaryHistory?: Prisma.SalaryHistoryOmit

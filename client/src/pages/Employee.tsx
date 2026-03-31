@@ -1,12 +1,14 @@
 import Button from '@/components/Button';
+import ConfirmationModal from '@/components/ConfirmationModal';
+import EmployeeSkeleton from '@/components/EmployeeSkeleton';
 import LoadingModal from '@/components/LoadingModal';
 import api from '@/config/api';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
 import { format } from 'date-fns';
-import { Calendar, Church, Contact, FileText, History, Mail, MapPin, Pen, Phone, Plus, User, Users, X, XCircle } from 'lucide-react';
-import { useState } from 'react';
-import { useParams } from 'react-router';
+import { Archive, ArrowLeft, Calendar, Church, Contact, FileText, History, Mail, MapPin, Pen, Phone, Plus, SquarePen, Trash, User, Users, X, XCircle } from 'lucide-react';
+import { useRef, useState } from 'react';
+import { useNavigate, useParams } from 'react-router';
 
 type TEmployeeRelative = {
 	id: number;
@@ -36,8 +38,19 @@ type TSSSSettings = {
 	id: number;
 	employee_id?: number;
 	sss_no: string;
-	ee_share_rate: number;
-	mpf_amount: number;
+	salary_range: [number, number];
+	msc: {
+		ss: number;
+		mpf: number;
+	};
+	employer: {
+		mpf: number;
+		ec: number;
+	};
+	employee: {
+		mpf: number;
+	};
+	total_contribution: number;
 	updated_at: string;
 	created_at: string;
 };
@@ -45,7 +58,11 @@ type TPhilhealthSettings = {
 	id: number;
 	employee_id?: number;
 	philhealth_no: string;
-	ee_share_rate: number;
+	total_contribution: number;
+	contribution: {
+		total: number;
+		rate: number;
+	};
 	updated_at: string;
 	created_at: string;
 };
@@ -53,7 +70,12 @@ type TPagIBIGSettings = {
 	id: number;
 	employee_id?: number;
 	pagibig_no: string;
-	ee_share_rate: number;
+	contribution: {
+		employer_rate: number;
+		employee_rate: number;
+		total_rate: number;
+		total: number;
+	};
 	updated_at: string;
 	created_at: string;
 };
@@ -90,6 +112,7 @@ type TEmployee = {
 
 const Employee = () => {
 	const { id } = useParams();
+	const navigate = useNavigate();
 
 	const queryClient = useQueryClient();
 
@@ -123,10 +146,36 @@ const Employee = () => {
 	const [openPagIBIGModal, setOpenPagIBIGModal] = useState(false);
 	const [openBIRModal, setOpenBIRModal] = useState(false);
 
-	const [philhealthSettings, setPhilhealthSettings] = useState({ philhealth_no: '', ee_share_rate: 0 });
-	const [pagibigSettings, setPagIBIGSettings] = useState({ pagibig_no: '', ee_share_rate: 0 });
-	const [sssSettings, setSSSSettings] = useState({ sss_no: '', ee_share_rate: 0, mpf_amount: 0 });
+	const [openEditSSSModal, setOpenEditSSSModal] = useState(false);
+	const [openEditPhilHealthModal, setOpenEditPhilHealthModal] = useState(false);
+	const [openEditPagIBIGModal, setOpenEditPagIBIGModal] = useState(false);
+	const [openEditBIRModal, setOpenEditBIRModal] = useState(false);
+
+	const sssEditNoInputRef = useRef<HTMLInputElement>(null);
+
+	const philHealthNoEditInputRef = useRef<HTMLInputElement>(null);
+
+	const pagibigNoEditInputRef = useRef<HTMLInputElement>(null);
+	const pagibigRateInputRef = useRef<HTMLInputElement>(null);
+
+	const tinEditInputRef = useRef<HTMLInputElement>(null);
+
+	const [philhealthSettings, setPhilhealthSettings] = useState({ philhealth_no: '' });
+	const [pagibigSettings, setPagIBIGSettings] = useState({ pagibig_no: '', ee_share_rate: 2 });
+	const [sssSettings, setSSSSettings] = useState({ sss_no: '', ee_share_rate: 5, mpf_amount: 0 });
 	const [birSettings, setBIRSettings] = useState({ tin_no: '' });
+
+	const [showDeleteModal, setShowDeleteModal] = useState(false);
+	const [showArchiveModal, setShowArchiveModal] = useState(false);
+
+	const benefits_query = useQuery({
+		queryKey: ['benefits'],
+		queryFn: async () => {
+			const response = await api.get('/benefits');
+			return response.data;
+		},
+		enabled: !!id,
+	});
 
 	const employee_query = useQuery({
 		queryKey: ['employee', id],
@@ -277,15 +326,129 @@ const Employee = () => {
 		},
 	});
 
+	const edit_sss_mutation = useMutation({
+		mutationFn: async (payload: Partial<TSSSSettings>) => {
+			const response = await api.put(`/employee/${id}?type=sss_settings`, payload);
+			return response.data;
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['employee', id] });
+			setOpenEditSSSModal(false);
+		},
+		onError: (error) => {
+			if (isAxiosError(error)) {
+				setErrorMessage(error.response?.data?.message || 'An error occurred while updating SSS settings.');
+				setShowErrorModal(true);
+				setOpenEditSSSModal(false);
+			}
+		},
+	});
+
+	const edit_philhealth_mutation = useMutation({
+		mutationFn: async (payload: Partial<TPhilhealthSettings>) => {
+			const response = await api.put(`/employee/${id}?type=philhealth_settings`, payload);
+			return response.data;
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['employee', id] });
+			setOpenEditPhilHealthModal(false);
+		},
+		onError: (error) => {
+			if (isAxiosError(error)) {
+				setErrorMessage(error.response?.data?.message || 'An error occurred while updating PhilHealth settings.');
+				setShowErrorModal(true);
+				setOpenEditPhilHealthModal(false);
+			}
+		},
+	});
+
+	const edit_pagibig_mutation = useMutation({
+		mutationFn: async (payload: Partial<TPagIBIGSettings>) => {
+			const response = await api.put(`/employee/${id}?type=pagibig_settings`, payload);
+			return response.data;
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['employee', id] });
+			setOpenEditPagIBIGModal(false);
+		},
+		onError: (error) => {
+			if (isAxiosError(error)) {
+				setErrorMessage(error.response?.data?.message || 'An error occurred while updating Pag-IBIG settings.');
+				setShowErrorModal(true);
+				setOpenEditPagIBIGModal(false);
+			}
+		},
+	});
+
+	const edit_bir_mutation = useMutation({
+		mutationFn: async (payload: Partial<TBIRSettings>) => {
+			const response = await api.put(`/employee/${id}?type=bir_settings`, payload);
+			return response.data;
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['employee', id] });
+			setOpenEditBIRModal(false);
+		},
+		onError: (error) => {
+			if (isAxiosError(error)) {
+				setErrorMessage(error.response?.data?.message || 'An error occurred while updating BIR settings.');
+				setShowErrorModal(true);
+				setOpenEditBIRModal(false);
+			}
+		},
+	});
+
+	const archive_employee_mutation = useMutation({
+		mutationFn: async () => {
+			const response = await api.put(`/employee/${id}?type=archive`);
+			return response.data;
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['employee', id] });
+			setShowArchiveModal(false);
+			navigate('../');
+		},
+		onError: (error) => {
+			if (isAxiosError(error)) {
+				setErrorMessage(error.response?.data?.message || 'An error occurred while archiving the employee.');
+				setShowErrorModal(true);
+				setShowArchiveModal(false);
+			}
+		},
+	});
+
+	const delete_employee_mutation = useMutation({
+		mutationFn: async () => {
+			const response = await api.delete(`/employee/${id}`);
+			return response.data;
+		},
+		onSuccess: () => {
+			setShowDeleteModal(false);
+			navigate('../');
+		},
+		onError: (error) => {
+			if (isAxiosError(error)) {
+				setErrorMessage(error.response?.data?.message || 'An error occurred while deleting the employee.');
+				setShowErrorModal(true);
+				setShowDeleteModal(false);
+			}
+		},
+	});
+
 	const employee: TEmployee = employee_query.data;
 
-	const formatDate = (dateString: string) => {
-		return format(new Date(dateString), 'MMMM d, yyyy');
+	const formatDate = (value?: string) => {
+		if (!value) return 'N/A';
+		const date = new Date(value);
+		if (Number.isNaN(date.getTime())) return 'N/A';
+		return format(date, 'MMMM d, yyyy');
 	};
 
-	const calculateAge = (birthDate: string) => {
+	const calculateAge = (birthDate?: string) => {
+		if (!birthDate) return 'N/A';
 		const today = new Date();
 		const birth = new Date(birthDate);
+		if (Number.isNaN(birth.getTime())) return 'N/A';
 		let age = today.getFullYear() - birth.getFullYear();
 		const monthDiff = today.getMonth() - birth.getMonth();
 		if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
@@ -323,8 +486,8 @@ const Employee = () => {
 
 	const handleOpenContactModal = () => {
 		setContactFormData({
-			email: employee.email || '',
-			contact_no: employee.contact_no || '',
+			email: employee?.email || '',
+			contact_no: employee?.contact_no || '',
 		});
 		setOpenContactInfoModal(true);
 	};
@@ -358,7 +521,7 @@ const Employee = () => {
 	const handleAddRelative = () => {
 		const newRelative: TEmployeeRelative = {
 			id: 0,
-			employee_id: employee.id,
+			employee_id: employee?.id,
 			first_name: '',
 			middle_name: '',
 			last_name: '',
@@ -380,7 +543,7 @@ const Employee = () => {
 	};
 
 	const handleOpenSalaryModal = () => {
-		setSalaryFormData(employee.salary_history || []);
+		setSalaryFormData(employee?.salary_history || []);
 		setNewSalaryAmount(0);
 		setOpenSalaryModal(true);
 	};
@@ -394,7 +557,7 @@ const Employee = () => {
 
 		const newSalary: TSalaryHistory = {
 			id: 0,
-			employee_id: employee.id,
+			employee_id: employee?.id,
 			amount: newSalaryAmount,
 			updated_at: new Date().toISOString(),
 			created_at: new Date().toISOString(),
@@ -407,14 +570,14 @@ const Employee = () => {
 	};
 
 	const getCurrentSalary = (): number => {
-		if (!employee.salary_history || employee.salary_history.length === 0) return 0;
-		return employee.salary_history[employee.salary_history.length - 1].amount;
+		if (!employee?.salary_history || employee?.salary_history.length === 0) return 0;
+		return employee?.salary_history[employee?.salary_history.length - 1].amount;
 	};
 
 	const handlePagIBIGChange = (field: keyof TPagIBIGSettings, value: string) => {
 		setPagIBIGSettings((prev) => ({
 			...prev,
-			[field]: field === 'ee_share_rate' ? parseFloat(value) : value,
+			[field]: value,
 		}));
 	};
 
@@ -428,7 +591,7 @@ const Employee = () => {
 	const handlePhilhealthChange = (field: keyof TPhilhealthSettings, value: string) => {
 		setPhilhealthSettings((prev) => ({
 			...prev,
-			[field]: field === 'ee_share_rate' ? parseFloat(value) : value,
+			[field]: value,
 		}));
 	};
 
@@ -457,7 +620,7 @@ const Employee = () => {
 	};
 
 	const handlePhilHealthSave = () => {
-		if (!philhealthSettings.philhealth_no || philhealthSettings.ee_share_rate <= 0) {
+		if (!philhealthSettings.philhealth_no) {
 			setErrorMessage('Please fill in all required fields for PhilHealth settings.');
 			setShowErrorModal(true);
 			return;
@@ -473,20 +636,52 @@ const Employee = () => {
 		}
 		add_bir_mutation.mutate(birSettings);
 	};
+	const handleEditPagIBIGSave = () => {
+		if (!pagibigNoEditInputRef.current?.value || !pagibigRateInputRef.current || parseFloat(pagibigRateInputRef.current?.value) <= 0) {
+			setErrorMessage('Please fill in all required fields for Pag-IBIG settings.');
+			setShowErrorModal(true);
+			return;
+		}
+		edit_pagibig_mutation.mutate({
+			pagibig_no: pagibigNoEditInputRef.current?.value || '',
+		});
+	};
 
-	if (employee_query.isPending) {
-		return (
-			<main className="bg-slate-50 min-h-screen w-full">
-				<div className="container mx-auto p-4">
-					<div className="flex items-center justify-center min-h-96">
-						<div className="text-center">
-							<div className="w-12 h-12 border-4 border-slate-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
-							<p className="text-slate-600 font-medium">Loading employee details...</p>
-						</div>
-					</div>
-				</div>
-			</main>
-		);
+	const handleEditSSSSave = () => {
+		if (!sssEditNoInputRef.current?.value) {
+			setErrorMessage('Please fill in all required fields for SSS settings.');
+			setShowErrorModal(true);
+			return;
+		}
+		edit_sss_mutation.mutate({
+			sss_no: sssEditNoInputRef.current?.value || '',
+		});
+	};
+
+	const handleEditPhilHealthSave = () => {
+		if (!philHealthNoEditInputRef.current?.value) {
+			setErrorMessage('Please fill in all required fields for PhilHealth settings.');
+			setShowErrorModal(true);
+			return;
+		}
+		edit_philhealth_mutation.mutate({
+			philhealth_no: philHealthNoEditInputRef.current?.value || '',
+		});
+	};
+
+	const handleEditBIRSave = () => {
+		if (!tinEditInputRef.current?.value) {
+			setErrorMessage('Please fill in all required fields for BIR settings.');
+			setShowErrorModal(true);
+			return;
+		}
+		edit_bir_mutation.mutate({
+			tin_no: tinEditInputRef.current?.value || '',
+		});
+	};
+
+	if (employee_query.isPending && benefits_query.isPending) {
+		return <EmployeeSkeleton />;
 	}
 
 	if (employee_query.isError) {
@@ -504,8 +699,13 @@ const Employee = () => {
 	return (
 		<main className="bg-white min-h-screen w-full pb-12">
 			<div className="container mx-auto px-4 py-8">
+				<div>
+					<button onClick={() => navigate(-1)} className="rounded-full bg-white p-2 border border-slate-200 hover:bg-slate-50">
+						<ArrowLeft size={20} className="text-slate-600 hover:text-slate-900 transition-colors" />
+					</button>
+				</div>
 				{/* Personal Information Section */}
-				<div className="bg-white border border-slate-200 rounded-lg overflow-hidden mb-6">
+				<section className="bg-white border border-slate-200 rounded-lg overflow-hidden mb-6 mt-5">
 					<div className="flex justify-between items-center gap-2 bg-white px-6 py-4 border-b border-slate-200">
 						<div className="flex items-center gap-2">
 							<User className="w-5 h-5 text-slate-600" />
@@ -529,7 +729,7 @@ const Employee = () => {
 								<div className="flex-1 min-w-0">
 									<p className="text-xs font-semibold text-slate-500 uppercase">Name</p>
 									<p className="text-sm font-medium text-slate-900 mt-1 wrap-break-word">
-										{employee.first_name} {employee.middle_name} {employee.last_name}
+										{employee?.first_name} {employee?.middle_name} {employee?.last_name}
 									</p>
 								</div>
 							</div>
@@ -537,7 +737,7 @@ const Employee = () => {
 								<User className="w-5 h-5 text-slate-600 mt-1 shrink-0" />
 								<div className="flex-1 min-w-0">
 									<p className="text-xs font-semibold text-slate-500 uppercase">Civil Status</p>
-									<p className="text-sm font-medium text-slate-900 mt-1 wrap-break-word">{employee.civil_status}</p>
+									<p className="text-sm font-medium text-slate-900 mt-1 wrap-break-word">{employee?.civil_status}</p>
 								</div>
 							</div>
 
@@ -545,37 +745,37 @@ const Employee = () => {
 								<Calendar className="w-5 h-5 text-slate-600 mt-1 shrink-0" />
 								<div className="flex-1 min-w-0">
 									<p className="text-xs font-semibold text-slate-500 uppercase">Birth Date</p>
-									<p className="text-sm font-medium text-slate-900 mt-1 wrap-break-word">{formatDate(employee.birth_date)}</p>
-									<p className="text-xs font-medium text-slate-500 mt-1">Age : {calculateAge(employee.birth_date)} years</p>
+									<p className="text-sm font-medium text-slate-900 mt-1 wrap-break-word">{formatDate(employee?.birth_date)}</p>
+									<p className="text-xs font-medium text-slate-500 mt-1">Age : {calculateAge(employee?.birth_date)} years</p>
 								</div>
 							</div>
 							<div className="flex items-start gap-3 bg-slate-50 p-4 rounded-lg border border-slate-200">
 								<MapPin className="w-5 h-5 text-slate-600 mt-1 shrink-0" />
 								<div className="flex-1 min-w-0">
 									<p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Birth Place</p>
-									<p className="text-sm font-medium text-slate-900 mt-1 wrap-break-word">{employee.birth_place}</p>
+									<p className="text-sm font-medium text-slate-900 mt-1 wrap-break-word">{employee?.birth_place}</p>
 								</div>
 							</div>
 							<div className="flex items-start gap-3 bg-slate-50 p-4 rounded-lg border border-slate-200">
 								<Contact className="w-5 h-5 text-slate-600 mt-1 shrink-0" />
 								<div className="flex-1 min-w-0">
 									<p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Citizenship</p>
-									<p className="text-sm font-medium text-slate-900 mt-1 wrap-break-word">{employee.citizenship}</p>
+									<p className="text-sm font-medium text-slate-900 mt-1 wrap-break-word">{employee?.citizenship}</p>
 								</div>
 							</div>
 							<div className="flex items-start gap-3 bg-slate-50 p-4 rounded-lg border border-slate-200">
 								<Church className="w-5 h-5 text-slate-600 mt-1 shrink-0" />
 								<div className="flex-1 min-w-0">
 									<p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Religion</p>
-									<p className="text-sm font-medium text-slate-900 mt-1 wrap-break-word">{employee.religion}</p>
+									<p className="text-sm font-medium text-slate-900 mt-1 wrap-break-word">{employee?.religion}</p>
 								</div>
 							</div>
 						</div>
 					</div>
-				</div>
+				</section>
 
 				{/* Contact Information Section */}
-				<div className="bg-white border border-slate-200 rounded-lg overflow-hidden mb-6">
+				<section className="bg-white border border-slate-200 rounded-lg overflow-hidden mb-6">
 					<div className="flex justify-between items-center gap-2 bg-white px-6 py-4 border-b border-slate-200">
 						<div className="flex items-center gap-2">
 							<Mail className="w-5 h-5 text-slate-600" />
@@ -598,23 +798,23 @@ const Employee = () => {
 								<Mail className="w-5 h-5 text-slate-600 mt-1 shrink-0" />
 								<div className="flex-1 min-w-0">
 									<p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Email</p>
-									<p className="text-sm font-medium text-slate-900 mt-1 wrap-break-word">{employee.email || 'N/A'}</p>
+									<p className="text-sm font-medium text-slate-900 mt-1 wrap-break-word">{employee?.email || 'N/A'}</p>
 								</div>
 							</div>
 							<div className="flex items-start gap-3 bg-slate-50 p-4 rounded-lg border border-slate-200">
 								<Phone className="w-5 h-5 text-slate-600 mt-1 shrink-0" />
 								<div className="flex-1 min-w-0">
 									<p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Phone Number</p>
-									<p className="text-sm font-medium text-slate-900 mt-1 wrap-break-word">{employee.contact_no || 'N/A'}</p>
+									<p className="text-sm font-medium text-slate-900 mt-1 wrap-break-word">{employee?.contact_no || 'N/A'}</p>
 								</div>
 							</div>
 						</div>
 					</div>
-				</div>
+				</section>
 
 				{/* Salary History Section */}
 
-				<div className="bg-white border border-slate-200 rounded-lg overflow-hidden mb-6">
+				<section className="bg-white border border-slate-200 rounded-lg overflow-hidden mb-6">
 					<div className="flex justify-between items-center gap-2 bg-white px-6 py-4 border-b border-slate-200">
 						<div className="flex items-center gap-2">
 							<span className="font-extrabold text-slate-600">PHP</span>
@@ -637,10 +837,10 @@ const Employee = () => {
 							<p className="text-xl font-bold text-slate-900">₱{getCurrentSalary().toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
 						</div>
 					</div>
-				</div>
+				</section>
 
 				{/* Family Members Section */}
-				{employee.relatives && employee.relatives.length > 0 && (
+				{employee?.relatives && employee?.relatives.length > 0 && (
 					<div className="bg-white border border-slate-200 rounded-lg overflow-hidden mb-6">
 						<div className="flex justify-between items-center gap-2 bg-white px-6 py-4 border-b border-slate-200">
 							<div className="flex items-center gap-2">
@@ -661,7 +861,7 @@ const Employee = () => {
 						</div>
 						<div className="p-6">
 							<div className="space-y-4">
-								{employee.relatives.map((relative) => (
+								{employee?.relatives.map((relative) => (
 									<div key={relative.id} className="border border-slate-200 rounded-lg p-4 bg-slate-50">
 										<div className="flex items-start justify-between mb-4">
 											<div>
@@ -682,7 +882,7 @@ const Employee = () => {
 											</div>
 											<div>
 												<p className="text-xs text-slate-500 font-semibold uppercase">Birth Date</p>
-												<p className="text-slate-900 font-medium mt-1">{formatDate(relative.birth_date)}</p>
+												<p className="text-slate-900 font-medium mt-1">{formatDate(relative?.birth_date)}</p>
 											</div>
 											<div>
 												<p className="text-xs text-slate-500 font-semibold uppercase">Birth Place</p>
@@ -701,7 +901,7 @@ const Employee = () => {
 				)}
 
 				{/* Statutory Deductions & Settings Section */}
-				<div className="bg-white border border-slate-200 rounded-lg overflow-hidden mb-6">
+				<section className="bg-white border border-slate-200 rounded-lg overflow-hidden mb-6">
 					<div className="flex items-center gap-2 bg-white px-6 py-4 border-b border-slate-200">
 						<FileText className="w-5 h-5 text-slate-600" />
 						<h2 className="text-md font-semibold text-slate-900">Statutory Deductions & Benefits</h2>
@@ -709,21 +909,22 @@ const Employee = () => {
 					<div className="p-6">
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 							{/* SSS */}
-							{employee.sss_settings ? (
+							{employee?.sss_settings ? (
 								<div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
-									<h3 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">SSS</h3>
+									<div className="flex items-center justify-between mb-4">
+										<h3 className="font-semibold text-slate-900">SSS</h3>
+										<button onClick={() => setOpenEditSSSModal(true)}>
+											<SquarePen size={16} className=" text-slate-600" />
+										</button>
+									</div>
 									<div className="space-y-3">
 										<div>
 											<p className="text-xs text-slate-600 uppercase font-semibold">SSS Number</p>
-											<p className="text-sm font-medium text-slate-900 mt-1">{employee.sss_settings.sss_no || 'N/A'}</p>
+											<p className="text-sm font-medium text-slate-900 mt-1">{employee?.sss_settings.sss_no || 'N/A'}</p>
 										</div>
 										<div>
-											<p className="text-xs text-slate-600 uppercase font-semibold">EE Share Rate</p>
-											<p className="text-sm font-medium text-slate-900 mt-1">{employee.sss_settings.ee_share_rate || 0}%</p>
-										</div>
-										<div>
-											<p className="text-xs text-slate-600 uppercase font-semibold">MPF Amount</p>
-											<p className="text-sm font-medium text-slate-900 mt-1">₱{(employee.sss_settings.mpf_amount || 0).toFixed(2)}</p>
+											<p className="text-xs text-slate-600 uppercase font-semibold">Contribution</p>
+											<p className="text-sm font-medium text-slate-900 mt-1">PHP {employee?.sss_settings?.total_contribution}</p>
 										</div>
 									</div>
 								</div>
@@ -747,17 +948,26 @@ const Employee = () => {
 							)}
 
 							{/* PhilHealth */}
-							{employee.philhealth_settings ? (
+							{employee?.philhealth_settings ? (
 								<div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
-									<h3 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">PhilHealth</h3>
+									<div className="flex items-center justify-between mb-4">
+										<h3 className="font-semibold text-slate-900">PhilHealth</h3>
+										<button onClick={() => setOpenEditPhilHealthModal(true)}>
+											<SquarePen size={16} className=" text-slate-600" />
+										</button>
+									</div>
 									<div className="space-y-3">
 										<div>
 											<p className="text-xs text-slate-600 uppercase font-semibold">PhilHealth Number</p>
-											<p className="text-sm font-medium text-slate-900 mt-1">{employee.philhealth_settings.philhealth_no || 'N/A'}</p>
+											<p className="text-sm font-medium text-slate-900 mt-1">{employee?.philhealth_settings.philhealth_no || 'N/A'}</p>
 										</div>
 										<div>
-											<p className="text-xs text-slate-600 uppercase font-semibold">EE Share Rate</p>
-											<p className="text-sm font-medium text-slate-900 mt-1">{employee.philhealth_settings.ee_share_rate || 0}%</p>
+											<p className="text-xs text-slate-600 uppercase font-semibold">Rate</p>
+											<p className="text-sm font-medium text-slate-900 mt-1">{employee?.philhealth_settings.contribution?.rate}%</p>
+										</div>
+										<div>
+											<p className="text-xs text-slate-600 uppercase font-semibold">Contribution</p>
+											<p className="text-sm font-medium text-slate-900 mt-1">PHP {employee?.philhealth_settings.contribution?.total}</p>
 										</div>
 									</div>
 								</div>
@@ -781,17 +991,26 @@ const Employee = () => {
 							)}
 
 							{/* Pag-IBIG */}
-							{employee.pagibig_settings ? (
+							{employee?.pagibig_settings ? (
 								<div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
-									<h3 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">Pag-IBIG</h3>
+									<div className="flex items-center justify-between mb-4">
+										<h3 className="font-semibold text-slate-900">Pag-IBIG</h3>
+										<button onClick={() => setOpenEditPagIBIGModal(true)}>
+											<SquarePen size={16} className=" text-slate-600" />
+										</button>
+									</div>
 									<div className="space-y-3">
 										<div>
 											<p className="text-xs text-slate-600 uppercase font-semibold">Pag-IBIG Number</p>
-											<p className="text-sm font-medium text-slate-900 mt-1">{employee.pagibig_settings.pagibig_no || 'N/A'}</p>
+											<p className="text-sm font-medium text-slate-900 mt-1">{employee?.pagibig_settings.pagibig_no || 'N/A'}</p>
 										</div>
 										<div>
-											<p className="text-xs text-slate-600 uppercase font-semibold">EE Share Rate</p>
-											<p className="text-sm font-medium text-slate-900 mt-1">{employee.pagibig_settings.ee_share_rate || 0}%</p>
+											<p className="text-xs text-slate-600 uppercase font-semibold">Rate</p>
+											<p className="text-sm font-medium text-slate-900 mt-1">{employee?.pagibig_settings.contribution?.total_rate}%</p>
+										</div>
+										<div>
+											<p className="text-xs text-slate-600 uppercase font-semibold">Contribution</p>
+											<p className="text-sm font-medium text-slate-900 mt-1">PHP {employee?.pagibig_settings.contribution?.total}</p>
 										</div>
 									</div>
 								</div>
@@ -815,13 +1034,18 @@ const Employee = () => {
 							)}
 
 							{/* BIR */}
-							{employee.bir_settings ? (
+							{employee?.bir_settings ? (
 								<div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
-									<h3 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">BIR</h3>
+									<div className="flex items-center justify-between mb-4">
+										<h3 className="font-semibold text-slate-900">BIR </h3>
+										<button onClick={() => setOpenEditBIRModal(true)}>
+											<SquarePen size={16} className=" text-slate-600" />
+										</button>
+									</div>
 									<div className="space-y-3">
 										<div>
 											<p className="text-xs text-slate-600 uppercase font-semibold">TIN Number</p>
-											<p className="text-sm font-medium text-slate-900 mt-1">{employee.bir_settings.tin_no || 'N/A'}</p>
+											<p className="text-sm font-medium text-slate-900 mt-1">{employee?.bir_settings.tin_no || 'N/A'}</p>
 										</div>
 									</div>
 								</div>
@@ -845,14 +1069,48 @@ const Employee = () => {
 							)}
 						</div>
 					</div>
-				</div>
+				</section>
+
+				{/* Actibons - DELETE and ARCHIVE */}
+				<section className="bg-white border border-slate-200 rounded-lg overflow-hidden mb-6 flex flex-col gap-2">
+					<div className="flex items-center justify-between border-b border-slate-200 gap-2 p-4">
+						<div className="max-w-md">
+							<h1 className="font-medium text-md mb-1">Archive Employee Record</h1>
+							<p className="text-sm text-slate-500">Archive the employee record to remove it from active lists without permanently deleting the data.</p>
+						</div>
+						<Button
+							text="Archive"
+							icon={{
+								position: 'left',
+								content: <Archive size={14} />,
+							}}
+							theme="outline"
+							onClick={() => setShowArchiveModal(true)}
+						/>
+					</div>
+					<div className="flex items-center justify-between gap-2 p-4">
+						<div className="max-w-md">
+							<h1 className="font-medium text-md mb-1">Delete Employee Record</h1>
+							<p className="text-sm text-slate-500">Delete the record permanently or archive it for future reference. Archived records can be restored later if needed.</p>
+						</div>
+						<Button
+							text="Delete"
+							icon={{
+								position: 'left',
+								content: <Trash size={14} />,
+							}}
+							theme="outline"
+							onClick={() => setShowDeleteModal(true)}
+						/>
+					</div>
+				</section>
 
 				{/* Meta Information */}
-				<div className="bg-slate-50 border border-slate-200 rounded-lg p-4 text-center">
+				<section className="bg-slate-50 border border-slate-200 rounded-lg p-4 text-center">
 					<p className="text-xs text-slate-600">
-						Last updated: {formatDate(employee.updated_at)} | Created: {formatDate(employee.created_at)}
+						Last updated: {formatDate(employee?.updated_at)} | Created: {formatDate(employee?.created_at)}
 					</p>
-				</div>
+				</section>
 			</div>
 
 			{/* Edit Personal Information Modal */}
@@ -992,7 +1250,6 @@ const Employee = () => {
 					</div>
 				</div>
 			)}
-
 			{/* Edit Contact Information Modal */}
 			{openContactInfoModal && (
 				<div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
@@ -1053,7 +1310,6 @@ const Employee = () => {
 					</div>
 				</div>
 			)}
-
 			{/* Edit Family Members Modal */}
 			{openRelativesModal && (
 				<div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
@@ -1216,7 +1472,6 @@ const Employee = () => {
 					</div>
 				</div>
 			)}
-
 			{/* Salary History Modal */}
 			{openSalaryModal && (
 				<div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
@@ -1280,11 +1535,11 @@ const Employee = () => {
 																<p className="text-sm font-medium text-slate-600">
 																	Entry {actualIndex === salaryFormData.length - 1 ? '(Latest)' : ''}
 																</p>
-																<p className="text-xs text-slate-500 mt-1">{formatDate(salary.updated_at)}</p>
+																<p className="text-xs text-slate-500 mt-1">{formatDate(salary?.updated_at)}</p>
 															</div>
 															<div className="flex items-center gap-3">
 																<span className="text-lg font-semibold text-slate-900">
-																	₱{salary.amount.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+																	₱{salary?.amount ? salary.amount.toLocaleString('en-US', { minimumFractionDigits: 2 }) : '0.00'}
 																</span>
 															</div>
 														</div>
@@ -1306,7 +1561,7 @@ const Employee = () => {
 							</button>
 							<button
 								onClick={handleSaveSalaryHistory}
-								disabled={edit_personal_info_mutation.isPending || employee.salary_history.length === salaryFormData.length}
+								disabled={edit_personal_info_mutation.isPending || employee?.salary_history.length === salaryFormData.length}
 								className="px-4 py-2 text-sm font-semibold text-white bg-slate-800 rounded-lg hover:bg-slate-700 transition-colors disabled:bg-slate-400"
 							>
 								{edit_personal_info_mutation.isPending ? 'Saving...' : 'Save Changes'}
@@ -1315,7 +1570,6 @@ const Employee = () => {
 					</div>
 				</div>
 			)}
-
 			{showErrorModal && (
 				<div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
 					<div className="bg-white rounded-lg shadow-lg max-w-md w-full p-6">
@@ -1336,7 +1590,6 @@ const Employee = () => {
 					</div>
 				</div>
 			)}
-
 			{openSSSModal && (
 				<>
 					<div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
@@ -1349,7 +1602,7 @@ const Employee = () => {
 								</button>
 							</div>
 
-							<div className="grid grid-cols-1 md:grid-cols-3 gap-4 px-6 py-4">
+							<div className="grid grid-cols-1 gap-4 px-6 py-4">
 								<div className="flex flex-col gap-2">
 									<label htmlFor="sss_no" className="block text-sm font-medium text-slate-700">
 										SSS No.
@@ -1363,39 +1616,11 @@ const Employee = () => {
 										className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
 									/>
 								</div>
-								<div className="flex flex-col gap-2">
-									<label htmlFor="sss_ee_share" className="block text-sm font-medium text-slate-700">
-										Employee Share Rate (%)
-									</label>
-									<input
-										type="number"
-										id="sss_ee_share"
-										value={sssSettings.ee_share_rate}
-										onChange={(e) => handleSSSChange('ee_share_rate', e.target.value)}
-										placeholder="10"
-										step="0.01"
-										className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
-									/>
-								</div>
-								<div className="flex flex-col gap-2">
-									<label htmlFor="sss_mpf" className="block text-sm font-medium text-slate-700">
-										MPF Amount
-									</label>
-									<input
-										type="number"
-										id="sss_mpf"
-										value={sssSettings.mpf_amount}
-										onChange={(e) => handleSSSChange('mpf_amount', e.target.value)}
-										placeholder="0.00"
-										step="0.01"
-										className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-blue-300"
-									/>
-								</div>
 							</div>
 
 							<div className="flex justify-end items-center gap-2 mt-2 px-6 py-4">
 								<Button text="Cancel" onClick={() => setOpenSSSModal(false)} theme="outline" />
-								<Button text="Save Changes" theme="outline" onClick={handleSSSSave} />
+								<Button text="Save Changes" theme="default" onClick={handleSSSSave} />
 							</div>
 						</div>
 					</div>
@@ -1427,25 +1652,11 @@ const Employee = () => {
 										className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
 									/>
 								</div>
-								<div className="flex flex-col gap-2">
-									<label htmlFor="philhealth_ee_share" className="block text-sm font-medium text-slate-700">
-										Employee Share Rate (%)
-									</label>
-									<input
-										type="number"
-										id="philhealth_ee_share"
-										value={philhealthSettings.ee_share_rate}
-										onChange={(e) => handlePhilhealthChange('ee_share_rate', e.target.value)}
-										placeholder="5"
-										step="0.01"
-										className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
-									/>
-								</div>
 							</div>
 
 							<div className="flex justify-end items-center gap-2 mt-2 px-6 py-4">
 								<Button text="Cancel" onClick={() => setOpenPhilHealthModal(false)} theme="outline" />
-								<Button text="Save Changes" theme="outline" onClick={handlePhilHealthSave} />
+								<Button text="Save Changes" theme="default" onClick={handlePhilHealthSave} />
 							</div>
 						</div>
 					</div>
@@ -1454,7 +1665,7 @@ const Employee = () => {
 			{openPagIBIGModal && (
 				<>
 					<div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-						<div className="bg-white rounded-lg shadow-lg max-w-2xl w-full  overflow-y-auto p-4">
+						<div className="bg-white rounded-lg shadow-lg max-w-2xl w-full  overflow-y-auto">
 							{/* Modal Header */}
 							<div className="flex justify-between items-center bg-white px-6 py-4 border-b border-slate-200 sticky top-0">
 								<h3 className="text-lg font-semibold text-slate-900">Edit PagIbig Information</h3>
@@ -1463,7 +1674,7 @@ const Employee = () => {
 								</button>
 							</div>
 
-							<div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
 								<div className="flex flex-col gap-2">
 									<label htmlFor="pagibig_no" className="block text-sm font-medium text-slate-700">
 										Pag-IBIG No.
@@ -1477,25 +1688,11 @@ const Employee = () => {
 										className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
 									/>
 								</div>
-								<div className="flex flex-col gap-2">
-									<label htmlFor="pagibig_ee_share" className="block text-sm font-medium text-slate-700">
-										Employee Share Rate (%)
-									</label>
-									<input
-										type="number"
-										id="pagibig_ee_share"
-										value={pagibigSettings.ee_share_rate}
-										onChange={(e) => handlePagIBIGChange('ee_share_rate', e.target.value)}
-										placeholder="2"
-										step="0.01"
-										className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
-									/>
-								</div>
 							</div>
 
-							<div className="flex justify-end items-center gap-2 mt-2">
+							<div className="flex justify-end items-center gap-2 mt-2 p-4">
 								<Button text="Cancel" onClick={() => setOpenPagIBIGModal(false)} theme="outline" />
-								<Button text="Save Changes" theme="outline" onClick={handlePagIBIGSave} />
+								<Button text="Save Changes" theme="default" onClick={handlePagIBIGSave} />
 							</div>
 						</div>
 					</div>
@@ -1531,12 +1728,176 @@ const Employee = () => {
 
 							<div className="flex justify-end items-center gap-2 mt-2 px-6 py-4">
 								<Button text="Cancel" onClick={() => setOpenBIRModal(false)} theme="outline" />
-								<Button text="Save Changes" theme="outline" onClick={handleBIRSave} />
+								<Button text="Save Changes" theme="default" onClick={handleBIRSave} />
 							</div>
 						</div>
 					</div>
 				</>
 			)}
+			{openEditSSSModal && (
+				<>
+					<div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+						<div className="bg-white rounded-lg shadow-lg max-w-2xl w-full overflow-y-auto">
+							{/* Modal Header */}
+							<div className="flex justify-between items-center bg-white px-6 py-4 border-b border-slate-200 sticky top-0">
+								<h3 className="text-lg font-semibold text-slate-900">Edit SSS Information</h3>
+								<button onClick={() => setOpenEditSSSModal(false)} className="p-1 hover:bg-slate-200 rounded-lg transition-colors">
+									<X className="w-5 h-5 text-slate-600" />
+								</button>
+							</div>
+
+							<div className="grid grid-cols-1  gap-4 px-6 py-4">
+								<div className="flex flex-col gap-2">
+									<label htmlFor="sss_no" className="block text-sm font-medium text-slate-700">
+										SSS No.
+									</label>
+									<input
+										type="text"
+										id="sss_no"
+										ref={sssEditNoInputRef}
+										defaultValue={employee?.sss_settings?.sss_no || ''}
+										placeholder="XX-XXXXXXX-X"
+										className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
+									/>
+								</div>
+							</div>
+
+							<div className="flex justify-end items-center gap-2 mt-2 px-6 py-4">
+								<Button text="Cancel" onClick={() => setOpenEditSSSModal(false)} theme="outline" />
+								<Button text="Save Changes" theme="default" onClick={handleEditSSSSave} />
+							</div>
+						</div>
+					</div>
+				</>
+			)}
+			{openEditPhilHealthModal && (
+				<>
+					<div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+						<div className="bg-white rounded-lg shadow-lg max-w-2xl w-full max-h-96 overflow-y-auto">
+							{/* Modal Header */}
+							<div className="flex justify-between items-center bg-white px-6 py-4 border-b border-slate-200 sticky top-0">
+								<h3 className="text-lg font-semibold text-slate-900">Edit PhilHealth Information</h3>
+								<button onClick={() => setOpenEditPhilHealthModal(false)} className="p-1 hover:bg-slate-200 rounded-lg transition-colors">
+									<X className="w-5 h-5 text-slate-600" />
+								</button>
+							</div>
+
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-4 px-6 py-4">
+								<div className="flex flex-col gap-2">
+									<label htmlFor="philhealth_no" className="block text-sm font-medium text-slate-700">
+										PhilHealth No.
+									</label>
+									<input
+										type="text"
+										id="philhealth_no"
+										ref={philHealthNoEditInputRef}
+										defaultValue={employee.philhealth_settings?.philhealth_no || ''}
+										placeholder="12-XXXXXXXXXXXX-X"
+										className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
+									/>
+								</div>
+							</div>
+
+							<div className="flex justify-end items-center gap-2 mt-2 px-6 py-4">
+								<Button text="Cancel" onClick={() => setOpenEditPhilHealthModal(false)} theme="outline" />
+								<Button text="Save Changes" theme="default" onClick={handleEditPhilHealthSave} />
+							</div>
+						</div>
+					</div>
+				</>
+			)}
+			{openEditPagIBIGModal && (
+				<>
+					<div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+						<div className="bg-white rounded-lg shadow-lg max-w-2xl w-full  overflow-y-auto">
+							{/* Modal Header */}
+							<div className="flex justify-between items-center bg-white px-6 py-4 border-b border-slate-200 sticky top-0">
+								<h3 className="text-lg font-semibold text-slate-900">Edit PagIbig Information</h3>
+								<button onClick={() => setOpenEditPagIBIGModal(false)} className="p-1 hover:bg-slate-200 rounded-lg transition-colors">
+									<X className="w-5 h-5 text-slate-600" />
+								</button>
+							</div>
+
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
+								<div className="flex flex-col gap-2">
+									<label htmlFor="pagibig_no" className="block text-sm font-medium text-slate-700">
+										Pag-IBIG No.
+									</label>
+									<input
+										type="text"
+										ref={pagibigNoEditInputRef}
+										id="pagibig_no"
+										defaultValue={employee.pagibig_settings?.pagibig_no || ''}
+										placeholder="XXXXXXXXXXXXXXX"
+										className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
+									/>
+								</div>
+							</div>
+
+							<div className="flex justify-end items-center gap-2 mt-2 p-4">
+								<Button text="Cancel" onClick={() => setOpenEditPagIBIGModal(false)} theme="outline" />
+								<Button text="Save Changes" theme="default" onClick={handleEditPagIBIGSave} />
+							</div>
+						</div>
+					</div>
+				</>
+			)}
+			{openEditBIRModal && (
+				<>
+					<div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+						<div className="bg-white rounded-lg shadow-lg max-w-2xl w-full max-h-96 overflow-y-auto">
+							{/* Modal Header */}
+							<div className="flex justify-between items-center bg-white px-6 py-4 border-b border-slate-200 sticky top-0">
+								<h3 className="text-lg font-semibold text-slate-900">Edit BIR Information</h3>
+								<button onClick={() => setOpenEditBIRModal(false)} className="p-1 hover:bg-slate-200 rounded-lg transition-colors">
+									<X className="w-5 h-5 text-slate-600" />
+								</button>
+							</div>
+
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-4 px-6 py-4">
+								<div className="flex flex-col gap-2">
+									<label htmlFor="bir_tin" className="block text-sm font-medium text-slate-700">
+										TIN No.
+									</label>
+									<input
+										ref={tinEditInputRef}
+										type="text"
+										id="bir_tin"
+										defaultValue={employee.bir_settings?.tin_no || ''}
+										placeholder="XXX-XXX-XXX-XXX"
+										className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
+									/>
+								</div>
+							</div>
+
+							<div className="flex justify-end items-center gap-2 mt-2 px-6 py-4">
+								<Button text="Cancel" onClick={() => setOpenEditBIRModal(false)} theme="outline" />
+								<Button text="Save Changes" theme="default" onClick={handleEditBIRSave} />
+							</div>
+						</div>
+					</div>
+				</>
+			)}
+
+			<ConfirmationModal
+				isOpen={showArchiveModal}
+				type="archive"
+				title="Archive Employee"
+				message={`Are you sure you want to archive ${employee?.first_name} ${employee?.last_name}? They will be moved to the archives and removed from active lists.`}
+				isLoading={archive_employee_mutation.isPending}
+				onConfirm={() => archive_employee_mutation.mutate()}
+				onCancel={() => setShowArchiveModal(false)}
+			/>
+
+			<ConfirmationModal
+				isOpen={showDeleteModal}
+				type="delete"
+				title="Delete Employee"
+				message={`Are you sure you want to permanently delete ${employee?.first_name} ${employee?.last_name}? This action cannot be undone and all associated data will be removed.`}
+				isLoading={delete_employee_mutation.isPending}
+				onConfirm={() => delete_employee_mutation.mutate()}
+				onCancel={() => setShowDeleteModal(false)}
+			/>
 
 			<LoadingModal
 				open={
@@ -1547,7 +1908,11 @@ const Employee = () => {
 					edit_personal_info_mutation.isPending ||
 					edit_relatives_mutation.isPending ||
 					edit_contact_info_mutation.isPending ||
-					edit_salary_mutation.isPending
+					edit_salary_mutation.isPending ||
+					edit_bir_mutation.isPending ||
+					edit_pagibig_mutation.isPending ||
+					edit_philhealth_mutation.isPending ||
+					edit_sss_mutation.isPending
 				}
 				message={'Saving changes...'}
 			/>

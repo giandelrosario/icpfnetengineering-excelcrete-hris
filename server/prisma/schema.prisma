@@ -12,22 +12,7 @@ datasource db {
   provider = "postgresql"
 }
 
-model StatutoryBeneficial {
-  id Int @id @default(autoincrement())
 
-  sss_er_share_rate Float @default(10)
-  sss_ec_amount Float @default(10)
-  sss_mpf_amount Float @default(0)
-
-  philhealth_er_rate Float @default(5)
-
-  pagibig_er_share_rate Float @default(2)
-
-  bir_er_share_rate Float @default(0) 
-
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-}
 
 
 model Employee {
@@ -42,6 +27,7 @@ model Employee {
   birth_place  String
   email        String?
   contact_no   String?
+  status       String @default("ACTIVE")
   created_at   DateTime @default(now())
   updated_at   DateTime @updatedAt
   relatives     EmployeeRelative[]
@@ -67,7 +53,7 @@ model EmployeeRelative {
   birth_place  String
   created_at   DateTime @default(now())
   updated_at   DateTime @updatedAt
-  employee     Employee   @relation(fields: [employee_id], references: [id])
+  employee     Employee   @relation(fields: [employee_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model SalaryHistory {
@@ -76,38 +62,34 @@ model SalaryHistory {
   amount Float @default(0)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-  employee Employee @relation(fields: [employee_id], references: [id])
+  employee Employee @relation(fields: [employee_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model SSSSettings {
   id Int @id @default(autoincrement())
   employee_id Int @unique
   sss_no String?
-  ee_share_rate Float?
-  mpf_amount Float?
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-  employee Employee @relation(fields: [employee_id], references: [id])
+  employee Employee @relation(fields: [employee_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model PhilhealthSettings {
   id Int @id @default(autoincrement())
   employee_id Int @unique
   philhealth_no String?
-  ee_share_rate Float?
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-  employee Employee @relation(fields: [employee_id], references: [id])
+  employee Employee @relation(fields: [employee_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model PagIBIGSettings {
   id Int @id @default(autoincrement())
   employee_id Int @unique
   pagibig_no String?
-  ee_share_rate Float?
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-  employee Employee @relation(fields: [employee_id], references: [id])
+  employee Employee @relation(fields: [employee_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model BIRSettings {
@@ -116,7 +98,7 @@ model BIRSettings {
   tin_no String?
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-  employee Employee @relation(fields: [employee_id], references: [id])
+  employee Employee @relation(fields: [employee_id], references: [id],onDelete: Cascade, onUpdate: Cascade)
 }
 
 model PayrollLogs {
@@ -127,7 +109,7 @@ model PayrollLogs {
   net_pay Float
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-  employee Employee @relation(fields: [employee_id], references: [id])
+  employee Employee @relation(fields: [employee_id], references: [id],onDelete: Cascade, onUpdate: Cascade)
   benefits PayrollLogsBenefits[]
 }
 
@@ -139,7 +121,7 @@ model PayrollLogsBenefits {
   amount Float
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-  payroll_logs PayrollLogs @relation(fields: [payroll_logs_id], references: [id])
+  payroll_logs PayrollLogs @relation(fields: [payroll_logs_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 

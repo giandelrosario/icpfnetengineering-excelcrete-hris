@@ -7,6 +7,8 @@ import Employees from './pages/Employees';
 import CreateEmployee from './pages/CreateEmployee';
 import AdminLayout from './components/layouts/AdminLayout';
 import Employee from '@/pages/Employee';
+import StatutoryBenefitsSettings from './pages/StatutoryBenefitsSettings';
+import Payroll from './pages/Payroll';
 
 const queryClient = new QueryClient();
 
@@ -30,11 +32,20 @@ const router = createBrowserRouter([
 						path: ':id',
 						element: <Employee />,
 					},
+
 					{
 						path: 'create',
 						element: <CreateEmployee />,
 					},
 				],
+			},
+			{
+				path: 'payroll',
+				element: <Payroll />,
+			},
+			{
+				path: 'settings',
+				element: <StatutoryBenefitsSettings />,
 			},
 		],
 	},

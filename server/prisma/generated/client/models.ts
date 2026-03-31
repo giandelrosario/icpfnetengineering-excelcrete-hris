@@ -8,7 +8,6 @@
  *
  * 🟢 You can import this file directly.
  */
-export type * from './models/StatutoryBeneficial'
 export type * from './models/Employee'
 export type * from './models/EmployeeRelative'
 export type * from './models/SalaryHistory'

@@ -51,7 +51,6 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
-  StatutoryBeneficial: 'StatutoryBeneficial',
   Employee: 'Employee',
   EmployeeRelative: 'EmployeeRelative',
   SalaryHistory: 'SalaryHistory',
@@ -79,21 +78,6 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
-export const StatutoryBeneficialScalarFieldEnum = {
-  id: 'id',
-  sss_er_share_rate: 'sss_er_share_rate',
-  sss_ec_amount: 'sss_ec_amount',
-  sss_mpf_amount: 'sss_mpf_amount',
-  philhealth_er_rate: 'philhealth_er_rate',
-  pagibig_er_share_rate: 'pagibig_er_share_rate',
-  bir_er_share_rate: 'bir_er_share_rate',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
-} as const
-
-export type StatutoryBeneficialScalarFieldEnum = (typeof StatutoryBeneficialScalarFieldEnum)[keyof typeof StatutoryBeneficialScalarFieldEnum]
-
-
 export const EmployeeScalarFieldEnum = {
   id: 'id',
   first_name: 'first_name',
@@ -106,6 +90,7 @@ export const EmployeeScalarFieldEnum = {
   birth_place: 'birth_place',
   email: 'email',
   contact_no: 'contact_no',
+  status: 'status',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -147,8 +132,6 @@ export const SSSSettingsScalarFieldEnum = {
   id: 'id',
   employee_id: 'employee_id',
   sss_no: 'sss_no',
-  ee_share_rate: 'ee_share_rate',
-  mpf_amount: 'mpf_amount',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -160,7 +143,6 @@ export const PhilhealthSettingsScalarFieldEnum = {
   id: 'id',
   employee_id: 'employee_id',
   philhealth_no: 'philhealth_no',
-  ee_share_rate: 'ee_share_rate',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -172,7 +154,6 @@ export const PagIBIGSettingsScalarFieldEnum = {
   id: 'id',
   employee_id: 'employee_id',
   pagibig_no: 'pagibig_no',
-  ee_share_rate: 'ee_share_rate',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
