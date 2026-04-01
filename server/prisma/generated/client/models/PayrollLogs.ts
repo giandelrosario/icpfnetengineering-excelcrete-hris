@@ -31,6 +31,7 @@ export type PayrollLogsAvgAggregateOutputType = {
   employee_id: number | null
   gross_pay: number | null
   net_pay: number | null
+  payroll_year: number | null
 }
 
 export type PayrollLogsSumAggregateOutputType = {
@@ -38,6 +39,7 @@ export type PayrollLogsSumAggregateOutputType = {
   employee_id: number | null
   gross_pay: number | null
   net_pay: number | null
+  payroll_year: number | null
 }
 
 export type PayrollLogsMinAggregateOutputType = {
@@ -46,6 +48,10 @@ export type PayrollLogsMinAggregateOutputType = {
   title: string | null
   gross_pay: number | null
   net_pay: number | null
+  pay_period: string | null
+  payroll_month: string | null
+  payroll_year: number | null
+  process_at: Date | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -56,6 +62,10 @@ export type PayrollLogsMaxAggregateOutputType = {
   title: string | null
   gross_pay: number | null
   net_pay: number | null
+  pay_period: string | null
+  payroll_month: string | null
+  payroll_year: number | null
+  process_at: Date | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -66,6 +76,10 @@ export type PayrollLogsCountAggregateOutputType = {
   title: number
   gross_pay: number
   net_pay: number
+  pay_period: number
+  payroll_month: number
+  payroll_year: number
+  process_at: number
   created_at: number
   updated_at: number
   _all: number
@@ -77,6 +91,7 @@ export type PayrollLogsAvgAggregateInputType = {
   employee_id?: true
   gross_pay?: true
   net_pay?: true
+  payroll_year?: true
 }
 
 export type PayrollLogsSumAggregateInputType = {
@@ -84,6 +99,7 @@ export type PayrollLogsSumAggregateInputType = {
   employee_id?: true
   gross_pay?: true
   net_pay?: true
+  payroll_year?: true
 }
 
 export type PayrollLogsMinAggregateInputType = {
@@ -92,6 +108,10 @@ export type PayrollLogsMinAggregateInputType = {
   title?: true
   gross_pay?: true
   net_pay?: true
+  pay_period?: true
+  payroll_month?: true
+  payroll_year?: true
+  process_at?: true
   created_at?: true
   updated_at?: true
 }
@@ -102,6 +122,10 @@ export type PayrollLogsMaxAggregateInputType = {
   title?: true
   gross_pay?: true
   net_pay?: true
+  pay_period?: true
+  payroll_month?: true
+  payroll_year?: true
+  process_at?: true
   created_at?: true
   updated_at?: true
 }
@@ -112,6 +136,10 @@ export type PayrollLogsCountAggregateInputType = {
   title?: true
   gross_pay?: true
   net_pay?: true
+  pay_period?: true
+  payroll_month?: true
+  payroll_year?: true
+  process_at?: true
   created_at?: true
   updated_at?: true
   _all?: true
@@ -209,6 +237,10 @@ export type PayrollLogsGroupByOutputType = {
   title: string
   gross_pay: number
   net_pay: number
+  pay_period: string
+  payroll_month: string
+  payroll_year: number
+  process_at: Date
   created_at: Date
   updated_at: Date
   _count: PayrollLogsCountAggregateOutputType | null
@@ -242,6 +274,10 @@ export type PayrollLogsWhereInput = {
   title?: Prisma.StringFilter<"PayrollLogs"> | string
   gross_pay?: Prisma.FloatFilter<"PayrollLogs"> | number
   net_pay?: Prisma.FloatFilter<"PayrollLogs"> | number
+  pay_period?: Prisma.StringFilter<"PayrollLogs"> | string
+  payroll_month?: Prisma.StringFilter<"PayrollLogs"> | string
+  payroll_year?: Prisma.IntFilter<"PayrollLogs"> | number
+  process_at?: Prisma.DateTimeFilter<"PayrollLogs"> | Date | string
   created_at?: Prisma.DateTimeFilter<"PayrollLogs"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"PayrollLogs"> | Date | string
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
@@ -254,6 +290,10 @@ export type PayrollLogsOrderByWithRelationInput = {
   title?: Prisma.SortOrder
   gross_pay?: Prisma.SortOrder
   net_pay?: Prisma.SortOrder
+  pay_period?: Prisma.SortOrder
+  payroll_month?: Prisma.SortOrder
+  payroll_year?: Prisma.SortOrder
+  process_at?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   employee?: Prisma.EmployeeOrderByWithRelationInput
@@ -269,6 +309,10 @@ export type PayrollLogsWhereUniqueInput = Prisma.AtLeast<{
   title?: Prisma.StringFilter<"PayrollLogs"> | string
   gross_pay?: Prisma.FloatFilter<"PayrollLogs"> | number
   net_pay?: Prisma.FloatFilter<"PayrollLogs"> | number
+  pay_period?: Prisma.StringFilter<"PayrollLogs"> | string
+  payroll_month?: Prisma.StringFilter<"PayrollLogs"> | string
+  payroll_year?: Prisma.IntFilter<"PayrollLogs"> | number
+  process_at?: Prisma.DateTimeFilter<"PayrollLogs"> | Date | string
   created_at?: Prisma.DateTimeFilter<"PayrollLogs"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"PayrollLogs"> | Date | string
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
@@ -281,6 +325,10 @@ export type PayrollLogsOrderByWithAggregationInput = {
   title?: Prisma.SortOrder
   gross_pay?: Prisma.SortOrder
   net_pay?: Prisma.SortOrder
+  pay_period?: Prisma.SortOrder
+  payroll_month?: Prisma.SortOrder
+  payroll_year?: Prisma.SortOrder
+  process_at?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   _count?: Prisma.PayrollLogsCountOrderByAggregateInput
@@ -299,6 +347,10 @@ export type PayrollLogsScalarWhereWithAggregatesInput = {
   title?: Prisma.StringWithAggregatesFilter<"PayrollLogs"> | string
   gross_pay?: Prisma.FloatWithAggregatesFilter<"PayrollLogs"> | number
   net_pay?: Prisma.FloatWithAggregatesFilter<"PayrollLogs"> | number
+  pay_period?: Prisma.StringWithAggregatesFilter<"PayrollLogs"> | string
+  payroll_month?: Prisma.StringWithAggregatesFilter<"PayrollLogs"> | string
+  payroll_year?: Prisma.IntWithAggregatesFilter<"PayrollLogs"> | number
+  process_at?: Prisma.DateTimeWithAggregatesFilter<"PayrollLogs"> | Date | string
   created_at?: Prisma.DateTimeWithAggregatesFilter<"PayrollLogs"> | Date | string
   updated_at?: Prisma.DateTimeWithAggregatesFilter<"PayrollLogs"> | Date | string
 }
@@ -307,6 +359,10 @@ export type PayrollLogsCreateInput = {
   title: string
   gross_pay: number
   net_pay: number
+  pay_period: string
+  payroll_month: string
+  payroll_year: number
+  process_at: Date | string
   created_at?: Date | string
   updated_at?: Date | string
   employee: Prisma.EmployeeCreateNestedOneWithoutPayroll_logsInput
@@ -319,6 +375,10 @@ export type PayrollLogsUncheckedCreateInput = {
   title: string
   gross_pay: number
   net_pay: number
+  pay_period: string
+  payroll_month: string
+  payroll_year: number
+  process_at: Date | string
   created_at?: Date | string
   updated_at?: Date | string
   benefits?: Prisma.PayrollLogsBenefitsUncheckedCreateNestedManyWithoutPayroll_logsInput
@@ -328,6 +388,10 @@ export type PayrollLogsUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   gross_pay?: Prisma.FloatFieldUpdateOperationsInput | number
   net_pay?: Prisma.FloatFieldUpdateOperationsInput | number
+  pay_period?: Prisma.StringFieldUpdateOperationsInput | string
+  payroll_month?: Prisma.StringFieldUpdateOperationsInput | string
+  payroll_year?: Prisma.IntFieldUpdateOperationsInput | number
+  process_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutPayroll_logsNestedInput
@@ -340,6 +404,10 @@ export type PayrollLogsUncheckedUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   gross_pay?: Prisma.FloatFieldUpdateOperationsInput | number
   net_pay?: Prisma.FloatFieldUpdateOperationsInput | number
+  pay_period?: Prisma.StringFieldUpdateOperationsInput | string
+  payroll_month?: Prisma.StringFieldUpdateOperationsInput | string
+  payroll_year?: Prisma.IntFieldUpdateOperationsInput | number
+  process_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   benefits?: Prisma.PayrollLogsBenefitsUncheckedUpdateManyWithoutPayroll_logsNestedInput
@@ -351,6 +419,10 @@ export type PayrollLogsCreateManyInput = {
   title: string
   gross_pay: number
   net_pay: number
+  pay_period: string
+  payroll_month: string
+  payroll_year: number
+  process_at: Date | string
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -359,6 +431,10 @@ export type PayrollLogsUpdateManyMutationInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   gross_pay?: Prisma.FloatFieldUpdateOperationsInput | number
   net_pay?: Prisma.FloatFieldUpdateOperationsInput | number
+  pay_period?: Prisma.StringFieldUpdateOperationsInput | string
+  payroll_month?: Prisma.StringFieldUpdateOperationsInput | string
+  payroll_year?: Prisma.IntFieldUpdateOperationsInput | number
+  process_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -369,6 +445,10 @@ export type PayrollLogsUncheckedUpdateManyInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   gross_pay?: Prisma.FloatFieldUpdateOperationsInput | number
   net_pay?: Prisma.FloatFieldUpdateOperationsInput | number
+  pay_period?: Prisma.StringFieldUpdateOperationsInput | string
+  payroll_month?: Prisma.StringFieldUpdateOperationsInput | string
+  payroll_year?: Prisma.IntFieldUpdateOperationsInput | number
+  process_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -389,6 +469,10 @@ export type PayrollLogsCountOrderByAggregateInput = {
   title?: Prisma.SortOrder
   gross_pay?: Prisma.SortOrder
   net_pay?: Prisma.SortOrder
+  pay_period?: Prisma.SortOrder
+  payroll_month?: Prisma.SortOrder
+  payroll_year?: Prisma.SortOrder
+  process_at?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -398,6 +482,7 @@ export type PayrollLogsAvgOrderByAggregateInput = {
   employee_id?: Prisma.SortOrder
   gross_pay?: Prisma.SortOrder
   net_pay?: Prisma.SortOrder
+  payroll_year?: Prisma.SortOrder
 }
 
 export type PayrollLogsMaxOrderByAggregateInput = {
@@ -406,6 +491,10 @@ export type PayrollLogsMaxOrderByAggregateInput = {
   title?: Prisma.SortOrder
   gross_pay?: Prisma.SortOrder
   net_pay?: Prisma.SortOrder
+  pay_period?: Prisma.SortOrder
+  payroll_month?: Prisma.SortOrder
+  payroll_year?: Prisma.SortOrder
+  process_at?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -416,6 +505,10 @@ export type PayrollLogsMinOrderByAggregateInput = {
   title?: Prisma.SortOrder
   gross_pay?: Prisma.SortOrder
   net_pay?: Prisma.SortOrder
+  pay_period?: Prisma.SortOrder
+  payroll_month?: Prisma.SortOrder
+  payroll_year?: Prisma.SortOrder
+  process_at?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -425,6 +518,7 @@ export type PayrollLogsSumOrderByAggregateInput = {
   employee_id?: Prisma.SortOrder
   gross_pay?: Prisma.SortOrder
   net_pay?: Prisma.SortOrder
+  payroll_year?: Prisma.SortOrder
 }
 
 export type PayrollLogsScalarRelationFilter = {
@@ -492,6 +586,10 @@ export type PayrollLogsCreateWithoutEmployeeInput = {
   title: string
   gross_pay: number
   net_pay: number
+  pay_period: string
+  payroll_month: string
+  payroll_year: number
+  process_at: Date | string
   created_at?: Date | string
   updated_at?: Date | string
   benefits?: Prisma.PayrollLogsBenefitsCreateNestedManyWithoutPayroll_logsInput
@@ -502,6 +600,10 @@ export type PayrollLogsUncheckedCreateWithoutEmployeeInput = {
   title: string
   gross_pay: number
   net_pay: number
+  pay_period: string
+  payroll_month: string
+  payroll_year: number
+  process_at: Date | string
   created_at?: Date | string
   updated_at?: Date | string
   benefits?: Prisma.PayrollLogsBenefitsUncheckedCreateNestedManyWithoutPayroll_logsInput
@@ -542,6 +644,10 @@ export type PayrollLogsScalarWhereInput = {
   title?: Prisma.StringFilter<"PayrollLogs"> | string
   gross_pay?: Prisma.FloatFilter<"PayrollLogs"> | number
   net_pay?: Prisma.FloatFilter<"PayrollLogs"> | number
+  pay_period?: Prisma.StringFilter<"PayrollLogs"> | string
+  payroll_month?: Prisma.StringFilter<"PayrollLogs"> | string
+  payroll_year?: Prisma.IntFilter<"PayrollLogs"> | number
+  process_at?: Prisma.DateTimeFilter<"PayrollLogs"> | Date | string
   created_at?: Prisma.DateTimeFilter<"PayrollLogs"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"PayrollLogs"> | Date | string
 }
@@ -550,6 +656,10 @@ export type PayrollLogsCreateWithoutBenefitsInput = {
   title: string
   gross_pay: number
   net_pay: number
+  pay_period: string
+  payroll_month: string
+  payroll_year: number
+  process_at: Date | string
   created_at?: Date | string
   updated_at?: Date | string
   employee: Prisma.EmployeeCreateNestedOneWithoutPayroll_logsInput
@@ -561,6 +671,10 @@ export type PayrollLogsUncheckedCreateWithoutBenefitsInput = {
   title: string
   gross_pay: number
   net_pay: number
+  pay_period: string
+  payroll_month: string
+  payroll_year: number
+  process_at: Date | string
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -585,6 +699,10 @@ export type PayrollLogsUpdateWithoutBenefitsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   gross_pay?: Prisma.FloatFieldUpdateOperationsInput | number
   net_pay?: Prisma.FloatFieldUpdateOperationsInput | number
+  pay_period?: Prisma.StringFieldUpdateOperationsInput | string
+  payroll_month?: Prisma.StringFieldUpdateOperationsInput | string
+  payroll_year?: Prisma.IntFieldUpdateOperationsInput | number
+  process_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutPayroll_logsNestedInput
@@ -596,6 +714,10 @@ export type PayrollLogsUncheckedUpdateWithoutBenefitsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   gross_pay?: Prisma.FloatFieldUpdateOperationsInput | number
   net_pay?: Prisma.FloatFieldUpdateOperationsInput | number
+  pay_period?: Prisma.StringFieldUpdateOperationsInput | string
+  payroll_month?: Prisma.StringFieldUpdateOperationsInput | string
+  payroll_year?: Prisma.IntFieldUpdateOperationsInput | number
+  process_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -605,6 +727,10 @@ export type PayrollLogsCreateManyEmployeeInput = {
   title: string
   gross_pay: number
   net_pay: number
+  pay_period: string
+  payroll_month: string
+  payroll_year: number
+  process_at: Date | string
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -613,6 +739,10 @@ export type PayrollLogsUpdateWithoutEmployeeInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   gross_pay?: Prisma.FloatFieldUpdateOperationsInput | number
   net_pay?: Prisma.FloatFieldUpdateOperationsInput | number
+  pay_period?: Prisma.StringFieldUpdateOperationsInput | string
+  payroll_month?: Prisma.StringFieldUpdateOperationsInput | string
+  payroll_year?: Prisma.IntFieldUpdateOperationsInput | number
+  process_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   benefits?: Prisma.PayrollLogsBenefitsUpdateManyWithoutPayroll_logsNestedInput
@@ -623,6 +753,10 @@ export type PayrollLogsUncheckedUpdateWithoutEmployeeInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   gross_pay?: Prisma.FloatFieldUpdateOperationsInput | number
   net_pay?: Prisma.FloatFieldUpdateOperationsInput | number
+  pay_period?: Prisma.StringFieldUpdateOperationsInput | string
+  payroll_month?: Prisma.StringFieldUpdateOperationsInput | string
+  payroll_year?: Prisma.IntFieldUpdateOperationsInput | number
+  process_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   benefits?: Prisma.PayrollLogsBenefitsUncheckedUpdateManyWithoutPayroll_logsNestedInput
@@ -633,6 +767,10 @@ export type PayrollLogsUncheckedUpdateManyWithoutEmployeeInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   gross_pay?: Prisma.FloatFieldUpdateOperationsInput | number
   net_pay?: Prisma.FloatFieldUpdateOperationsInput | number
+  pay_period?: Prisma.StringFieldUpdateOperationsInput | string
+  payroll_month?: Prisma.StringFieldUpdateOperationsInput | string
+  payroll_year?: Prisma.IntFieldUpdateOperationsInput | number
+  process_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -674,6 +812,10 @@ export type PayrollLogsSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   title?: boolean
   gross_pay?: boolean
   net_pay?: boolean
+  pay_period?: boolean
+  payroll_month?: boolean
+  payroll_year?: boolean
+  process_at?: boolean
   created_at?: boolean
   updated_at?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
@@ -687,6 +829,10 @@ export type PayrollLogsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   title?: boolean
   gross_pay?: boolean
   net_pay?: boolean
+  pay_period?: boolean
+  payroll_month?: boolean
+  payroll_year?: boolean
+  process_at?: boolean
   created_at?: boolean
   updated_at?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
@@ -698,6 +844,10 @@ export type PayrollLogsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   title?: boolean
   gross_pay?: boolean
   net_pay?: boolean
+  pay_period?: boolean
+  payroll_month?: boolean
+  payroll_year?: boolean
+  process_at?: boolean
   created_at?: boolean
   updated_at?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
@@ -709,11 +859,15 @@ export type PayrollLogsSelectScalar = {
   title?: boolean
   gross_pay?: boolean
   net_pay?: boolean
+  pay_period?: boolean
+  payroll_month?: boolean
+  payroll_year?: boolean
+  process_at?: boolean
   created_at?: boolean
   updated_at?: boolean
 }
 
-export type PayrollLogsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employee_id" | "title" | "gross_pay" | "net_pay" | "created_at" | "updated_at", ExtArgs["result"]["payrollLogs"]>
+export type PayrollLogsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employee_id" | "title" | "gross_pay" | "net_pay" | "pay_period" | "payroll_month" | "payroll_year" | "process_at" | "created_at" | "updated_at", ExtArgs["result"]["payrollLogs"]>
 export type PayrollLogsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   benefits?: boolean | Prisma.PayrollLogs$benefitsArgs<ExtArgs>
@@ -738,6 +892,10 @@ export type $PayrollLogsPayload<ExtArgs extends runtime.Types.Extensions.Interna
     title: string
     gross_pay: number
     net_pay: number
+    pay_period: string
+    payroll_month: string
+    payroll_year: number
+    process_at: Date
     created_at: Date
     updated_at: Date
   }, ExtArgs["result"]["payrollLogs"]>
@@ -1170,6 +1328,10 @@ export interface PayrollLogsFieldRefs {
   readonly title: Prisma.FieldRef<"PayrollLogs", 'String'>
   readonly gross_pay: Prisma.FieldRef<"PayrollLogs", 'Float'>
   readonly net_pay: Prisma.FieldRef<"PayrollLogs", 'Float'>
+  readonly pay_period: Prisma.FieldRef<"PayrollLogs", 'String'>
+  readonly payroll_month: Prisma.FieldRef<"PayrollLogs", 'String'>
+  readonly payroll_year: Prisma.FieldRef<"PayrollLogs", 'Int'>
+  readonly process_at: Prisma.FieldRef<"PayrollLogs", 'DateTime'>
   readonly created_at: Prisma.FieldRef<"PayrollLogs", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"PayrollLogs", 'DateTime'>
 }

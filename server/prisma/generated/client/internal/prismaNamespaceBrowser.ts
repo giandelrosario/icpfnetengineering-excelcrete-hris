@@ -178,6 +178,10 @@ export const PayrollLogsScalarFieldEnum = {
   title: 'title',
   gross_pay: 'gross_pay',
   net_pay: 'net_pay',
+  pay_period: 'pay_period',
+  payroll_month: 'payroll_month',
+  payroll_year: 'payroll_year',
+  process_at: 'process_at',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const

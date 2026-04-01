@@ -9,6 +9,7 @@ import { format } from 'date-fns';
 import { Archive, ArrowLeft, Calendar, Church, Contact, FileText, History, Mail, MapPin, Pen, Phone, Plus, SquarePen, Trash, User, Users, X, XCircle } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
+import { FormatAsMoney } from '@/utils/lib';
 
 type TEmployeeRelative = {
 	id: number;
@@ -51,6 +52,7 @@ type TSSSSettings = {
 		mpf: number;
 	};
 	total_contribution: number;
+	no_sss_contributions: number;
 	updated_at: string;
 	created_at: string;
 };
@@ -63,6 +65,7 @@ type TPhilhealthSettings = {
 		total: number;
 		rate: number;
 	};
+	no_philhealth_contributions: number;
 	updated_at: string;
 	created_at: string;
 };
@@ -76,6 +79,7 @@ type TPagIBIGSettings = {
 		total_rate: number;
 		total: number;
 	};
+	no_pagibig_contributions: number;
 	updated_at: string;
 	created_at: string;
 };
@@ -86,6 +90,19 @@ type TBIRSettings = {
 	ee_share_rate: number;
 	updated_at: string;
 	created_at: string;
+};
+
+type TPayrollLog = {
+	gross_pay: number;
+	net_pay: number;
+	title: string;
+	payroll_month: string;
+	payroll_year: number;
+	process_at: string;
+	benefits: {
+		benefit_key: string;
+		amount: number;
+	}[];
 };
 
 type TEmployee = {
@@ -108,6 +125,7 @@ type TEmployee = {
 	philhealth_settings?: TPhilhealthSettings;
 	pagibig_settings?: TPagIBIGSettings;
 	bir_settings?: TBIRSettings;
+	payroll_logs: TPayrollLog[];
 };
 
 const Employee = () => {
@@ -150,6 +168,8 @@ const Employee = () => {
 	const [openEditPhilHealthModal, setOpenEditPhilHealthModal] = useState(false);
 	const [openEditPagIBIGModal, setOpenEditPagIBIGModal] = useState(false);
 	const [openEditBIRModal, setOpenEditBIRModal] = useState(false);
+	const [openPayrollLogsModal, setOpenPayrollLogsModal] = useState(false);
+	const [payrollLogsPage, setPayrollLogsPage] = useState(1);
 
 	const sssEditNoInputRef = useRef<HTMLInputElement>(null);
 
@@ -168,15 +188,6 @@ const Employee = () => {
 	const [showDeleteModal, setShowDeleteModal] = useState(false);
 	const [showArchiveModal, setShowArchiveModal] = useState(false);
 
-	const benefits_query = useQuery({
-		queryKey: ['benefits'],
-		queryFn: async () => {
-			const response = await api.get('/benefits');
-			return response.data;
-		},
-		enabled: !!id,
-	});
-
 	const employee_query = useQuery({
 		queryKey: ['employee', id],
 		queryFn: async () => {
@@ -185,6 +196,8 @@ const Employee = () => {
 		},
 		enabled: !!id,
 	});
+
+	console.log(employee_query.data);
 
 	const edit_personal_info_mutation = useMutation({
 		mutationFn: async (payload: Partial<TEmployee>) => {
@@ -574,6 +587,16 @@ const Employee = () => {
 		return employee?.salary_history[employee?.salary_history.length - 1].amount;
 	};
 
+	const payrollLogs = (employee?.payroll_logs ?? [])
+		.slice()
+		.sort((a, b) => new Date(b.process_at).getTime() - new Date(a.process_at).getTime());
+	const payrollLogsPreview = payrollLogs.slice(0, 3);
+	const payrollLogsPerPage = 6;
+	const payrollLogsTotalPages = Math.max(1, Math.ceil(payrollLogs.length / payrollLogsPerPage));
+	const payrollLogsSafePage = Math.min(payrollLogsPage, payrollLogsTotalPages);
+	const payrollLogsStartIndex = (payrollLogsSafePage - 1) * payrollLogsPerPage;
+	const payrollLogsSlice = payrollLogs.slice(payrollLogsStartIndex, payrollLogsStartIndex + payrollLogsPerPage);
+
 	const handlePagIBIGChange = (field: keyof TPagIBIGSettings, value: string) => {
 		setPagIBIGSettings((prev) => ({
 			...prev,
@@ -680,7 +703,7 @@ const Employee = () => {
 		});
 	};
 
-	if (employee_query.isPending || benefits_query.isPending) {
+	if (employee_query.isPending) {
 		return <EmployeeSkeleton />;
 	}
 
@@ -917,14 +940,18 @@ const Employee = () => {
 											<SquarePen size={16} className=" text-slate-600" />
 										</button>
 									</div>
-									<div className="space-y-3">
+									<div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
 										<div>
 											<p className="text-xs text-slate-600 uppercase font-semibold">SSS Number</p>
 											<p className="text-sm font-medium text-slate-900 mt-1">{employee?.sss_settings.sss_no || 'N/A'}</p>
 										</div>
 										<div>
 											<p className="text-xs text-slate-600 uppercase font-semibold">Contribution</p>
-											<p className="text-sm font-medium text-slate-900 mt-1">PHP {employee?.sss_settings?.total_contribution}</p>
+											<p className="text-sm font-medium text-slate-900 mt-1">PHP {FormatAsMoney(employee?.sss_settings?.total_contribution)}</p>
+										</div>
+										<div>
+											<p className="text-xs text-slate-600 uppercase font-semibold">No. of Contribution</p>
+											<p className="text-sm font-medium text-slate-900 mt-1">{employee?.sss_settings?.no_sss_contributions}</p>
 										</div>
 									</div>
 								</div>
@@ -956,7 +983,7 @@ const Employee = () => {
 											<SquarePen size={16} className=" text-slate-600" />
 										</button>
 									</div>
-									<div className="space-y-3">
+									<div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
 										<div>
 											<p className="text-xs text-slate-600 uppercase font-semibold">PhilHealth Number</p>
 											<p className="text-sm font-medium text-slate-900 mt-1">{employee?.philhealth_settings.philhealth_no || 'N/A'}</p>
@@ -967,7 +994,11 @@ const Employee = () => {
 										</div>
 										<div>
 											<p className="text-xs text-slate-600 uppercase font-semibold">Contribution</p>
-											<p className="text-sm font-medium text-slate-900 mt-1">PHP {employee?.philhealth_settings.contribution?.total}</p>
+											<p className="text-sm font-medium text-slate-900 mt-1">PHP {FormatAsMoney(employee?.philhealth_settings.contribution?.total)}</p>
+										</div>
+										<div>
+											<p className="text-xs text-slate-600 uppercase font-semibold">No. of Contribution</p>
+											<p className="text-sm font-medium text-slate-900 mt-1">{employee?.philhealth_settings.no_philhealth_contributions}</p>
 										</div>
 									</div>
 								</div>
@@ -999,7 +1030,7 @@ const Employee = () => {
 											<SquarePen size={16} className=" text-slate-600" />
 										</button>
 									</div>
-									<div className="space-y-3">
+									<div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
 										<div>
 											<p className="text-xs text-slate-600 uppercase font-semibold">Pag-IBIG Number</p>
 											<p className="text-sm font-medium text-slate-900 mt-1">{employee?.pagibig_settings.pagibig_no || 'N/A'}</p>
@@ -1010,7 +1041,11 @@ const Employee = () => {
 										</div>
 										<div>
 											<p className="text-xs text-slate-600 uppercase font-semibold">Contribution</p>
-											<p className="text-sm font-medium text-slate-900 mt-1">PHP {employee?.pagibig_settings.contribution?.total}</p>
+											<p className="text-sm font-medium text-slate-900 mt-1">PHP {FormatAsMoney(employee?.pagibig_settings.contribution?.total)}</p>
+										</div>
+										<div>
+											<p className="text-xs text-slate-600 uppercase font-semibold">No. of Contribution</p>
+											<p className="text-sm font-medium text-slate-900 mt-1">{employee?.pagibig_settings.no_pagibig_contributions}</p>
 										</div>
 									</div>
 								</div>
@@ -1042,7 +1077,7 @@ const Employee = () => {
 											<SquarePen size={16} className=" text-slate-600" />
 										</button>
 									</div>
-									<div className="space-y-3">
+									<div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
 										<div>
 											<p className="text-xs text-slate-600 uppercase font-semibold">TIN Number</p>
 											<p className="text-sm font-medium text-slate-900 mt-1">{employee?.bir_settings.tin_no || 'N/A'}</p>
@@ -1068,6 +1103,54 @@ const Employee = () => {
 								</div>
 							)}
 						</div>
+					</div>
+				</section>
+
+				{/* logs of payroll */}
+				<section className="bg-white border border-slate-200 rounded-lg overflow-hidden mb-6">
+					<div className="flex items-center justify-between gap-2 bg-white px-6 py-4 border-b border-slate-200">
+						<div className="flex items-center gap-2">
+							<History className="w-5 h-5 text-slate-600" />
+							<h2 className="text-md font-semibold text-slate-900">Payroll Logs</h2>
+						</div>
+						<Button
+							text="View All"
+							theme="outline"
+							disabled={payrollLogs.length === 0}
+							onClick={() => {
+								setPayrollLogsPage(1);
+								setOpenPayrollLogsModal(true);
+							}}
+						/>
+					</div>
+					<div className="p-6">
+						{payrollLogsPreview.length === 0 ? (
+							<p className="text-sm text-slate-500 text-center py-4">No payroll logs yet.</p>
+						) : (
+							<div className="space-y-3">
+								{payrollLogsPreview.map((log, index) => (
+									<div key={`${log.title}-${index}`} className="border border-slate-200 rounded-lg p-4 bg-slate-50">
+										<div className="flex items-start justify-between gap-4">
+											<div>
+												<p className="text-sm font-semibold text-slate-900">{log.title}</p>
+												<p className="text-xs text-slate-500 mt-1">{formatDate(log.process_at)}</p>
+											</div>
+											<div className="text-right">
+												<p className="text-xs text-slate-500">Net Pay</p>
+												<p className="text-sm font-semibold text-slate-900">PHP {FormatAsMoney(log.net_pay)}</p>
+											</div>
+										</div>
+										<div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs text-slate-600">
+											<span>Gross: PHP {FormatAsMoney(log.gross_pay)}</span>
+											<span>Month: {log.payroll_month} {log.payroll_year}</span>
+											<span>
+												Benefits: {log.benefits.length ? log.benefits.map((benefit) => benefit.benefit_key.toUpperCase()).join(', ') : 'None'}
+											</span>
+										</div>
+									</div>
+								))}
+							</div>
+						)}
 					</div>
 				</section>
 
@@ -1112,6 +1195,71 @@ const Employee = () => {
 					</p>
 				</section>
 			</div>
+
+			{openPayrollLogsModal && (
+				<div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+					<div className="bg-white rounded-lg shadow-lg max-w-5xl w-full max-h-[90vh] flex flex-col overflow-hidden">
+						<div className="flex items-center justify-between bg-white px-6 py-4 border-b border-slate-200">
+							<h3 className="text-lg font-semibold text-slate-900">Payroll Logs</h3>
+							<button onClick={() => setOpenPayrollLogsModal(false)} className="p-1 hover:bg-slate-200 rounded-lg transition-colors">
+								<X className="w-5 h-5 text-slate-600" />
+							</button>
+						</div>
+						<div className="p-6 overflow-y-auto">
+							{payrollLogs.length === 0 ? (
+								<p className="text-sm text-slate-500 text-center py-6">No payroll logs yet.</p>
+							) : (
+								<div className="space-y-3">
+									{payrollLogsSlice.map((log, index) => (
+										<div key={`${log.title}-${index}`} className="border border-slate-200 rounded-lg p-4">
+											<div className="flex items-start justify-between gap-4">
+												<div>
+													<p className="text-sm font-semibold text-slate-900">{log.title}</p>
+													<p className="text-xs text-slate-500 mt-1">{formatDate(log.process_at)}</p>
+												</div>
+												<div className="text-right">
+													<p className="text-xs text-slate-500">Net Pay</p>
+													<p className="text-sm font-semibold text-slate-900">PHP {FormatAsMoney(log.net_pay)}</p>
+												</div>
+											</div>
+											<div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs text-slate-600">
+												<span>Gross: PHP {FormatAsMoney(log.gross_pay)}</span>
+												<span>Month: {log.payroll_month} {log.payroll_year}</span>
+												<span>
+													Benefits: {log.benefits.length ? log.benefits.map((benefit) => benefit.benefit_key.toUpperCase()).join(', ') : 'None'}
+												</span>
+											</div>
+										</div>
+									))}
+								</div>
+							)}
+						</div>
+						{payrollLogs.length > 0 && (
+							<div className="flex items-center justify-between border-t border-slate-200 px-6 py-4 bg-slate-50 text-xs text-slate-600">
+								<span>
+									Page {payrollLogsSafePage} of {payrollLogsTotalPages}
+								</span>
+								<div className="flex items-center gap-2">
+									<button
+										disabled={payrollLogsSafePage === 1}
+										onClick={() => setPayrollLogsPage((prev) => Math.max(prev - 1, 1))}
+										className="rounded border border-slate-200 px-2 py-1 text-xs text-slate-700 disabled:opacity-50"
+									>
+										Previous
+									</button>
+									<button
+										disabled={payrollLogsSafePage === payrollLogsTotalPages}
+										onClick={() => setPayrollLogsPage((prev) => Math.min(prev + 1, payrollLogsTotalPages))}
+										className="rounded border border-slate-200 px-2 py-1 text-xs text-slate-700 disabled:opacity-50"
+									>
+										Next
+									</button>
+								</div>
+							</div>
+						)}
+					</div>
+				</div>
+			)}
 
 			{/* Edit Personal Information Modal */}
 			{openPersonalInfoModal && (

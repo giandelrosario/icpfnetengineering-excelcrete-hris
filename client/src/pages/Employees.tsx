@@ -1,10 +1,9 @@
 import Button from '@/components/Button';
-import ConfirmationModal from '@/components/ConfirmationModal';
 import EmployeeArchives from '@/components/EmployeeArchives';
 import EmployeesSkeleton from '@/components/EmployeesSkeleton';
 import api from '@/config/api';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Archive, BookText, Plus, Search, Trash2, Users } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { Archive, BookText, Plus, Search, Users } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 
@@ -16,9 +15,9 @@ type TEmployee = {
 	email?: string;
 	birth_date?: string;
 	civil_status?: string;
-	sss_count?: number;
-	philhealth_count?: number;
-	pagibig_count?: number;
+	no_sss_contributions?: number;
+	no_philhealth_contributions?: number;
+	no_pagibig_contributions?: number;
 	bir_count?: number;
 };
 
@@ -26,29 +25,16 @@ const Employees = () => {
 	const [searchTerm, setSearchTerm] = useState('');
 	const [currentPage, setCurrentPage] = useState(1);
 	const [archivesOpen, setArchivesOpen] = useState(false);
-	const [deleteConfirm, setDeleteConfirm] = useState<{ isOpen: boolean; employeeId?: number; employeeName?: string }>({ isOpen: false });
 
 	const itemsPerPage = 10;
 
 	const navigate = useNavigate();
-	const queryClient = useQueryClient();
 
 	const employees_query = useQuery({
 		queryKey: ['employees'],
 		queryFn: async () => {
 			const response = await api.get('/employee?status=ACTIVE');
 			return response.data;
-		},
-	});
-
-	const delete_employee_mutation = useMutation({
-		mutationFn: async (employeeId: number) => {
-			const response = await api.delete(`/employee/${employeeId}`);
-			return response.data;
-		},
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['employees'] });
-			setDeleteConfirm({ isOpen: false });
 		},
 	});
 
@@ -65,12 +51,6 @@ const Employees = () => {
 	const paginatedEmployees = filteredEmployees.slice((safeCurrentPage - 1) * itemsPerPage, safeCurrentPage * itemsPerPage);
 	const pageStart = filteredEmployees.length ? (safeCurrentPage - 1) * itemsPerPage + 1 : 0;
 	const pageEnd = filteredEmployees.length ? Math.min(safeCurrentPage * itemsPerPage, filteredEmployees.length) : 0;
-
-	// Pagination calculations
-	// const totalPages = Math.ceil(filteredEmployees.length / itemsPerPage);
-	// const startIndex = (currentPage - 1) * itemsPerPage;
-	// const endIndex = startIndex + itemsPerPage;
-	// const paginatedEmployees = filteredEmployees.slice(startIndex, endIndex);
 
 	// Reset to page 1 when search changes
 	const handleSearch = (value: string) => {
@@ -167,17 +147,17 @@ const Employees = () => {
 												</td>
 												<td className="px-6 py-2 text-center">
 													<span className="inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-sm font-medium text-slate-700">
-														{employee.sss_count || 0}
+														{employee.no_sss_contributions || 0}
 													</span>
 												</td>
 												<td className="px-6 py-2 text-center">
 													<span className="inline-flex items-center gap-1 rounded-full  px-3 py-1.5 text-sm font-medium text-slate-700">
-														{employee.philhealth_count || 0}
+														{employee.no_philhealth_contributions || 0}
 													</span>
 												</td>
 												<td className="px-6 py-2 text-center">
 													<span className="inline-flex items-center gap-1 rounded-full  px-3 py-1.5 text-sm font-medium text-slate-700">
-														{employee.pagibig_count || 0}
+														{employee.no_pagibig_contributions || 0}
 													</span>
 												</td>
 												<td className="px-6 py-2">
@@ -187,18 +167,6 @@ const Employees = () => {
 															onClick={() => navigate(`${employee.id}`)}
 														>
 															<BookText size={14} />
-														</button>
-														<button
-															onClick={() => {
-																setDeleteConfirm({
-																	isOpen: true,
-																	employeeId: employee.id,
-																	employeeName: `${employee.first_name} ${employee.middle_name ? `${employee.middle_name.charAt(0)}.` : ''} ${employee.last_name}`,
-																});
-															}}
-															className="inline-flex items-center gap-1 rounded px-3 py-1.5 text-xs font-medium text-red-700 hover:bg-red-100 transition"
-														>
-															<Trash2 size={14} />
 														</button>
 													</div>
 												</td>
@@ -239,20 +207,6 @@ const Employees = () => {
 			</main>
 
 			<EmployeeArchives isOpen={archivesOpen} onClose={() => setArchivesOpen(false)} />
-
-			<ConfirmationModal
-				isOpen={deleteConfirm.isOpen}
-				type="delete"
-				title="Delete Employee"
-				message={`Are you sure you want to delete ${deleteConfirm.employeeName}? This action cannot be undone.`}
-				isLoading={delete_employee_mutation.isPending}
-				onConfirm={() => {
-					if (deleteConfirm.employeeId) {
-						delete_employee_mutation.mutate(deleteConfirm.employeeId);
-					}
-				}}
-				onCancel={() => setDeleteConfirm({ isOpen: false })}
-			/>
 		</>
 	);
 };

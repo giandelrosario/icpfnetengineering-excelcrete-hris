@@ -1,8 +1,10 @@
 import Button from '@/components/Button';
+import Dialog from '@/components/Dialog';
+import LoadingModal from '@/components/LoadingModal';
 import api from '@/config/api';
-import { useQuery } from '@tanstack/react-query';
-import { set } from 'date-fns';
-import { BookText, Calendar, Check, Search, Users, XCircle } from 'lucide-react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { isAxiosError } from 'axios';
+import { Calendar, Check, Search, Users, XCircle } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 
@@ -67,6 +69,8 @@ const BENEFITS = [
 ];
 
 const Payroll = () => {
+	const queryClient = useQueryClient();
+
 	const [searchTerm, setSearchTerm] = useState('');
 
 	const [selectedMonths, setSelectedMonths] = useState<string[]>([]);
@@ -77,7 +81,7 @@ const Payroll = () => {
 	const [openSummaryModal, setOpenSummaryModal] = useState(false);
 
 	const [currentPage, setCurrentPage] = useState(1);
-	const [openProceedModal, setOpenProceedModal] = useState(false);
+	const [openSuccessModal, setOpenSuccessModal] = useState(false);
 
 	const [benefits, setBenefits] = useState<{ philhealth: boolean; sss: boolean; pagibig: boolean }>({ philhealth: false, sss: false, pagibig: false });
 
@@ -93,10 +97,46 @@ const Payroll = () => {
 	const employees_query = useQuery({
 		queryKey: ['employees', 'payroll'],
 		queryFn: async () => {
-			const response = await api.get('/employee/payroll?status=ACTIVE&sss=' + benefits.sss + '&philhealth=' + benefits.philhealth + '&pagibig=' + benefits.pagibig);
+			const response = await api.get(
+				'/employee/payroll?status=ACTIVE&sss=' +
+					benefits.sss +
+					'&philhealth=' +
+					benefits.philhealth +
+					'&pagibig=' +
+					benefits.pagibig +
+					'&pay_period=' +
+					selectedPayPeriod +
+					'&months=' +
+					selectedMonthValue +
+					'&year=' +
+					selectedYear,
+			);
 			return response.data as TEmployee[];
 		},
 		enabled: step === 2,
+	});
+
+	const payroll_mutation = useMutation({
+		mutationFn: async (data: any) => {
+			const response = await api.post('/employee/payroll', data);
+			return response.data;
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: ['employees', 'payroll'],
+			});
+			queryClient.invalidateQueries({
+				queryKey: ['employees'],
+			});
+			setOpenSummaryModal(false);
+			setOpenSuccessModal(true);
+		},
+		onError: (error: any) => {
+			if (isAxiosError(error)) {
+				setErrorMessage(error.response?.data?.message || 'Something went wrong. Please try again later.');
+				setShowErrorModal(true);
+			}
+		},
 	});
 
 	const toggleMonth = (value: string) => {
@@ -218,6 +258,49 @@ const Payroll = () => {
 
 	const confirmProceed = () => {
 		setOpenSummaryModal(true);
+	};
+
+	const proceedWithPayroll = async () => {
+		const payload = {
+			employee: selectedEmployee.map((emp) => {
+				const baseSalary = emp.salary || 0;
+				const gross = baseSalary * payMultiplier;
+				let deductions = 0;
+				const appliedBenefits: { benefit_key: string; amount: number }[] = [];
+
+				if (benefits.sss && emp.sss_settings?.total_contribution != null) {
+					const amount = emp.sss_settings.total_contribution * payMultiplier;
+					deductions += amount;
+					appliedBenefits.push({ benefit_key: 'sss', amount });
+				}
+
+				if (benefits.philhealth && emp.philhealth_settings?.contribution?.total != null) {
+					const amount = emp.philhealth_settings.contribution.total * payMultiplier;
+					deductions += amount;
+					appliedBenefits.push({ benefit_key: 'philhealth', amount });
+				}
+
+				if (benefits.pagibig && emp.pagibig_settings?.contribution?.total != null) {
+					const amount = emp.pagibig_settings.contribution.total * payMultiplier;
+					deductions += amount;
+					appliedBenefits.push({ benefit_key: 'pagibig', amount });
+				}
+
+				const net = Math.max(gross - deductions, 0);
+
+				return {
+					id: emp.id,
+					applied_benefits: appliedBenefits,
+					gross,
+					deductions,
+					net,
+				};
+			}),
+			months: selectedMonthValue,
+			year: selectedYear,
+			pay_period: selectedPayPeriod,
+		};
+		payroll_mutation.mutate(payload);
 	};
 
 	return (
@@ -580,6 +663,15 @@ const Payroll = () => {
 						</div>
 						<div className="flex justify-end gap-2 px-6 py-4 border-t border-slate-200 bg-slate-50">
 							<Button theme="outline" text="Close" onClick={() => setOpenSummaryModal(false)} />
+							<Button
+								theme="default"
+								text="Proceed"
+								disabled={summaryRows.length === 0}
+								onClick={() => {
+									setOpenSummaryModal(false);
+									proceedWithPayroll();
+								}}
+							/>
 						</div>
 					</div>
 				</div>
@@ -605,6 +697,21 @@ const Payroll = () => {
 					</div>
 				</div>
 			)}
+
+			<Dialog
+				icon={<Check size={18} className="text-green-600" />}
+				content={{
+					title: 'Success',
+					message: 'Payroll has been processed successfully.',
+				}}
+				isOpen={openSuccessModal}
+			>
+				<div className="w-full flex justify-center items-center">
+					<Button theme="default" text="Go to Employees" onClick={() => navigate('/dashboard/employees')} />
+				</div>
+			</Dialog>
+
+			<LoadingModal open={payroll_mutation.isPending} message={'Processing payroll...'} />
 		</main>
 	);
 };

@@ -1,6 +1,8 @@
 import express, { Request, Response, Router } from 'express';
 import { prisma } from '../config/prisma';
-import { SSS_CONTRIBUTION_RATES, PHILHEALTH_RATE, PAG_IBIG_RATES } from '../lib/benefits_contribution';
+import { PAG_IBIG_RATES, PHILHEALTH_RATE, SSS_CONTRIBUTION_RATES } from '../lib/benefits_contribution';
+
+const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
 const router: Router = express.Router();
 
@@ -52,6 +54,27 @@ type TEmployee = {
 	civil_status: string;
 };
 
+type TPayrollLogsBenefits = {
+	id: number;
+	payroll_logs_id: number;
+	benefit_title: string;
+	benefit_key: string;
+	amount: number;
+	created_at: Date;
+	updated_at: Date;
+};
+
+type TPayrollLogs = {
+	id: number;
+	employee_id: number;
+	title: string;
+	gross_pay: number;
+	net_pay: number;
+	created_at: Date;
+	updated_at: Date;
+	benefits: TPayrollLogsBenefits[];
+};
+
 router.get('/', async (req: Request, res: Response) => {
 	const status = req.query.status as string | undefined;
 
@@ -90,7 +113,6 @@ router.get('/', async (req: Request, res: Response) => {
 			const no_sss_contributions = allBenefits.filter((b) => b.benefit_key === 'sss').length;
 			const no_philhealth_contributions = allBenefits.filter((b) => b.benefit_key === 'philhealth').length;
 			const no_pagibig_contributions = allBenefits.filter((b) => b.benefit_key === 'pagibig').length;
-			const no_bir_contributions = allBenefits.filter((b) => b.benefit_key === 'bir').length;
 
 			const salaryHistory = employee.salary_history ?? [];
 			const salary = salaryHistory.length > 0 ? (salaryHistory[0]?.amount ?? 0) : 0;
@@ -108,7 +130,6 @@ router.get('/', async (req: Request, res: Response) => {
 				no_sss_contributions,
 				no_philhealth_contributions,
 				no_pagibig_contributions,
-				no_bir_contributions,
 			};
 		});
 
@@ -126,6 +147,50 @@ router.get('/payroll', async (req: Request, res: Response) => {
 	const philhealth = req.query.philhealth as string | undefined;
 	const pagibig = req.query.pagibig as string | undefined;
 
+	const pay_period = req.query.pay_period as string | undefined;
+	const yearParam = req.query.year as string | undefined;
+	const monthsParam = req.query.months as string | string[] | undefined;
+
+	const parsedYear = yearParam ? Number(yearParam) : undefined;
+
+	const monthValues = Array.isArray(monthsParam)
+		? monthsParam
+		: monthsParam
+			? monthsParam
+					.split(',')
+					.map((month) => month.trim())
+					.filter(Boolean)
+			: [];
+	const monthNamesFilter = monthValues.map((month) => monthNames[Number.parseInt(month, 10) - 1]).filter((name): name is string => Boolean(name));
+
+	const selectedBenefitKeys = [
+		{ key: 'sss', enabled: sss === 'true' },
+		{ key: 'philhealth', enabled: philhealth === 'true' },
+		{ key: 'pagibig', enabled: pagibig === 'true' },
+	]
+		.filter((benefit) => benefit.enabled)
+		.map((benefit) => benefit.key);
+
+	const shouldCheckPaidBenefits = pay_period !== 'half' && Boolean(parsedYear) && monthNamesFilter.length > 0 && selectedBenefitKeys.length > 0;
+
+	const payrollLogsSelect = {
+		where: shouldCheckPaidBenefits
+			? {
+					payroll_year: parsedYear as number,
+					payroll_month: { in: monthNamesFilter },
+					...(pay_period && { pay_period }),
+				}
+			: { id: -1 },
+		select: {
+			payroll_month: true,
+			benefits: {
+				select: {
+					benefit_key: true,
+				},
+			},
+		},
+	};
+
 	try {
 		const employees = await prisma.employee.findMany({
 			select: {
@@ -138,6 +203,7 @@ router.get('/payroll', async (req: Request, res: Response) => {
 				philhealth_settings: true,
 				pagibig_settings: true,
 				bir_settings: true,
+				payroll_logs: payrollLogsSelect,
 			},
 			where: {
 				...(status && { status }),
@@ -145,7 +211,29 @@ router.get('/payroll', async (req: Request, res: Response) => {
 		});
 
 		const payload = employees
+			.filter((employee) => {
+				if (sss === 'true' && !employee.sss_settings) return false;
+				if (philhealth === 'true' && !employee.philhealth_settings) return false;
+				if (pagibig === 'true' && !employee.pagibig_settings) return false;
+				if (!shouldCheckPaidBenefits || !employee.payroll_logs) return true;
+
+				const monthBenefits = new Map<string, Set<string>>();
+
+				employee.payroll_logs.forEach((log) => {
+					const benefitSet = monthBenefits.get(log.payroll_month) ?? new Set<string>();
+					log.benefits.forEach((benefit) => benefitSet.add(benefit.benefit_key));
+					monthBenefits.set(log.payroll_month, benefitSet);
+				});
+
+				const isFullyPaidForSelection = monthNamesFilter.every((monthName) => {
+					const benefitSet = monthBenefits.get(monthName);
+					return benefitSet ? selectedBenefitKeys.every((key) => benefitSet.has(key)) : false;
+				});
+
+				return !isFullyPaidForSelection;
+			})
 			.map((employee) => {
+				const { payroll_logs: _payrollLogs, ...rest } = employee;
 				const salaryHistory = employee.salary_history ?? [];
 				const salary = salaryHistory.length > 0 ? (salaryHistory[0]?.amount ?? 0) : 0;
 
@@ -156,24 +244,97 @@ router.get('/payroll', async (req: Request, res: Response) => {
 				const pagibig_contribution = PAG_IBIG_RATES(salary);
 
 				return {
-					...employee,
+					...rest,
 					salary: salary,
 					sss_settings: employee.sss_settings ? { ...employee.sss_settings, ...sss_contribution } : null,
 					philhealth_settings: employee.philhealth_settings ? { ...employee.philhealth_settings, contribution: philhealth_contribution } : null,
 					pagibig_settings: employee.pagibig_settings ? { ...employee.pagibig_settings, contribution: pagibig_contribution } : null,
 				};
-			})
-			.filter((employee) => {
-				if (sss === 'true' && !employee.sss_settings) return false;
-				if (philhealth === 'true' && !employee.philhealth_settings) return false;
-				if (pagibig === 'true' && !employee.pagibig_settings) return false;
-				return true;
 			});
 
 		return res.status(200).json(payload);
 	} catch (error) {
 		console.error('Error fetching employees for payroll:', error);
 		return res.status(500).json({ message: 'An error occurred while fetching employees for payroll.' });
+	}
+});
+
+router.post('/payroll', async (req: Request, res: Response) => {
+	const employeess = req.body.employee as
+		| {
+				id: number;
+				gross: number;
+				net: number;
+				deductions: number;
+				applied_benefits: {
+					benefit_key: string;
+					amount: number;
+				}[];
+		  }[]
+		| undefined;
+	const months = req.body.months as string[] | undefined;
+	const year = req.body.year as number | undefined;
+	const pay_period = req.body.pay_period as string | undefined;
+
+	if (!employeess || employeess.length === 0) {
+		return res.status(400).json({ message: 'No employees provided.' });
+	}
+
+	if (!months || months.length === 0) {
+		return res.status(400).json({ message: 'No months provided.' });
+	}
+
+	if (!year) {
+		return res.status(400).json({ message: 'No year provided.' });
+	}
+
+	if (!pay_period) {
+		return res.status(400).json({ message: 'No pay period provided.' });
+	}
+
+	const pay = months?.map((month) => {
+		const monthIndex = parseInt(month) - 1;
+
+		const monthName = monthNames[monthIndex] || 'Unknown';
+
+		const payrollLogsData = employeess.map((employee) => ({
+			employee_id: employee.id,
+			title: `Payroll for ${monthName} ${year} - ${pay_period}`,
+			gross_pay: employee.gross,
+			net_pay: employee.net,
+			payroll_month: monthName,
+			payroll_year: year,
+			pay_period,
+			process_at: new Date(),
+			...(employee.applied_benefits?.length
+				? {
+						benefits: {
+							createMany: {
+								data: employee.applied_benefits.map((benefit) => ({
+									benefit_key: benefit.benefit_key,
+									amount: benefit.amount,
+									benefit_title: benefit.benefit_key,
+								})),
+							},
+						},
+					}
+				: {}),
+		}));
+		return payrollLogsData;
+	});
+
+	try {
+		await prisma.$transaction(
+			pay.flat().map((log) =>
+				prisma.payrollLogs.create({
+					data: log,
+				}),
+			),
+		);
+		return res.status(200).json({ message: 'Payroll processed successfully.' });
+	} catch (error) {
+		console.error('Error processing payroll:', error);
+		return res.status(500).json({ message: 'An error occurred while processing payroll.' });
 	}
 });
 
@@ -190,6 +351,22 @@ router.get('/:id', async (req: Request, res: Response) => {
 				philhealth_settings: true,
 				pagibig_settings: true,
 				bir_settings: true,
+				payroll_logs: {
+					select: {
+						gross_pay: true,
+						net_pay: true,
+						title: true,
+						payroll_month: true,
+						payroll_year: true,
+						process_at: true,
+						benefits: {
+							select: {
+								benefit_key: true,
+								amount: true,
+							},
+						},
+					},
+				},
 			},
 		});
 
@@ -205,11 +382,18 @@ router.get('/:id', async (req: Request, res: Response) => {
 
 		const pagibig_contribution = PAG_IBIG_RATES(current_salary);
 
+		const allBenefits = employee.payroll_logs.flatMap((log) => log.benefits);
+
+		const no_sss_contributions = allBenefits.filter((b) => b.benefit_key === 'sss').length;
+		const no_philhealth_contributions = allBenefits.filter((b) => b.benefit_key === 'philhealth').length;
+		const no_pagibig_contributions = allBenefits.filter((b) => b.benefit_key === 'pagibig').length;
+
 		const payload = {
 			...employee,
-			sss_settings: employee.sss_settings ? { ...employee.sss_settings, ...sss_contribution } : null,
-			philhealth_settings: employee.philhealth_settings ? { ...employee.philhealth_settings, contribution: philhealth_contribution } : null,
-			pagibig_settings: employee.pagibig_settings ? { ...employee.pagibig_settings, contribution: pagibig_contribution } : null,
+
+			sss_settings: employee.sss_settings ? { ...employee.sss_settings, ...sss_contribution, no_sss_contributions } : null,
+			philhealth_settings: employee.philhealth_settings ? { ...employee.philhealth_settings, contribution: philhealth_contribution, no_philhealth_contributions } : null,
+			pagibig_settings: employee.pagibig_settings ? { ...employee.pagibig_settings, contribution: pagibig_contribution, no_pagibig_contributions } : null,
 		};
 
 		return res.status(200).json(payload);
