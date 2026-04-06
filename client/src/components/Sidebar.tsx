@@ -1,6 +1,8 @@
-import { LayoutDashboard, PanelRightClose, Settings2, Tickets } from 'lucide-react';
+import useSession from '@/hooks/useSession';
+import { HandCoins, LayoutDashboard, LogOut, PanelRightClose, Tickets } from 'lucide-react';
 import React from 'react';
-import { Link, useLocation } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router';
+import Dialog from './Dialog';
 
 const filtered_links = [
 	{
@@ -15,12 +17,31 @@ const filtered_links = [
 		href: '/dashboard/payroll',
 		icon: <Tickets size={16} />,
 	},
+	{
+		id: 3,
+		name: 'Benefits',
+		href: '/dashboard/benefits',
+		icon: <HandCoins size={16} />,
+	},
 ];
 
 const Sidebar = () => {
 	const location = useLocation();
 
 	const [open, setOpen] = React.useState(true);
+
+	const [logOutModalOpen, setLogOutModalOpen] = React.useState(false);
+
+	const session = useSession();
+
+	const navigate = useNavigate();
+
+	const logOut = () => {
+		session.clearToken();
+		navigate('/', {
+			replace: true,
+		});
+	};
 
 	return (
 		<div className="hidden lg:flex flex-row relative">
@@ -41,6 +62,16 @@ const Sidebar = () => {
 										</Link>
 									</div>
 								))}
+
+								<div>
+									<button
+										onClick={() => setLogOutModalOpen(true)}
+										className={`w-full flex items-center px-4 py-2 text-slate-500 rounded-md hover:bg-gray-50 ${location.pathname === '/dashboard/settings' ? 'bg-gray-50 text-slate-700' : ''}`}
+									>
+										<LogOut size={16} />
+										<span className="ml-2 text-sm font-medium">Log out</span>
+									</button>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -61,6 +92,24 @@ const Sidebar = () => {
 					</div>
 				</>
 			)}
+
+			<Dialog
+				isOpen={logOutModalOpen}
+				icon={<LogOut size={30} className="text-rose-500" />}
+				content={{
+					title: 'Log out',
+					message: 'Are you sure you want to log out?',
+				}}
+			>
+				<div className="flex flex-col items-center justify-center w-full">
+					<button onClick={logOut} className={`mt-2 text-xs font-semibold w-full px-5 py-3 text-white bg-rose-500 rounded-lg hover:bg-rose-600`}>
+						Log out
+					</button>
+					<button onClick={() => setLogOutModalOpen(false)} className={`mt-2 text-xs font-semibold w-full px-5 py-3 text-slate-900 rounded-lg hover:bg-slate-50`}>
+						Cancel
+					</button>
+				</div>
+			</Dialog>
 		</div>
 	);
 };

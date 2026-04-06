@@ -2,12 +2,13 @@ import { createBrowserRouter } from 'react-router';
 import { RouterProvider } from 'react-router/dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-import Login from './pages/Login';
+import Login from './pages/LoginPage';
 import Employees from './pages/Employees';
 import CreateEmployee from './pages/CreateEmployee';
 import AdminLayout from './components/layouts/AdminLayout';
 import Employee from '@/pages/Employee';
 import Payroll from './pages/Payroll';
+import BenefitSetting from '@/pages/BenefitSetting';
 
 const queryClient = new QueryClient();
 
@@ -41,6 +42,11 @@ const router = createBrowserRouter([
 			{
 				path: 'payroll',
 				element: <Payroll />,
+			},
+			{
+				path: 'benefits',
+
+				element: <BenefitSetting />,
 			},
 		],
 	},

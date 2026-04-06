@@ -1,7 +1,7 @@
 import Button from '@/components/Button';
 import EmployeeArchives from '@/components/EmployeeArchives';
 import EmployeesSkeleton from '@/components/EmployeesSkeleton';
-import api from '@/config/api';
+import useAxios from '@/hooks/useAxios';
 import { useQuery } from '@tanstack/react-query';
 import { Archive, BookText, Plus, Search, Users } from 'lucide-react';
 import { useState } from 'react';
@@ -29,6 +29,8 @@ const Employees = () => {
 	const itemsPerPage = 10;
 
 	const navigate = useNavigate();
+
+	const api = useAxios();
 
 	const employees_query = useQuery({
 		queryKey: ['employees'],
@@ -76,7 +78,7 @@ const Employees = () => {
 
 	return (
 		<>
-			<main className="bg-white min-h-screen w-full">
+			<main className="bg-slate-50 min-h-screen w-full">
 				<div className="max-w-6xl mx-auto p-4 space-y-4">
 					{/* Header */}
 					<div className="flex items-center justify-between">
@@ -129,7 +131,7 @@ const Employees = () => {
 							<div className="overflow-hidden rounded-lg border border-slate-200 bg-white">
 								<table className="w-full text-left text-sm">
 									<thead>
-										<tr className="border-b border-slate-200 bg-slate-50">
+										<tr className="border-b border-slate-200 bg-white">
 											<th className="px-6 py-3 font-semibold text-slate-700">Name</th>
 											<th className="px-6 py-3 font-semibold text-slate-700 text-center">SSS</th>
 											<th className="px-6 py-3 font-semibold text-slate-700 text-center">PhilHealth</th>

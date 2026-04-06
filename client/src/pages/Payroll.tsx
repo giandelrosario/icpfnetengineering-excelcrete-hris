@@ -1,7 +1,7 @@
 import Button from '@/components/Button';
 import Dialog from '@/components/Dialog';
 import LoadingModal from '@/components/LoadingModal';
-import api from '@/config/api';
+import useAxios from '@/hooks/useAxios';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
 import { Calendar, Check, Search, Users, XCircle } from 'lucide-react';
@@ -90,6 +90,8 @@ const Payroll = () => {
 	const navigate = useNavigate();
 
 	const itemsPerPage = 10;
+
+	const api = useAxios();
 
 	const [showErrorModal, setShowErrorModal] = useState(false);
 	const [errorMessage, setErrorMessage] = useState('Something went wrong. Please try again later.');

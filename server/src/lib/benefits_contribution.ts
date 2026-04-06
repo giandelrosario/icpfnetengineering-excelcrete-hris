@@ -1,4 +1,5 @@
 import sss from '../json/sss.json';
+import { prisma } from '../config/prisma';
 
 type PagIBIGRates = {
 	employer_rate: number;
@@ -54,8 +55,9 @@ export const PAG_IBIG_RATES = (salary: number): PagIBIGRates => {
 };
 
 export const PHILHEALTH_RATE = (salary: number) => {
+	const contribution = salary * (PHILHEALTH_RATE_PERCENTAGE / 100);
 	return {
-		total: salary * (PHILHEALTH_RATE_PERCENTAGE / 100),
+		total: contribution,
 		rate: PHILHEALTH_RATE_PERCENTAGE,
 	};
 };

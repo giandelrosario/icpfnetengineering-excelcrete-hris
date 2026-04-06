@@ -384,6 +384,8 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 
 export const ModelName = {
+  SSSTable: 'SSSTable',
+  EmployerShare: 'EmployerShare',
   Employee: 'Employee',
   EmployeeRelative: 'EmployeeRelative',
   SalaryHistory: 'SalaryHistory',
@@ -408,10 +410,158 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "employee" | "employeeRelative" | "salaryHistory" | "sSSSettings" | "philhealthSettings" | "pagIBIGSettings" | "bIRSettings" | "payrollLogs" | "payrollLogsBenefits"
+    modelProps: "sSSTable" | "employerShare" | "employee" | "employeeRelative" | "salaryHistory" | "sSSSettings" | "philhealthSettings" | "pagIBIGSettings" | "bIRSettings" | "payrollLogs" | "payrollLogsBenefits"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
+    SSSTable: {
+      payload: Prisma.$SSSTablePayload<ExtArgs>
+      fields: Prisma.SSSTableFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SSSTableFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SSSTablePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SSSTableFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SSSTablePayload>
+        }
+        findFirst: {
+          args: Prisma.SSSTableFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SSSTablePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SSSTableFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SSSTablePayload>
+        }
+        findMany: {
+          args: Prisma.SSSTableFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SSSTablePayload>[]
+        }
+        create: {
+          args: Prisma.SSSTableCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SSSTablePayload>
+        }
+        createMany: {
+          args: Prisma.SSSTableCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SSSTableCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SSSTablePayload>[]
+        }
+        delete: {
+          args: Prisma.SSSTableDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SSSTablePayload>
+        }
+        update: {
+          args: Prisma.SSSTableUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SSSTablePayload>
+        }
+        deleteMany: {
+          args: Prisma.SSSTableDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SSSTableUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SSSTableUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SSSTablePayload>[]
+        }
+        upsert: {
+          args: Prisma.SSSTableUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SSSTablePayload>
+        }
+        aggregate: {
+          args: Prisma.SSSTableAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSSSTable>
+        }
+        groupBy: {
+          args: Prisma.SSSTableGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SSSTableGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SSSTableCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SSSTableCountAggregateOutputType> | number
+        }
+      }
+    }
+    EmployerShare: {
+      payload: Prisma.$EmployerSharePayload<ExtArgs>
+      fields: Prisma.EmployerShareFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.EmployerShareFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployerSharePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.EmployerShareFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployerSharePayload>
+        }
+        findFirst: {
+          args: Prisma.EmployerShareFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployerSharePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.EmployerShareFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployerSharePayload>
+        }
+        findMany: {
+          args: Prisma.EmployerShareFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployerSharePayload>[]
+        }
+        create: {
+          args: Prisma.EmployerShareCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployerSharePayload>
+        }
+        createMany: {
+          args: Prisma.EmployerShareCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.EmployerShareCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployerSharePayload>[]
+        }
+        delete: {
+          args: Prisma.EmployerShareDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployerSharePayload>
+        }
+        update: {
+          args: Prisma.EmployerShareUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployerSharePayload>
+        }
+        deleteMany: {
+          args: Prisma.EmployerShareDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.EmployerShareUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.EmployerShareUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployerSharePayload>[]
+        }
+        upsert: {
+          args: Prisma.EmployerShareUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployerSharePayload>
+        }
+        aggregate: {
+          args: Prisma.EmployerShareAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEmployerShare>
+        }
+        groupBy: {
+          args: Prisma.EmployerShareGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmployerShareGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.EmployerShareCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmployerShareCountAggregateOutputType> | number
+        }
+      }
+    }
     Employee: {
       payload: Prisma.$EmployeePayload<ExtArgs>
       fields: Prisma.EmployeeFieldRefs
@@ -1117,6 +1267,36 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
+export const SSSTableScalarFieldEnum = {
+  id: 'id',
+  salary_range_from: 'salary_range_from',
+  salary_range_to: 'salary_range_to',
+  msc_ss: 'msc_ss',
+  msc_mpf: 'msc_mpf',
+  er_ss: 'er_ss',
+  er_mpf: 'er_mpf',
+  er_ec: 'er_ec',
+  ee_ss: 'ee_ss',
+  ee_mpf: 'ee_mpf',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type SSSTableScalarFieldEnum = (typeof SSSTableScalarFieldEnum)[keyof typeof SSSTableScalarFieldEnum]
+
+
+export const EmployerShareScalarFieldEnum = {
+  id: 'id',
+  sss_share: 'sss_share',
+  philhealth_share: 'philhealth_share',
+  pagibig_share: 'pagibig_share',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type EmployerShareScalarFieldEnum = (typeof EmployerShareScalarFieldEnum)[keyof typeof EmployerShareScalarFieldEnum]
+
+
 export const EmployeeScalarFieldEnum = {
   id: 'id',
   first_name: 'first_name',
@@ -1171,6 +1351,7 @@ export const SSSSettingsScalarFieldEnum = {
   id: 'id',
   employee_id: 'employee_id',
   sss_no: 'sss_no',
+  ee_share: 'ee_share',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -1182,6 +1363,7 @@ export const PhilhealthSettingsScalarFieldEnum = {
   id: 'id',
   employee_id: 'employee_id',
   philhealth_no: 'philhealth_no',
+  ee_share: 'ee_share',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -1193,6 +1375,7 @@ export const PagIBIGSettingsScalarFieldEnum = {
   id: 'id',
   employee_id: 'employee_id',
   pagibig_no: 'pagibig_no',
+  ee_share: 'ee_share',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -1286,16 +1469,16 @@ export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
 
 
 /**
- * Reference to a field of type 'String'
+ * Reference to a field of type 'Float'
  */
-export type StringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String'>
+export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
     
 
 
 /**
- * Reference to a field of type 'String[]'
+ * Reference to a field of type 'Float[]'
  */
-export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String[]'>
+export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
 
 
@@ -1314,16 +1497,16 @@ export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
 
 
 /**
- * Reference to a field of type 'Float'
+ * Reference to a field of type 'String'
  */
-export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+export type StringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String'>
     
 
 
 /**
- * Reference to a field of type 'Float[]'
+ * Reference to a field of type 'String[]'
  */
-export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String[]'>
     
 
 /**
@@ -1421,6 +1604,8 @@ export type PrismaClientOptions = ({
   comments?: runtime.SqlCommenterPlugin[]
 }
 export type GlobalOmitConfig = {
+  sSSTable?: Prisma.SSSTableOmit
+  employerShare?: Prisma.EmployerShareOmit
   employee?: Prisma.EmployeeOmit
   employeeRelative?: Prisma.EmployeeRelativeOmit
   salaryHistory?: Prisma.SalaryHistoryOmit

@@ -1,6 +1,7 @@
 import express, { Request, Response, Router } from 'express';
 import { prisma } from '../config/prisma';
 import { PAG_IBIG_RATES, PHILHEALTH_RATE, SSS_CONTRIBUTION_RATES } from '../lib/benefits_contribution';
+import { checkAuth } from './auth';
 
 const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -26,14 +27,17 @@ type TSalaryHistory = {
 
 type TSSSSettings = {
 	employee_id?: number;
+	ee_share: number;
 	sss_no: string;
 };
 type TPhilhealthSettings = {
 	employee_id?: number;
+	ee_share: number;
 	philhealth_no: string;
 };
 type TPagIBIGSettings = {
 	employee_id?: number;
+	ee_share: number;
 	pagibig_no: string;
 };
 type TBIRSettings = {
@@ -75,7 +79,7 @@ type TPayrollLogs = {
 	benefits: TPayrollLogsBenefits[];
 };
 
-router.get('/', async (req: Request, res: Response) => {
+router.get('/', checkAuth, async (req: Request, res: Response) => {
 	const status = req.query.status as string | undefined;
 
 	try {
@@ -140,7 +144,7 @@ router.get('/', async (req: Request, res: Response) => {
 	}
 });
 
-router.get('/payroll', async (req: Request, res: Response) => {
+router.get('/payroll', checkAuth, async (req: Request, res: Response) => {
 	const status = req.query.status as string | undefined;
 
 	const sss = req.query.sss as string | undefined;
@@ -210,6 +214,8 @@ router.get('/payroll', async (req: Request, res: Response) => {
 			},
 		});
 
+		const employer_share = await prisma.employerShare.findFirst();
+
 		const payload = employees
 			.filter((employee) => {
 				if (sss === 'true' && !employee.sss_settings) return false;
@@ -239,9 +245,14 @@ router.get('/payroll', async (req: Request, res: Response) => {
 
 				const sss_contribution = SSS_CONTRIBUTION_RATES(salary);
 
-				const philhealth_contribution = PHILHEALTH_RATE(salary);
-
-				const pagibig_contribution = PAG_IBIG_RATES(salary);
+				const philhealth_contribution = {
+					total: (salary * ((employer_share?.philhealth_share ?? 0) + (employee.philhealth_settings?.ee_share ?? 0))) / 100,
+					rate: (employer_share?.philhealth_share ?? 0) + (employee.philhealth_settings?.ee_share ?? 0),
+				};
+				const pagibig_contribution = {
+					total: (employer_share?.pagibig_share ?? 0) + (employee.pagibig_settings?.ee_share ?? 0),
+					rate: (employer_share?.pagibig_share ?? 0) + (employee.pagibig_settings?.ee_share ?? 0),
+				};
 
 				return {
 					...rest,
@@ -259,7 +270,7 @@ router.get('/payroll', async (req: Request, res: Response) => {
 	}
 });
 
-router.post('/payroll', async (req: Request, res: Response) => {
+router.post('/payroll', checkAuth, async (req: Request, res: Response) => {
 	const employeess = req.body.employee as
 		| {
 				id: number;
@@ -338,7 +349,7 @@ router.post('/payroll', async (req: Request, res: Response) => {
 	}
 });
 
-router.get('/:id', async (req: Request, res: Response) => {
+router.get('/:id', checkAuth, async (req: Request, res: Response) => {
 	const { id } = req.params;
 
 	try {
@@ -346,7 +357,7 @@ router.get('/:id', async (req: Request, res: Response) => {
 			where: { id: Number(id) },
 			include: {
 				relatives: true,
-				salary_history: true,
+				salary_history: { orderBy: { created_at: 'desc' } },
 				sss_settings: true,
 				philhealth_settings: true,
 				pagibig_settings: true,
@@ -374,13 +385,22 @@ router.get('/:id', async (req: Request, res: Response) => {
 			return res.status(404).json({ message: 'Employee not found.' });
 		}
 
+		const employer_share = await prisma.employerShare.findFirst();
+
 		const current_salary = (employee.salary_history ?? []).length > 0 ? ((employee.salary_history ?? [])[0]?.amount ?? 0) : 0;
 
 		const sss_contribution = SSS_CONTRIBUTION_RATES(current_salary);
 
-		const philhealth_contribution = PHILHEALTH_RATE(current_salary);
+		// const philhealth_contribution = PHILHEALTH_RATE(current_salary);
+		const philhealth_contribution = {
+			total: (current_salary * ((employer_share?.philhealth_share ?? 0) + (employee.philhealth_settings?.ee_share ?? 0))) / 100,
+			rate: (employer_share?.philhealth_share ?? 0) + (employee.philhealth_settings?.ee_share ?? 0),
+		};
 
-		const pagibig_contribution = PAG_IBIG_RATES(current_salary);
+		// const pagibig_contribution = PAG_IBIG_RATES(current_salary);
+		const pagibig_contribution = {
+			total: (employer_share?.pagibig_share ?? 0) + (employee.pagibig_settings?.ee_share ?? 0),
+		};
 
 		const allBenefits = employee.payroll_logs.flatMap((log) => log.benefits);
 
@@ -403,7 +423,7 @@ router.get('/:id', async (req: Request, res: Response) => {
 	}
 });
 
-router.post('/', async (req: Request, res: Response) => {
+router.post('/', checkAuth, async (req: Request, res: Response) => {
 	const body = req.body as TEmployee & {
 		relatives: TEmployeeRelative[];
 		salary?: TSalaryHistory;
@@ -498,7 +518,7 @@ router.post('/', async (req: Request, res: Response) => {
 	}
 });
 
-router.put('/:id', async (req: Request, res: Response) => {
+router.put('/:id', checkAuth, async (req: Request, res: Response) => {
 	const { type } = req.query;
 	const { id } = req.params;
 	const body = req.body;
@@ -610,6 +630,7 @@ router.put('/:id', async (req: Request, res: Response) => {
 						where: { employee_id: Number(id) },
 						data: {
 							sss_no: sssBody.sss_no,
+							ee_share: sssBody.ee_share,
 						},
 					});
 					return res.status(200).json(updatedSettings);
@@ -619,6 +640,7 @@ router.put('/:id', async (req: Request, res: Response) => {
 						data: {
 							employee_id: Number(id),
 							sss_no: sssBody.sss_no,
+							ee_share: sssBody.ee_share,
 						},
 					});
 					return res.status(201).json(newSettings);
@@ -642,6 +664,7 @@ router.put('/:id', async (req: Request, res: Response) => {
 						where: { employee_id: Number(id) },
 						data: {
 							philhealth_no: philhealthBody.philhealth_no,
+							ee_share: philhealthBody.ee_share,
 						},
 					});
 					return res.status(200).json(updatedSettings);
@@ -651,6 +674,7 @@ router.put('/:id', async (req: Request, res: Response) => {
 						data: {
 							employee_id: Number(id),
 							philhealth_no: philhealthBody.philhealth_no,
+							ee_share: philhealthBody.ee_share,
 						},
 					});
 					return res.status(201).json(newSettings);
@@ -674,6 +698,7 @@ router.put('/:id', async (req: Request, res: Response) => {
 						where: { employee_id: Number(id) },
 						data: {
 							pagibig_no: pagibigBody.pagibig_no,
+							ee_share: pagibigBody.ee_share,
 						},
 					});
 					return res.status(200).json(updatedSettings);
@@ -683,6 +708,7 @@ router.put('/:id', async (req: Request, res: Response) => {
 						data: {
 							employee_id: Number(id),
 							pagibig_no: pagibigBody.pagibig_no,
+							ee_share: pagibigBody.ee_share,
 						},
 					});
 					return res.status(201).json(newSettings);
@@ -761,7 +787,7 @@ router.put('/:id', async (req: Request, res: Response) => {
 	return res.status(400).json({ message: 'Invalid update type specified.' });
 });
 
-router.post('/:id/pagibig', async (req: Request, res: Response) => {
+router.post('/:id/pagibig', checkAuth, async (req: Request, res: Response) => {
 	const { id } = req.params;
 	const body = req.body as TPagIBIGSettings;
 
@@ -795,7 +821,7 @@ router.post('/:id/pagibig', async (req: Request, res: Response) => {
 	}
 });
 
-router.post('/:id/sss', async (req: Request, res: Response) => {
+router.post('/:id/sss', checkAuth, async (req: Request, res: Response) => {
 	const { id } = req.params;
 	const body = req.body as TSSSSettings;
 
@@ -829,7 +855,7 @@ router.post('/:id/sss', async (req: Request, res: Response) => {
 	}
 });
 
-router.post('/:id/philhealth', async (req: Request, res: Response) => {
+router.post('/:id/philhealth', checkAuth, async (req: Request, res: Response) => {
 	const { id } = req.params;
 	const body = req.body as TPhilhealthSettings;
 
@@ -863,7 +889,7 @@ router.post('/:id/philhealth', async (req: Request, res: Response) => {
 	}
 });
 
-router.post('/:id/bir', async (req: Request, res: Response) => {
+router.post('/:id/bir', checkAuth, async (req: Request, res: Response) => {
 	const { id } = req.params;
 	const body = req.body as TBIRSettings;
 
@@ -897,7 +923,7 @@ router.post('/:id/bir', async (req: Request, res: Response) => {
 	}
 });
 
-router.delete('/:id', async (req: Request, res: Response) => {
+router.delete('/:id', checkAuth, async (req: Request, res: Response) => {
 	const { id } = req.params;
 
 	try {

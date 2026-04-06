@@ -12,8 +12,40 @@ datasource db {
   provider = "postgresql"
 }
 
+model SSSTableSet{
+  id Int @id @default(autoincrement())
+  title String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  sss_tables SSSTable[]
+}
 
 
+model SSSTable {
+  id Int @id @default(autoincrement())
+  sss_table_set_id Int
+  salary_range_from Float
+  salary_range_to Float
+  msc_ss Float
+  msc_mpf Float
+  er_ss Float
+  er_mpf Float
+  er_ec Float
+  ee_ss Float
+  ee_mpf Float
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  sss_table_set SSSTableSet @relation(fields: [sss_table_set_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model EmployerShare {
+  id Int @id @default(autoincrement())
+  sss_share Float @default(10)
+  philhealth_share Float @default(2.5) 
+  pagibig_share Float @default(200)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
 
 model Employee {
   id           Int      @id @default(autoincrement())
@@ -69,6 +101,7 @@ model SSSSettings {
   id Int @id @default(autoincrement())
   employee_id Int @unique
   sss_no String?
+  ee_share Float @default(5)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   employee Employee @relation(fields: [employee_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -78,6 +111,7 @@ model PhilhealthSettings {
   id Int @id @default(autoincrement())
   employee_id Int @unique
   philhealth_no String?
+  ee_share Float @default(2.5)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   employee Employee @relation(fields: [employee_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -87,6 +121,7 @@ model PagIBIGSettings {
   id Int @id @default(autoincrement())
   employee_id Int @unique
   pagibig_no String?
+  ee_share Float @default(200)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   employee Employee @relation(fields: [employee_id], references: [id], onDelete: Cascade, onUpdate: Cascade)

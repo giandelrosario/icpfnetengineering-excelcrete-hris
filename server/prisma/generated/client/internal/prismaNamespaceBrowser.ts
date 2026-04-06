@@ -51,6 +51,8 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
+  SSSTable: 'SSSTable',
+  EmployerShare: 'EmployerShare',
   Employee: 'Employee',
   EmployeeRelative: 'EmployeeRelative',
   SalaryHistory: 'SalaryHistory',
@@ -76,6 +78,36 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 } as const)
 
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
+
+
+export const SSSTableScalarFieldEnum = {
+  id: 'id',
+  salary_range_from: 'salary_range_from',
+  salary_range_to: 'salary_range_to',
+  msc_ss: 'msc_ss',
+  msc_mpf: 'msc_mpf',
+  er_ss: 'er_ss',
+  er_mpf: 'er_mpf',
+  er_ec: 'er_ec',
+  ee_ss: 'ee_ss',
+  ee_mpf: 'ee_mpf',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type SSSTableScalarFieldEnum = (typeof SSSTableScalarFieldEnum)[keyof typeof SSSTableScalarFieldEnum]
+
+
+export const EmployerShareScalarFieldEnum = {
+  id: 'id',
+  sss_share: 'sss_share',
+  philhealth_share: 'philhealth_share',
+  pagibig_share: 'pagibig_share',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type EmployerShareScalarFieldEnum = (typeof EmployerShareScalarFieldEnum)[keyof typeof EmployerShareScalarFieldEnum]
 
 
 export const EmployeeScalarFieldEnum = {
@@ -132,6 +164,7 @@ export const SSSSettingsScalarFieldEnum = {
   id: 'id',
   employee_id: 'employee_id',
   sss_no: 'sss_no',
+  ee_share: 'ee_share',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -143,6 +176,7 @@ export const PhilhealthSettingsScalarFieldEnum = {
   id: 'id',
   employee_id: 'employee_id',
   philhealth_no: 'philhealth_no',
+  ee_share: 'ee_share',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -154,6 +188,7 @@ export const PagIBIGSettingsScalarFieldEnum = {
   id: 'id',
   employee_id: 'employee_id',
   pagibig_no: 'pagibig_no',
+  ee_share: 'ee_share',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const

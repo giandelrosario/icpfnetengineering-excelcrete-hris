@@ -1,13 +1,13 @@
 import Button from '@/components/Button';
 import LoadingModal from '@/components/LoadingModal';
-import api from '@/config/api';
+import useAxios from '@/hooks/useAxios';
 import { CIVIL_STATUS } from '@/utils/lib';
 import { useGSAP } from '@gsap/react';
 import { useMutation } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
 import gsap from 'gsap';
 import { ArrowLeft, ArrowRight, Edit2, Grid2x2, IdCard, Plus, Trash2, Users, XCircle } from 'lucide-react';
-import React, { useState, useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 
 type TEmployeeRelative = {
@@ -119,6 +119,8 @@ const CreateEmployee = () => {
 
 	const sectionRef = useRef<HTMLElement>(null);
 	const stepIndicatorsRef = useRef<(HTMLLIElement | null)[]>([]);
+
+	const api = useAxios();
 
 	const create_employee_mutation = useMutation({
 		mutationFn: async (

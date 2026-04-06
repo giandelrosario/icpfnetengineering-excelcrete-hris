@@ -18,6 +18,16 @@ export { Prisma }
 export * as $Enums from './enums'
 export * from './enums';
 /**
+ * Model SSSTable
+ * 
+ */
+export type SSSTable = Prisma.SSSTableModel
+/**
+ * Model EmployerShare
+ * 
+ */
+export type EmployerShare = Prisma.EmployerShareModel
+/**
  * Model Employee
  * 
  */

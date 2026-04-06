@@ -2,14 +2,14 @@ import Button from '@/components/Button';
 import ConfirmationModal from '@/components/ConfirmationModal';
 import EmployeeSkeleton from '@/components/EmployeeSkeleton';
 import LoadingModal from '@/components/LoadingModal';
-import api from '@/config/api';
+import useAxios from '@/hooks/useAxios';
+import { FormatAsMoney } from '@/utils/lib';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
 import { format } from 'date-fns';
 import { Archive, ArrowLeft, Calendar, Church, Contact, FileText, History, Mail, MapPin, Pen, Phone, Plus, SquarePen, Trash, User, Users, X, XCircle } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
-import { FormatAsMoney } from '@/utils/lib';
 
 type TEmployeeRelative = {
 	id: number;
@@ -39,6 +39,7 @@ type TSSSSettings = {
 	id: number;
 	employee_id?: number;
 	sss_no: string;
+	ee_share: number;
 	salary_range: [number, number];
 	msc: {
 		ss: number;
@@ -61,6 +62,7 @@ type TPhilhealthSettings = {
 	employee_id?: number;
 	philhealth_no: string;
 	total_contribution: number;
+	ee_share: number;
 	contribution: {
 		total: number;
 		rate: number;
@@ -73,6 +75,7 @@ type TPagIBIGSettings = {
 	id: number;
 	employee_id?: number;
 	pagibig_no: string;
+	ee_share: number;
 	contribution: {
 		employer_rate: number;
 		employee_rate: number;
@@ -172,21 +175,25 @@ const Employee = () => {
 	const [payrollLogsPage, setPayrollLogsPage] = useState(1);
 
 	const sssEditNoInputRef = useRef<HTMLInputElement>(null);
+	const sssEditRateInputRef = useRef<HTMLInputElement>(null);
 
 	const philHealthNoEditInputRef = useRef<HTMLInputElement>(null);
+	const philHealthRateInputRef = useRef<HTMLInputElement>(null);
 
 	const pagibigNoEditInputRef = useRef<HTMLInputElement>(null);
 	const pagibigRateInputRef = useRef<HTMLInputElement>(null);
 
 	const tinEditInputRef = useRef<HTMLInputElement>(null);
 
-	const [philhealthSettings, setPhilhealthSettings] = useState({ philhealth_no: '' });
-	const [pagibigSettings, setPagIBIGSettings] = useState({ pagibig_no: '', ee_share_rate: 2 });
-	const [sssSettings, setSSSSettings] = useState({ sss_no: '', ee_share_rate: 5, mpf_amount: 0 });
+	const [philhealthSettings, setPhilhealthSettings] = useState({ philhealth_no: '', ee_share: 0 });
+	const [pagibigSettings, setPagIBIGSettings] = useState({ pagibig_no: '', ee_share: 0 });
+	const [sssSettings, setSSSSettings] = useState({ sss_no: '', ee_share: 0 });
 	const [birSettings, setBIRSettings] = useState({ tin_no: '' });
 
 	const [showDeleteModal, setShowDeleteModal] = useState(false);
 	const [showArchiveModal, setShowArchiveModal] = useState(false);
+
+	const api = useAxios();
 
 	const employee_query = useQuery({
 		queryKey: ['employee', id],
@@ -587,9 +594,7 @@ const Employee = () => {
 		return employee?.salary_history[employee?.salary_history.length - 1].amount;
 	};
 
-	const payrollLogs = (employee?.payroll_logs ?? [])
-		.slice()
-		.sort((a, b) => new Date(b.process_at).getTime() - new Date(a.process_at).getTime());
+	const payrollLogs = (employee?.payroll_logs ?? []).slice().sort((a, b) => new Date(b.process_at).getTime() - new Date(a.process_at).getTime());
 	const payrollLogsPreview = payrollLogs.slice(0, 3);
 	const payrollLogsPerPage = 6;
 	const payrollLogsTotalPages = Math.max(1, Math.ceil(payrollLogs.length / payrollLogsPerPage));
@@ -607,7 +612,7 @@ const Employee = () => {
 	const handleSSSChange = (field: keyof TSSSSettings, value: string) => {
 		setSSSSettings((prev) => ({
 			...prev,
-			[field]: ['ee_share_rate', 'mpf_amount'].includes(field) ? parseFloat(value) : value,
+			[field]: ['ee_share'].includes(field) ? parseFloat(value) : value,
 		}));
 	};
 
@@ -626,7 +631,7 @@ const Employee = () => {
 	};
 
 	const handlePagIBIGSave = () => {
-		if (!pagibigSettings.pagibig_no || pagibigSettings.ee_share_rate <= 0) {
+		if (!pagibigSettings.pagibig_no || pagibigSettings.ee_share <= 0) {
 			setErrorMessage('Please fill in all required fields for Pag-IBIG settings.');
 			setShowErrorModal(true);
 			return;
@@ -635,7 +640,7 @@ const Employee = () => {
 	};
 
 	const handleSSSSave = () => {
-		if (!sssSettings.sss_no || sssSettings.ee_share_rate <= 0 || sssSettings.mpf_amount < 0) {
+		if (!sssSettings.sss_no || sssSettings.ee_share <= 0) {
 			setErrorMessage('Please fill in all required fields for SSS settings.');
 			setShowErrorModal(true);
 		}
@@ -643,7 +648,7 @@ const Employee = () => {
 	};
 
 	const handlePhilHealthSave = () => {
-		if (!philhealthSettings.philhealth_no) {
+		if (!philhealthSettings.philhealth_no || philhealthSettings.ee_share <= 0) {
 			setErrorMessage('Please fill in all required fields for PhilHealth settings.');
 			setShowErrorModal(true);
 			return;
@@ -652,7 +657,7 @@ const Employee = () => {
 	};
 
 	const handleBIRSave = () => {
-		if (!birSettings.tin_no) {
+		if (!birSettings.tin_no || birSettings.tin_no.length !== 9) {
 			setErrorMessage('Please fill in all required fields for BIR settings.');
 			setShowErrorModal(true);
 			return;
@@ -667,6 +672,7 @@ const Employee = () => {
 		}
 		edit_pagibig_mutation.mutate({
 			pagibig_no: pagibigNoEditInputRef.current?.value || '',
+			ee_share: pagibigRateInputRef.current ? parseFloat(pagibigRateInputRef.current.value) : 0,
 		});
 	};
 
@@ -678,6 +684,7 @@ const Employee = () => {
 		}
 		edit_sss_mutation.mutate({
 			sss_no: sssEditNoInputRef.current?.value || '',
+			ee_share: sssEditRateInputRef.current ? parseFloat(sssEditRateInputRef.current.value) : 0,
 		});
 	};
 
@@ -689,6 +696,7 @@ const Employee = () => {
 		}
 		edit_philhealth_mutation.mutate({
 			philhealth_no: philHealthNoEditInputRef.current?.value || '',
+			ee_share: philHealthRateInputRef.current ? parseFloat(philHealthRateInputRef.current.value) : 0,
 		});
 	};
 
@@ -720,7 +728,7 @@ const Employee = () => {
 	}
 
 	return (
-		<main className="bg-white min-h-screen w-full pb-12">
+		<main className="bg-slate-50 min-h-screen w-full pb-12">
 			<div className="container mx-auto px-4 py-8">
 				<div>
 					<button onClick={() => navigate(-1)} className="rounded-full bg-white p-2 border border-slate-200 hover:bg-slate-50">
@@ -745,53 +753,52 @@ const Employee = () => {
 							onClick={handleOpenModal}
 						/>
 					</div>
-					<div className="p-6">
-						<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-							<div className="flex items-start gap-3 bg-slate-50 p-4 rounded-lg border border-slate-200">
-								<User className="w-5 h-5 text-slate-600 mt-1 shrink-0" />
-								<div className="flex-1 min-w-0">
-									<p className="text-xs font-semibold text-slate-500 uppercase">Name</p>
-									<p className="text-sm font-medium text-slate-900 mt-1 wrap-break-word">
-										{employee?.first_name} {employee?.middle_name} {employee?.last_name}
-									</p>
-								</div>
-							</div>
-							<div className="flex items-start gap-3 bg-slate-50 p-4 rounded-lg border border-slate-200">
-								<User className="w-5 h-5 text-slate-600 mt-1 shrink-0" />
-								<div className="flex-1 min-w-0">
-									<p className="text-xs font-semibold text-slate-500 uppercase">Civil Status</p>
-									<p className="text-sm font-medium text-slate-900 mt-1 wrap-break-word">{employee?.civil_status}</p>
-								</div>
-							</div>
 
-							<div className="flex items-start gap-3 bg-slate-50 p-4 rounded-lg border border-slate-200">
-								<Calendar className="w-5 h-5 text-slate-600 mt-1 shrink-0" />
-								<div className="flex-1 min-w-0">
-									<p className="text-xs font-semibold text-slate-500 uppercase">Birth Date</p>
-									<p className="text-sm font-medium text-slate-900 mt-1 wrap-break-word">{formatDate(employee?.birth_date)}</p>
-									<p className="text-xs font-medium text-slate-500 mt-1">Age : {calculateAge(employee?.birth_date)} years</p>
-								</div>
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-6 px-4 md:px-6">
+						<div className="flex items-start gap-3 bg-slate-50 p-4 rounded-lg border border-slate-200">
+							<User className="w-5 h-5 text-slate-600 mt-1 shrink-0" />
+							<div className="flex-1 min-w-0">
+								<p className="text-xs font-semibold text-slate-500 uppercase">Name</p>
+								<p className="text-sm font-medium text-slate-900 mt-1 wrap-break-word">
+									{employee?.first_name} {employee?.middle_name} {employee?.last_name}
+								</p>
 							</div>
-							<div className="flex items-start gap-3 bg-slate-50 p-4 rounded-lg border border-slate-200">
-								<MapPin className="w-5 h-5 text-slate-600 mt-1 shrink-0" />
-								<div className="flex-1 min-w-0">
-									<p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Birth Place</p>
-									<p className="text-sm font-medium text-slate-900 mt-1 wrap-break-word">{employee?.birth_place}</p>
-								</div>
+						</div>
+						<div className="flex items-start gap-3 bg-slate-50 p-4 rounded-lg border border-slate-200">
+							<User className="w-5 h-5 text-slate-600 mt-1 shrink-0" />
+							<div className="flex-1 min-w-0">
+								<p className="text-xs font-semibold text-slate-500 uppercase">Civil Status</p>
+								<p className="text-sm font-medium text-slate-900 mt-1 wrap-break-word">{employee?.civil_status}</p>
 							</div>
-							<div className="flex items-start gap-3 bg-slate-50 p-4 rounded-lg border border-slate-200">
-								<Contact className="w-5 h-5 text-slate-600 mt-1 shrink-0" />
-								<div className="flex-1 min-w-0">
-									<p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Citizenship</p>
-									<p className="text-sm font-medium text-slate-900 mt-1 wrap-break-word">{employee?.citizenship}</p>
-								</div>
+						</div>
+
+						<div className="flex items-start gap-3 bg-slate-50 p-4 rounded-lg border border-slate-200">
+							<Calendar className="w-5 h-5 text-slate-600 mt-1 shrink-0" />
+							<div className="flex-1 min-w-0">
+								<p className="text-xs font-semibold text-slate-500 uppercase">Birth Date</p>
+								<p className="text-sm font-medium text-slate-900 mt-1 wrap-break-word">{formatDate(employee?.birth_date)}</p>
+								<p className="text-xs font-medium text-slate-500 mt-1">Age : {calculateAge(employee?.birth_date)} years</p>
 							</div>
-							<div className="flex items-start gap-3 bg-slate-50 p-4 rounded-lg border border-slate-200">
-								<Church className="w-5 h-5 text-slate-600 mt-1 shrink-0" />
-								<div className="flex-1 min-w-0">
-									<p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Religion</p>
-									<p className="text-sm font-medium text-slate-900 mt-1 wrap-break-word">{employee?.religion}</p>
-								</div>
+						</div>
+						<div className="flex items-start gap-3 bg-slate-50 p-4 rounded-lg border border-slate-200">
+							<MapPin className="w-5 h-5 text-slate-600 mt-1 shrink-0" />
+							<div className="flex-1 min-w-0">
+								<p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Birth Place</p>
+								<p className="text-sm font-medium text-slate-900 mt-1 wrap-break-word">{employee?.birth_place}</p>
+							</div>
+						</div>
+						<div className="flex items-start gap-3 bg-slate-50 p-4 rounded-lg border border-slate-200">
+							<Contact className="w-5 h-5 text-slate-600 mt-1 shrink-0" />
+							<div className="flex-1 min-w-0">
+								<p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Citizenship</p>
+								<p className="text-sm font-medium text-slate-900 mt-1 wrap-break-word">{employee?.citizenship}</p>
+							</div>
+						</div>
+						<div className="flex items-start gap-3 bg-slate-50 p-4 rounded-lg border border-slate-200">
+							<Church className="w-5 h-5 text-slate-600 mt-1 shrink-0" />
+							<div className="flex-1 min-w-0">
+								<p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Religion</p>
+								<p className="text-sm font-medium text-slate-900 mt-1 wrap-break-word">{employee?.religion}</p>
 							</div>
 						</div>
 					</div>
@@ -905,15 +912,15 @@ const Employee = () => {
 											</div>
 											<div>
 												<p className="text-xs text-slate-500 font-semibold uppercase">Birth Date</p>
-												<p className="text-slate-900 font-medium mt-1">{formatDate(relative?.birth_date)}</p>
+												<p className="text-slate-900 font-medium mt-1">{formatDate(relative?.birth_date) || 'N/A'}</p>
 											</div>
 											<div>
 												<p className="text-xs text-slate-500 font-semibold uppercase">Birth Place</p>
-												<p className="text-slate-900 font-medium mt-1">{relative.birth_place}</p>
+												<p className="text-slate-900 font-medium mt-1">{relative.birth_place || 'N/A'}</p>
 											</div>
 											<div className="col-span-1 sm:col-span-2">
 												<p className="text-xs text-slate-500 font-semibold uppercase">Address</p>
-												<p className="text-slate-900 font-medium mt-1">{relative.address}</p>
+												<p className="text-slate-900 font-medium mt-1">{relative.address || 'N/A'}</p>
 											</div>
 										</div>
 									</div>
@@ -948,6 +955,10 @@ const Employee = () => {
 										<div>
 											<p className="text-xs text-slate-600 uppercase font-semibold">Contribution</p>
 											<p className="text-sm font-medium text-slate-900 mt-1">PHP {FormatAsMoney(employee?.sss_settings?.total_contribution)}</p>
+										</div>
+										<div>
+											<p className="text-xs text-slate-600 uppercase font-semibold">Rate</p>
+											<p className="text-sm font-medium text-slate-900 mt-1">{employee?.sss_settings?.ee_share}%</p>
 										</div>
 										<div>
 											<p className="text-xs text-slate-600 uppercase font-semibold">No. of Contribution</p>
@@ -990,7 +1001,7 @@ const Employee = () => {
 										</div>
 										<div>
 											<p className="text-xs text-slate-600 uppercase font-semibold">Rate</p>
-											<p className="text-sm font-medium text-slate-900 mt-1">{employee?.philhealth_settings.contribution?.rate}%</p>
+											<p className="text-sm font-medium text-slate-900 mt-1">{employee?.philhealth_settings.ee_share}%</p>
 										</div>
 										<div>
 											<p className="text-xs text-slate-600 uppercase font-semibold">Contribution</p>
@@ -1037,7 +1048,7 @@ const Employee = () => {
 										</div>
 										<div>
 											<p className="text-xs text-slate-600 uppercase font-semibold">Rate</p>
-											<p className="text-sm font-medium text-slate-900 mt-1">{employee?.pagibig_settings.contribution?.total_rate}%</p>
+											<p className="text-sm font-medium text-slate-900 mt-1">PHP {employee?.pagibig_settings?.ee_share}</p>
 										</div>
 										<div>
 											<p className="text-xs text-slate-600 uppercase font-semibold">Contribution</p>
@@ -1142,10 +1153,10 @@ const Employee = () => {
 										</div>
 										<div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs text-slate-600">
 											<span>Gross: PHP {FormatAsMoney(log.gross_pay)}</span>
-											<span>Month: {log.payroll_month} {log.payroll_year}</span>
 											<span>
-												Benefits: {log.benefits.length ? log.benefits.map((benefit) => benefit.benefit_key.toUpperCase()).join(', ') : 'None'}
+												Month: {log.payroll_month} {log.payroll_year}
 											</span>
+											<span>Benefits: {log.benefits.length ? log.benefits.map((benefit) => benefit.benefit_key.toUpperCase()).join(', ') : 'None'}</span>
 										</div>
 									</div>
 								))}
@@ -1224,7 +1235,9 @@ const Employee = () => {
 											</div>
 											<div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs text-slate-600">
 												<span>Gross: PHP {FormatAsMoney(log.gross_pay)}</span>
-												<span>Month: {log.payroll_month} {log.payroll_year}</span>
+												<span>
+													Month: {log.payroll_month} {log.payroll_year}
+												</span>
 												<span>
 													Benefits: {log.benefits.length ? log.benefits.map((benefit) => benefit.benefit_key.toUpperCase()).join(', ') : 'None'}
 												</span>
@@ -1836,6 +1849,18 @@ const Employee = () => {
 										className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
 									/>
 								</div>
+								<div className="flex flex-col gap-2">
+									<label htmlFor="pagibig_rate" className="block text-sm font-medium text-slate-700">
+										Rate
+									</label>
+									<input
+										type="number"
+										id="pagibig_rate"
+										defaultValue={pagibigSettings.ee_share}
+										onChange={(e) => handlePagIBIGChange('ee_share', e.target.value)}
+										className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
+									/>
+								</div>
 							</div>
 
 							<div className="flex justify-end items-center gap-2 mt-2 p-4">
@@ -1908,6 +1933,19 @@ const Employee = () => {
 										className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
 									/>
 								</div>
+								<div className="flex flex-col gap-2">
+									<label htmlFor="sss_rate" className="block text-sm font-medium text-slate-700">
+										Rate
+									</label>
+									<input
+										type="number"
+										id="sss_rate"
+										ref={sssEditRateInputRef}
+										defaultValue={employee?.sss_settings?.ee_share || 0}
+										placeholder="XX"
+										className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
+									/>
+								</div>
 							</div>
 
 							<div className="flex justify-end items-center gap-2 mt-2 px-6 py-4">
@@ -1944,6 +1982,19 @@ const Employee = () => {
 										className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
 									/>
 								</div>
+								<div className="flex flex-col gap-2">
+									<label htmlFor="philhealth_no" className="block text-sm font-medium text-slate-700">
+										Rate
+									</label>
+									<input
+										type="text"
+										id="philhealth_no"
+										ref={philHealthRateInputRef}
+										defaultValue={employee.philhealth_settings?.ee_share || 0}
+										placeholder="XX"
+										className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
+									/>
+								</div>
 							</div>
 
 							<div className="flex justify-end items-center gap-2 mt-2 px-6 py-4">
@@ -1977,6 +2028,18 @@ const Employee = () => {
 										id="pagibig_no"
 										defaultValue={employee.pagibig_settings?.pagibig_no || ''}
 										placeholder="XXXXXXXXXXXXXXX"
+										className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
+									/>
+								</div>
+								<div className="flex flex-col gap-2">
+									<label htmlFor="pagibig_rate" className="block text-sm font-medium text-slate-700">
+										Rate
+									</label>
+									<input
+										type="number"
+										id="pagibig_rate"
+										defaultValue={employee.pagibig_settings?.ee_share || 0}
+										ref={pagibigRateInputRef}
 										className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
 									/>
 								</div>

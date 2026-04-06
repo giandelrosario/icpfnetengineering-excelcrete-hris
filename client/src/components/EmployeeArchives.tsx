@@ -1,4 +1,4 @@
-import api from '@/config/api';
+import useAxios from '@/hooks/useAxios';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
 import { AlertCircle, Archive, X } from 'lucide-react';
@@ -20,6 +20,8 @@ interface EmployeeArchivesProps {
 
 const EmployeeArchives = ({ isOpen, onClose }: EmployeeArchivesProps) => {
 	const queryClient = useQueryClient();
+
+	const api = useAxios();
 
 	const employee_archives_query = useQuery({
 		queryKey: ['employees_archives'],
