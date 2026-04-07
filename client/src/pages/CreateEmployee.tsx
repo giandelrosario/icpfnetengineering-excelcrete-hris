@@ -63,6 +63,7 @@ type TEmployeeDetails = {
 	religion: string;
 	birth_date: string;
 	birth_place: string;
+	hire_date: string;
 };
 
 const initialEmployeeDetails: TEmployeeDetails = {
@@ -76,6 +77,7 @@ const initialEmployeeDetails: TEmployeeDetails = {
 	religion: '',
 	birth_date: '',
 	birth_place: '',
+	hire_date: '',
 };
 
 const CreateEmployee = () => {
@@ -211,6 +213,7 @@ const CreateEmployee = () => {
 					{ key: 'contact_no', label: 'Contact No.' },
 					{ key: 'birth_date', label: 'Birth Date' },
 					{ key: 'birth_place', label: 'Birth Place' },
+					{ key: 'hire_date', label: 'Hire Date' },
 				];
 
 				const missingFields = requiredFields.filter(({ key }) => !employeeDetails[key].trim()).map(({ label }) => label);
@@ -369,6 +372,7 @@ const CreateEmployee = () => {
 			religion: employeeDetails.religion,
 			birth_date: employeeDetails.birth_date,
 			birth_place: employeeDetails.birth_place,
+			hire_date: employeeDetails.hire_date,
 			relatives: relatives,
 		};
 		// Add only selected benefits to payload
@@ -580,6 +584,19 @@ const CreateEmployee = () => {
 									value={employeeDetails.birth_date}
 									onChange={(e) => handleEmployeeDetailsChange('birth_date', e.target.value)}
 									placeholder="Enter Birth Date"
+									className="text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-slate-300"
+								/>
+							</div>
+							<div className="flex flex-col gap-2">
+								<label htmlFor="hire_date" className="block text-sm font-medium text-slate-700">
+									Hire Date
+								</label>
+								<input
+									type="date"
+									id="hire_date"
+									value={employeeDetails.hire_date}
+									onChange={(e) => handleEmployeeDetailsChange('hire_date', e.target.value)}
+									placeholder="Enter Hire Date"
 									className="text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-slate-300"
 								/>
 							</div>
@@ -1141,6 +1158,10 @@ const CreateEmployee = () => {
 									<div className="bg-white p-3 rounded-lg border border-slate-200">
 										<p className="text-xs text-slate-500 uppercase tracking-wide">Birth Place</p>
 										<p className="text-slate-900 font-medium">{employeeDetails.birth_place || '—'}</p>
+									</div>
+									<div className="bg-white p-3 rounded-lg border border-slate-200">
+										<p className="text-xs text-slate-500 uppercase tracking-wide">Hire Date</p>
+										<p className="text-slate-900 font-medium">{employeeDetails.hire_date || '—'}</p>
 									</div>
 								</div>
 							</div>

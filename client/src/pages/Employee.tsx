@@ -7,7 +7,7 @@ import { FormatAsMoney } from '@/utils/lib';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
 import { format } from 'date-fns';
-import { Archive, ArrowLeft, Calendar, Church, Contact, FileText, History, Mail, MapPin, Pen, Phone, Plus, SquarePen, Trash, User, Users, X, XCircle } from 'lucide-react';
+import { Archive, ArrowLeft, Calendar, CalendarCheck, Church, Contact, FileText, History, Mail, MapPin, Pen, Phone, Plus, SquarePen, Trash, User, Users, X, XCircle } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 
@@ -52,7 +52,7 @@ type TSSSSettings = {
 	employee: {
 		mpf: number;
 	};
-	total_contribution: number;
+	total: number;
 	no_sss_contributions: number;
 	updated_at: string;
 	created_at: string;
@@ -120,6 +120,7 @@ type TEmployee = {
 	religion: string;
 	citizenship: string;
 	civil_status: string;
+	hire_date?: string;
 	updated_at: string;
 	created_at: string;
 	relatives: TEmployeeRelative[];
@@ -147,6 +148,7 @@ const Employee = () => {
 		last_name: '',
 		civil_status: '',
 		birth_date: '',
+		hire_date: '',
 		birth_place: '',
 		citizenship: '',
 		religion: '',
@@ -487,6 +489,7 @@ const Employee = () => {
 			birth_place: employee.birth_place,
 			citizenship: employee.citizenship,
 			religion: employee.religion,
+			hire_date: employee.hire_date ? employee.hire_date.split('T')[0] : '',
 		});
 		setOpenPersonalInfoModal(true);
 	};
@@ -591,7 +594,7 @@ const Employee = () => {
 
 	const getCurrentSalary = (): number => {
 		if (!employee?.salary_history || employee?.salary_history.length === 0) return 0;
-		return employee?.salary_history[employee?.salary_history.length - 1].amount;
+		return employee?.salary_history[0].amount;
 	};
 
 	const payrollLogs = (employee?.payroll_logs ?? []).slice().sort((a, b) => new Date(b.process_at).getTime() - new Date(a.process_at).getTime());
@@ -801,6 +804,13 @@ const Employee = () => {
 								<p className="text-sm font-medium text-slate-900 mt-1 wrap-break-word">{employee?.religion}</p>
 							</div>
 						</div>
+						<div className="flex items-start gap-3 bg-slate-50 p-4 rounded-lg border border-slate-200">
+							<CalendarCheck className="w-5 h-5 text-slate-600 mt-1 shrink-0" />
+							<div className="flex-1 min-w-0">
+								<p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Hire Date</p>
+								<p className="text-sm font-medium text-slate-900 mt-1 wrap-break-word">{employee?.hire_date ? formatDate(employee?.hire_date) : 'N/A'}</p>
+							</div>
+						</div>
 					</div>
 				</section>
 
@@ -954,11 +964,7 @@ const Employee = () => {
 										</div>
 										<div>
 											<p className="text-xs text-slate-600 uppercase font-semibold">Contribution</p>
-											<p className="text-sm font-medium text-slate-900 mt-1">PHP {FormatAsMoney(employee?.sss_settings?.total_contribution)}</p>
-										</div>
-										<div>
-											<p className="text-xs text-slate-600 uppercase font-semibold">Rate</p>
-											<p className="text-sm font-medium text-slate-900 mt-1">{employee?.sss_settings?.ee_share}%</p>
+											<p className="text-sm font-medium text-slate-900 mt-1">PHP {FormatAsMoney(employee?.sss_settings?.total)}</p>
 										</div>
 										<div>
 											<p className="text-xs text-slate-600 uppercase font-semibold">No. of Contribution</p>
@@ -1389,6 +1395,18 @@ const Employee = () => {
 										className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
 									/>
 								</div>
+
+								{/* Hire Date */}
+								<div className="md:col-span-2">
+									<label className="block text-sm font-semibold text-slate-700 mb-2">Hire Date</label>
+									<input
+										type="date"
+										name="hire_date"
+										value={formData.hire_date}
+										onChange={handleFormChange}
+										className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+									/>
+								</div>
 							</div>
 						</div>
 
@@ -1684,7 +1702,7 @@ const Employee = () => {
 										<div className="space-y-3">
 											{salaryFormData
 												.slice()
-												.reverse()
+
 												.map((salary, reverseIndex) => {
 													const actualIndex = salaryFormData.length - 1 - reverseIndex;
 													return (

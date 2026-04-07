@@ -90,9 +90,7 @@ export const SSSTableScalarFieldEnum = {
   er_mpf: 'er_mpf',
   er_ec: 'er_ec',
   ee_ss: 'ee_ss',
-  ee_mpf: 'ee_mpf',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
+  ee_mpf: 'ee_mpf'
 } as const
 
 export type SSSTableScalarFieldEnum = (typeof SSSTableScalarFieldEnum)[keyof typeof SSSTableScalarFieldEnum]
@@ -123,6 +121,7 @@ export const EmployeeScalarFieldEnum = {
   email: 'email',
   contact_no: 'contact_no',
   status: 'status',
+  hire_date: 'hire_date',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -165,6 +164,7 @@ export const SSSSettingsScalarFieldEnum = {
   employee_id: 'employee_id',
   sss_no: 'sss_no',
   ee_share: 'ee_share',
+  start_date: 'start_date',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -177,6 +177,7 @@ export const PhilhealthSettingsScalarFieldEnum = {
   employee_id: 'employee_id',
   philhealth_no: 'philhealth_no',
   ee_share: 'ee_share',
+  start_date: 'start_date',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -189,6 +190,7 @@ export const PagIBIGSettingsScalarFieldEnum = {
   employee_id: 'employee_id',
   pagibig_no: 'pagibig_no',
   ee_share: 'ee_share',
+  start_date: 'start_date',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -200,6 +202,7 @@ export const BIRSettingsScalarFieldEnum = {
   id: 'id',
   employee_id: 'employee_id',
   tin_no: 'tin_no',
+  start_date: 'start_date',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const

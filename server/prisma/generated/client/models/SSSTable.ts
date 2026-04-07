@@ -63,8 +63,6 @@ export type SSSTableMinAggregateOutputType = {
   er_ec: number | null
   ee_ss: number | null
   ee_mpf: number | null
-  created_at: Date | null
-  updated_at: Date | null
 }
 
 export type SSSTableMaxAggregateOutputType = {
@@ -78,8 +76,6 @@ export type SSSTableMaxAggregateOutputType = {
   er_ec: number | null
   ee_ss: number | null
   ee_mpf: number | null
-  created_at: Date | null
-  updated_at: Date | null
 }
 
 export type SSSTableCountAggregateOutputType = {
@@ -93,8 +89,6 @@ export type SSSTableCountAggregateOutputType = {
   er_ec: number
   ee_ss: number
   ee_mpf: number
-  created_at: number
-  updated_at: number
   _all: number
 }
 
@@ -136,8 +130,6 @@ export type SSSTableMinAggregateInputType = {
   er_ec?: true
   ee_ss?: true
   ee_mpf?: true
-  created_at?: true
-  updated_at?: true
 }
 
 export type SSSTableMaxAggregateInputType = {
@@ -151,8 +143,6 @@ export type SSSTableMaxAggregateInputType = {
   er_ec?: true
   ee_ss?: true
   ee_mpf?: true
-  created_at?: true
-  updated_at?: true
 }
 
 export type SSSTableCountAggregateInputType = {
@@ -166,8 +156,6 @@ export type SSSTableCountAggregateInputType = {
   er_ec?: true
   ee_ss?: true
   ee_mpf?: true
-  created_at?: true
-  updated_at?: true
   _all?: true
 }
 
@@ -268,8 +256,6 @@ export type SSSTableGroupByOutputType = {
   er_ec: number
   ee_ss: number
   ee_mpf: number
-  created_at: Date
-  updated_at: Date
   _count: SSSTableCountAggregateOutputType | null
   _avg: SSSTableAvgAggregateOutputType | null
   _sum: SSSTableSumAggregateOutputType | null
@@ -306,8 +292,6 @@ export type SSSTableWhereInput = {
   er_ec?: Prisma.FloatFilter<"SSSTable"> | number
   ee_ss?: Prisma.FloatFilter<"SSSTable"> | number
   ee_mpf?: Prisma.FloatFilter<"SSSTable"> | number
-  created_at?: Prisma.DateTimeFilter<"SSSTable"> | Date | string
-  updated_at?: Prisma.DateTimeFilter<"SSSTable"> | Date | string
 }
 
 export type SSSTableOrderByWithRelationInput = {
@@ -321,8 +305,6 @@ export type SSSTableOrderByWithRelationInput = {
   er_ec?: Prisma.SortOrder
   ee_ss?: Prisma.SortOrder
   ee_mpf?: Prisma.SortOrder
-  created_at?: Prisma.SortOrder
-  updated_at?: Prisma.SortOrder
 }
 
 export type SSSTableWhereUniqueInput = Prisma.AtLeast<{
@@ -339,8 +321,6 @@ export type SSSTableWhereUniqueInput = Prisma.AtLeast<{
   er_ec?: Prisma.FloatFilter<"SSSTable"> | number
   ee_ss?: Prisma.FloatFilter<"SSSTable"> | number
   ee_mpf?: Prisma.FloatFilter<"SSSTable"> | number
-  created_at?: Prisma.DateTimeFilter<"SSSTable"> | Date | string
-  updated_at?: Prisma.DateTimeFilter<"SSSTable"> | Date | string
 }, "id">
 
 export type SSSTableOrderByWithAggregationInput = {
@@ -354,8 +334,6 @@ export type SSSTableOrderByWithAggregationInput = {
   er_ec?: Prisma.SortOrder
   ee_ss?: Prisma.SortOrder
   ee_mpf?: Prisma.SortOrder
-  created_at?: Prisma.SortOrder
-  updated_at?: Prisma.SortOrder
   _count?: Prisma.SSSTableCountOrderByAggregateInput
   _avg?: Prisma.SSSTableAvgOrderByAggregateInput
   _max?: Prisma.SSSTableMaxOrderByAggregateInput
@@ -377,22 +355,18 @@ export type SSSTableScalarWhereWithAggregatesInput = {
   er_ec?: Prisma.FloatWithAggregatesFilter<"SSSTable"> | number
   ee_ss?: Prisma.FloatWithAggregatesFilter<"SSSTable"> | number
   ee_mpf?: Prisma.FloatWithAggregatesFilter<"SSSTable"> | number
-  created_at?: Prisma.DateTimeWithAggregatesFilter<"SSSTable"> | Date | string
-  updated_at?: Prisma.DateTimeWithAggregatesFilter<"SSSTable"> | Date | string
 }
 
 export type SSSTableCreateInput = {
   salary_range_from: number
   salary_range_to: number
   msc_ss: number
-  msc_mpf: number
+  msc_mpf?: number
   er_ss: number
-  er_mpf: number
-  er_ec: number
+  er_mpf?: number
+  er_ec?: number
   ee_ss: number
-  ee_mpf: number
-  created_at?: Date | string
-  updated_at?: Date | string
+  ee_mpf?: number
 }
 
 export type SSSTableUncheckedCreateInput = {
@@ -400,14 +374,12 @@ export type SSSTableUncheckedCreateInput = {
   salary_range_from: number
   salary_range_to: number
   msc_ss: number
-  msc_mpf: number
+  msc_mpf?: number
   er_ss: number
-  er_mpf: number
-  er_ec: number
+  er_mpf?: number
+  er_ec?: number
   ee_ss: number
-  ee_mpf: number
-  created_at?: Date | string
-  updated_at?: Date | string
+  ee_mpf?: number
 }
 
 export type SSSTableUpdateInput = {
@@ -420,8 +392,6 @@ export type SSSTableUpdateInput = {
   er_ec?: Prisma.FloatFieldUpdateOperationsInput | number
   ee_ss?: Prisma.FloatFieldUpdateOperationsInput | number
   ee_mpf?: Prisma.FloatFieldUpdateOperationsInput | number
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type SSSTableUncheckedUpdateInput = {
@@ -435,8 +405,6 @@ export type SSSTableUncheckedUpdateInput = {
   er_ec?: Prisma.FloatFieldUpdateOperationsInput | number
   ee_ss?: Prisma.FloatFieldUpdateOperationsInput | number
   ee_mpf?: Prisma.FloatFieldUpdateOperationsInput | number
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type SSSTableCreateManyInput = {
@@ -444,14 +412,12 @@ export type SSSTableCreateManyInput = {
   salary_range_from: number
   salary_range_to: number
   msc_ss: number
-  msc_mpf: number
+  msc_mpf?: number
   er_ss: number
-  er_mpf: number
-  er_ec: number
+  er_mpf?: number
+  er_ec?: number
   ee_ss: number
-  ee_mpf: number
-  created_at?: Date | string
-  updated_at?: Date | string
+  ee_mpf?: number
 }
 
 export type SSSTableUpdateManyMutationInput = {
@@ -464,8 +430,6 @@ export type SSSTableUpdateManyMutationInput = {
   er_ec?: Prisma.FloatFieldUpdateOperationsInput | number
   ee_ss?: Prisma.FloatFieldUpdateOperationsInput | number
   ee_mpf?: Prisma.FloatFieldUpdateOperationsInput | number
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type SSSTableUncheckedUpdateManyInput = {
@@ -479,8 +443,6 @@ export type SSSTableUncheckedUpdateManyInput = {
   er_ec?: Prisma.FloatFieldUpdateOperationsInput | number
   ee_ss?: Prisma.FloatFieldUpdateOperationsInput | number
   ee_mpf?: Prisma.FloatFieldUpdateOperationsInput | number
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type SSSTableCountOrderByAggregateInput = {
@@ -494,8 +456,6 @@ export type SSSTableCountOrderByAggregateInput = {
   er_ec?: Prisma.SortOrder
   ee_ss?: Prisma.SortOrder
   ee_mpf?: Prisma.SortOrder
-  created_at?: Prisma.SortOrder
-  updated_at?: Prisma.SortOrder
 }
 
 export type SSSTableAvgOrderByAggregateInput = {
@@ -522,8 +482,6 @@ export type SSSTableMaxOrderByAggregateInput = {
   er_ec?: Prisma.SortOrder
   ee_ss?: Prisma.SortOrder
   ee_mpf?: Prisma.SortOrder
-  created_at?: Prisma.SortOrder
-  updated_at?: Prisma.SortOrder
 }
 
 export type SSSTableMinOrderByAggregateInput = {
@@ -537,8 +495,6 @@ export type SSSTableMinOrderByAggregateInput = {
   er_ec?: Prisma.SortOrder
   ee_ss?: Prisma.SortOrder
   ee_mpf?: Prisma.SortOrder
-  created_at?: Prisma.SortOrder
-  updated_at?: Prisma.SortOrder
 }
 
 export type SSSTableSumOrderByAggregateInput = {
@@ -562,10 +518,6 @@ export type FloatFieldUpdateOperationsInput = {
   divide?: number
 }
 
-export type DateTimeFieldUpdateOperationsInput = {
-  set?: Date | string
-}
-
 export type IntFieldUpdateOperationsInput = {
   set?: number
   increment?: number
@@ -587,8 +539,6 @@ export type SSSTableSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   er_ec?: boolean
   ee_ss?: boolean
   ee_mpf?: boolean
-  created_at?: boolean
-  updated_at?: boolean
 }, ExtArgs["result"]["sSSTable"]>
 
 export type SSSTableSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -602,8 +552,6 @@ export type SSSTableSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   er_ec?: boolean
   ee_ss?: boolean
   ee_mpf?: boolean
-  created_at?: boolean
-  updated_at?: boolean
 }, ExtArgs["result"]["sSSTable"]>
 
 export type SSSTableSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -617,8 +565,6 @@ export type SSSTableSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   er_ec?: boolean
   ee_ss?: boolean
   ee_mpf?: boolean
-  created_at?: boolean
-  updated_at?: boolean
 }, ExtArgs["result"]["sSSTable"]>
 
 export type SSSTableSelectScalar = {
@@ -632,11 +578,9 @@ export type SSSTableSelectScalar = {
   er_ec?: boolean
   ee_ss?: boolean
   ee_mpf?: boolean
-  created_at?: boolean
-  updated_at?: boolean
 }
 
-export type SSSTableOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "salary_range_from" | "salary_range_to" | "msc_ss" | "msc_mpf" | "er_ss" | "er_mpf" | "er_ec" | "ee_ss" | "ee_mpf" | "created_at" | "updated_at", ExtArgs["result"]["sSSTable"]>
+export type SSSTableOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "salary_range_from" | "salary_range_to" | "msc_ss" | "msc_mpf" | "er_ss" | "er_mpf" | "er_ec" | "ee_ss" | "ee_mpf", ExtArgs["result"]["sSSTable"]>
 
 export type $SSSTablePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "SSSTable"
@@ -652,8 +596,6 @@ export type $SSSTablePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     er_ec: number
     ee_ss: number
     ee_mpf: number
-    created_at: Date
-    updated_at: Date
   }, ExtArgs["result"]["sSSTable"]>
   composites: {}
 }
@@ -1087,8 +1029,6 @@ export interface SSSTableFieldRefs {
   readonly er_ec: Prisma.FieldRef<"SSSTable", 'Float'>
   readonly ee_ss: Prisma.FieldRef<"SSSTable", 'Float'>
   readonly ee_mpf: Prisma.FieldRef<"SSSTable", 'Float'>
-  readonly created_at: Prisma.FieldRef<"SSSTable", 'DateTime'>
-  readonly updated_at: Prisma.FieldRef<"SSSTable", 'DateTime'>
 }
     
 

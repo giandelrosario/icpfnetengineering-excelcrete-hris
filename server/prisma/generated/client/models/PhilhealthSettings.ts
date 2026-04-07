@@ -43,6 +43,7 @@ export type PhilhealthSettingsMinAggregateOutputType = {
   employee_id: number | null
   philhealth_no: string | null
   ee_share: number | null
+  start_date: Date | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -52,6 +53,7 @@ export type PhilhealthSettingsMaxAggregateOutputType = {
   employee_id: number | null
   philhealth_no: string | null
   ee_share: number | null
+  start_date: Date | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -61,6 +63,7 @@ export type PhilhealthSettingsCountAggregateOutputType = {
   employee_id: number
   philhealth_no: number
   ee_share: number
+  start_date: number
   created_at: number
   updated_at: number
   _all: number
@@ -84,6 +87,7 @@ export type PhilhealthSettingsMinAggregateInputType = {
   employee_id?: true
   philhealth_no?: true
   ee_share?: true
+  start_date?: true
   created_at?: true
   updated_at?: true
 }
@@ -93,6 +97,7 @@ export type PhilhealthSettingsMaxAggregateInputType = {
   employee_id?: true
   philhealth_no?: true
   ee_share?: true
+  start_date?: true
   created_at?: true
   updated_at?: true
 }
@@ -102,6 +107,7 @@ export type PhilhealthSettingsCountAggregateInputType = {
   employee_id?: true
   philhealth_no?: true
   ee_share?: true
+  start_date?: true
   created_at?: true
   updated_at?: true
   _all?: true
@@ -198,6 +204,7 @@ export type PhilhealthSettingsGroupByOutputType = {
   employee_id: number
   philhealth_no: string | null
   ee_share: number
+  start_date: Date
   created_at: Date
   updated_at: Date
   _count: PhilhealthSettingsCountAggregateOutputType | null
@@ -230,6 +237,7 @@ export type PhilhealthSettingsWhereInput = {
   employee_id?: Prisma.IntFilter<"PhilhealthSettings"> | number
   philhealth_no?: Prisma.StringNullableFilter<"PhilhealthSettings"> | string | null
   ee_share?: Prisma.FloatFilter<"PhilhealthSettings"> | number
+  start_date?: Prisma.DateTimeFilter<"PhilhealthSettings"> | Date | string
   created_at?: Prisma.DateTimeFilter<"PhilhealthSettings"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"PhilhealthSettings"> | Date | string
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
@@ -240,6 +248,7 @@ export type PhilhealthSettingsOrderByWithRelationInput = {
   employee_id?: Prisma.SortOrder
   philhealth_no?: Prisma.SortOrderInput | Prisma.SortOrder
   ee_share?: Prisma.SortOrder
+  start_date?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   employee?: Prisma.EmployeeOrderByWithRelationInput
@@ -253,6 +262,7 @@ export type PhilhealthSettingsWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.PhilhealthSettingsWhereInput | Prisma.PhilhealthSettingsWhereInput[]
   philhealth_no?: Prisma.StringNullableFilter<"PhilhealthSettings"> | string | null
   ee_share?: Prisma.FloatFilter<"PhilhealthSettings"> | number
+  start_date?: Prisma.DateTimeFilter<"PhilhealthSettings"> | Date | string
   created_at?: Prisma.DateTimeFilter<"PhilhealthSettings"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"PhilhealthSettings"> | Date | string
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
@@ -263,6 +273,7 @@ export type PhilhealthSettingsOrderByWithAggregationInput = {
   employee_id?: Prisma.SortOrder
   philhealth_no?: Prisma.SortOrderInput | Prisma.SortOrder
   ee_share?: Prisma.SortOrder
+  start_date?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   _count?: Prisma.PhilhealthSettingsCountOrderByAggregateInput
@@ -280,6 +291,7 @@ export type PhilhealthSettingsScalarWhereWithAggregatesInput = {
   employee_id?: Prisma.IntWithAggregatesFilter<"PhilhealthSettings"> | number
   philhealth_no?: Prisma.StringNullableWithAggregatesFilter<"PhilhealthSettings"> | string | null
   ee_share?: Prisma.FloatWithAggregatesFilter<"PhilhealthSettings"> | number
+  start_date?: Prisma.DateTimeWithAggregatesFilter<"PhilhealthSettings"> | Date | string
   created_at?: Prisma.DateTimeWithAggregatesFilter<"PhilhealthSettings"> | Date | string
   updated_at?: Prisma.DateTimeWithAggregatesFilter<"PhilhealthSettings"> | Date | string
 }
@@ -287,6 +299,7 @@ export type PhilhealthSettingsScalarWhereWithAggregatesInput = {
 export type PhilhealthSettingsCreateInput = {
   philhealth_no?: string | null
   ee_share?: number
+  start_date?: Date | string
   created_at?: Date | string
   updated_at?: Date | string
   employee: Prisma.EmployeeCreateNestedOneWithoutPhilhealth_settingsInput
@@ -297,6 +310,7 @@ export type PhilhealthSettingsUncheckedCreateInput = {
   employee_id: number
   philhealth_no?: string | null
   ee_share?: number
+  start_date?: Date | string
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -304,6 +318,7 @@ export type PhilhealthSettingsUncheckedCreateInput = {
 export type PhilhealthSettingsUpdateInput = {
   philhealth_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ee_share?: Prisma.FloatFieldUpdateOperationsInput | number
+  start_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutPhilhealth_settingsNestedInput
@@ -314,6 +329,7 @@ export type PhilhealthSettingsUncheckedUpdateInput = {
   employee_id?: Prisma.IntFieldUpdateOperationsInput | number
   philhealth_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ee_share?: Prisma.FloatFieldUpdateOperationsInput | number
+  start_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -323,6 +339,7 @@ export type PhilhealthSettingsCreateManyInput = {
   employee_id: number
   philhealth_no?: string | null
   ee_share?: number
+  start_date?: Date | string
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -330,6 +347,7 @@ export type PhilhealthSettingsCreateManyInput = {
 export type PhilhealthSettingsUpdateManyMutationInput = {
   philhealth_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ee_share?: Prisma.FloatFieldUpdateOperationsInput | number
+  start_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -339,6 +357,7 @@ export type PhilhealthSettingsUncheckedUpdateManyInput = {
   employee_id?: Prisma.IntFieldUpdateOperationsInput | number
   philhealth_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ee_share?: Prisma.FloatFieldUpdateOperationsInput | number
+  start_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -353,6 +372,7 @@ export type PhilhealthSettingsCountOrderByAggregateInput = {
   employee_id?: Prisma.SortOrder
   philhealth_no?: Prisma.SortOrder
   ee_share?: Prisma.SortOrder
+  start_date?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -368,6 +388,7 @@ export type PhilhealthSettingsMaxOrderByAggregateInput = {
   employee_id?: Prisma.SortOrder
   philhealth_no?: Prisma.SortOrder
   ee_share?: Prisma.SortOrder
+  start_date?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -377,6 +398,7 @@ export type PhilhealthSettingsMinOrderByAggregateInput = {
   employee_id?: Prisma.SortOrder
   philhealth_no?: Prisma.SortOrder
   ee_share?: Prisma.SortOrder
+  start_date?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -422,6 +444,7 @@ export type PhilhealthSettingsUncheckedUpdateOneWithoutEmployeeNestedInput = {
 export type PhilhealthSettingsCreateWithoutEmployeeInput = {
   philhealth_no?: string | null
   ee_share?: number
+  start_date?: Date | string
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -430,6 +453,7 @@ export type PhilhealthSettingsUncheckedCreateWithoutEmployeeInput = {
   id?: number
   philhealth_no?: string | null
   ee_share?: number
+  start_date?: Date | string
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -453,6 +477,7 @@ export type PhilhealthSettingsUpdateToOneWithWhereWithoutEmployeeInput = {
 export type PhilhealthSettingsUpdateWithoutEmployeeInput = {
   philhealth_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ee_share?: Prisma.FloatFieldUpdateOperationsInput | number
+  start_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -461,6 +486,7 @@ export type PhilhealthSettingsUncheckedUpdateWithoutEmployeeInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   philhealth_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ee_share?: Prisma.FloatFieldUpdateOperationsInput | number
+  start_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -472,6 +498,7 @@ export type PhilhealthSettingsSelect<ExtArgs extends runtime.Types.Extensions.In
   employee_id?: boolean
   philhealth_no?: boolean
   ee_share?: boolean
+  start_date?: boolean
   created_at?: boolean
   updated_at?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
@@ -482,6 +509,7 @@ export type PhilhealthSettingsSelectCreateManyAndReturn<ExtArgs extends runtime.
   employee_id?: boolean
   philhealth_no?: boolean
   ee_share?: boolean
+  start_date?: boolean
   created_at?: boolean
   updated_at?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
@@ -492,6 +520,7 @@ export type PhilhealthSettingsSelectUpdateManyAndReturn<ExtArgs extends runtime.
   employee_id?: boolean
   philhealth_no?: boolean
   ee_share?: boolean
+  start_date?: boolean
   created_at?: boolean
   updated_at?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
@@ -502,11 +531,12 @@ export type PhilhealthSettingsSelectScalar = {
   employee_id?: boolean
   philhealth_no?: boolean
   ee_share?: boolean
+  start_date?: boolean
   created_at?: boolean
   updated_at?: boolean
 }
 
-export type PhilhealthSettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employee_id" | "philhealth_no" | "ee_share" | "created_at" | "updated_at", ExtArgs["result"]["philhealthSettings"]>
+export type PhilhealthSettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employee_id" | "philhealth_no" | "ee_share" | "start_date" | "created_at" | "updated_at", ExtArgs["result"]["philhealthSettings"]>
 export type PhilhealthSettingsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
 }
@@ -527,6 +557,7 @@ export type $PhilhealthSettingsPayload<ExtArgs extends runtime.Types.Extensions.
     employee_id: number
     philhealth_no: string | null
     ee_share: number
+    start_date: Date
     created_at: Date
     updated_at: Date
   }, ExtArgs["result"]["philhealthSettings"]>
@@ -957,6 +988,7 @@ export interface PhilhealthSettingsFieldRefs {
   readonly employee_id: Prisma.FieldRef<"PhilhealthSettings", 'Int'>
   readonly philhealth_no: Prisma.FieldRef<"PhilhealthSettings", 'String'>
   readonly ee_share: Prisma.FieldRef<"PhilhealthSettings", 'Float'>
+  readonly start_date: Prisma.FieldRef<"PhilhealthSettings", 'DateTime'>
   readonly created_at: Prisma.FieldRef<"PhilhealthSettings", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"PhilhealthSettings", 'DateTime'>
 }

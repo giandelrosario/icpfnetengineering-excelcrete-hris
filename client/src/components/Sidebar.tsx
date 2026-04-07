@@ -1,5 +1,5 @@
 import useSession from '@/hooks/useSession';
-import { HandCoins, LayoutDashboard, LogOut, PanelRightClose, Tickets } from 'lucide-react';
+import { HandCoins, LayoutDashboard, LogOut, PanelRightClose, Table, Tickets } from 'lucide-react';
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router';
 import Dialog from './Dialog';

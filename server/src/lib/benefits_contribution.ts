@@ -1,26 +1,11 @@
-import sss from '../json/sss.json';
 import { prisma } from '../config/prisma';
+import { generateSSS2025TableSet } from './sss_table_2025';
 
 type PagIBIGRates = {
 	employer_rate: number;
 	employee_rate: number;
 	total_rate: number;
 	total?: number;
-};
-
-type SSSContribution = {
-	salary_range: [number, number];
-	msc: {
-		ss: number;
-		mpf: number;
-	};
-	employer: {
-		ec: number;
-		mpf: number;
-	};
-	employee: {
-		mpf: number;
-	};
 };
 
 export const SSS_EMPLOYER_RATE = 10;
@@ -62,20 +47,21 @@ export const PHILHEALTH_RATE = (salary: number) => {
 	};
 };
 
-export const SSS_CONTRIBUTION_RATES = (salary: number) => {
-	const contribution = sss.find((contribution: any) => {
-		const [min, max] = contribution.salary_range as [number, number];
-		return salary >= min && salary <= max;
+export const SSS_CONTRIBUTION_RATES = async (salary: number) => {
+	const contribution = await prisma.sSSTable.findFirst({
+		where: {
+			salary_range_from: { lte: salary },
+			salary_range_to: { gte: salary },
+		},
+		orderBy: {
+			salary_range_from: 'desc',
+		},
 	});
 
-	const total_contribution =
-		contribution &&
-		contribution.msc.ss * (SSS_EMPLOYER_RATE / 100) +
-			contribution.msc.ss * (SSS_EMPLOYEE_RATE / 100) +
-			contribution.msc.mpf +
-			contribution.employee.mpf +
-			contribution.employer.ec +
-			contribution.employer.mpf;
+	const fallbackContribution = generateSSS2025TableSet().find((row) => salary >= row.salary_range_from && salary <= row.salary_range_to);
+	const source = contribution ?? fallbackContribution;
 
-	return { total_contribution } as { total_contribution: number };
+	const total_contribution = source ? source.er_ss + source.er_mpf + source.er_ec + source.ee_ss + source.ee_mpf : 0;
+
+	return { total_contribution: Number(total_contribution.toFixed(2)) };
 };

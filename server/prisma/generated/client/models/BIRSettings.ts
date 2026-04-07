@@ -40,6 +40,7 @@ export type BIRSettingsMinAggregateOutputType = {
   id: number | null
   employee_id: number | null
   tin_no: string | null
+  start_date: Date | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -48,6 +49,7 @@ export type BIRSettingsMaxAggregateOutputType = {
   id: number | null
   employee_id: number | null
   tin_no: string | null
+  start_date: Date | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -56,6 +58,7 @@ export type BIRSettingsCountAggregateOutputType = {
   id: number
   employee_id: number
   tin_no: number
+  start_date: number
   created_at: number
   updated_at: number
   _all: number
@@ -76,6 +79,7 @@ export type BIRSettingsMinAggregateInputType = {
   id?: true
   employee_id?: true
   tin_no?: true
+  start_date?: true
   created_at?: true
   updated_at?: true
 }
@@ -84,6 +88,7 @@ export type BIRSettingsMaxAggregateInputType = {
   id?: true
   employee_id?: true
   tin_no?: true
+  start_date?: true
   created_at?: true
   updated_at?: true
 }
@@ -92,6 +97,7 @@ export type BIRSettingsCountAggregateInputType = {
   id?: true
   employee_id?: true
   tin_no?: true
+  start_date?: true
   created_at?: true
   updated_at?: true
   _all?: true
@@ -187,6 +193,7 @@ export type BIRSettingsGroupByOutputType = {
   id: number
   employee_id: number
   tin_no: string | null
+  start_date: Date
   created_at: Date
   updated_at: Date
   _count: BIRSettingsCountAggregateOutputType | null
@@ -218,6 +225,7 @@ export type BIRSettingsWhereInput = {
   id?: Prisma.IntFilter<"BIRSettings"> | number
   employee_id?: Prisma.IntFilter<"BIRSettings"> | number
   tin_no?: Prisma.StringNullableFilter<"BIRSettings"> | string | null
+  start_date?: Prisma.DateTimeFilter<"BIRSettings"> | Date | string
   created_at?: Prisma.DateTimeFilter<"BIRSettings"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"BIRSettings"> | Date | string
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
@@ -227,6 +235,7 @@ export type BIRSettingsOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   employee_id?: Prisma.SortOrder
   tin_no?: Prisma.SortOrderInput | Prisma.SortOrder
+  start_date?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   employee?: Prisma.EmployeeOrderByWithRelationInput
@@ -239,6 +248,7 @@ export type BIRSettingsWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.BIRSettingsWhereInput[]
   NOT?: Prisma.BIRSettingsWhereInput | Prisma.BIRSettingsWhereInput[]
   tin_no?: Prisma.StringNullableFilter<"BIRSettings"> | string | null
+  start_date?: Prisma.DateTimeFilter<"BIRSettings"> | Date | string
   created_at?: Prisma.DateTimeFilter<"BIRSettings"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"BIRSettings"> | Date | string
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
@@ -248,6 +258,7 @@ export type BIRSettingsOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   employee_id?: Prisma.SortOrder
   tin_no?: Prisma.SortOrderInput | Prisma.SortOrder
+  start_date?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   _count?: Prisma.BIRSettingsCountOrderByAggregateInput
@@ -264,12 +275,14 @@ export type BIRSettingsScalarWhereWithAggregatesInput = {
   id?: Prisma.IntWithAggregatesFilter<"BIRSettings"> | number
   employee_id?: Prisma.IntWithAggregatesFilter<"BIRSettings"> | number
   tin_no?: Prisma.StringNullableWithAggregatesFilter<"BIRSettings"> | string | null
+  start_date?: Prisma.DateTimeWithAggregatesFilter<"BIRSettings"> | Date | string
   created_at?: Prisma.DateTimeWithAggregatesFilter<"BIRSettings"> | Date | string
   updated_at?: Prisma.DateTimeWithAggregatesFilter<"BIRSettings"> | Date | string
 }
 
 export type BIRSettingsCreateInput = {
   tin_no?: string | null
+  start_date?: Date | string
   created_at?: Date | string
   updated_at?: Date | string
   employee: Prisma.EmployeeCreateNestedOneWithoutBir_settingsInput
@@ -279,12 +292,14 @@ export type BIRSettingsUncheckedCreateInput = {
   id?: number
   employee_id: number
   tin_no?: string | null
+  start_date?: Date | string
   created_at?: Date | string
   updated_at?: Date | string
 }
 
 export type BIRSettingsUpdateInput = {
   tin_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  start_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutBir_settingsNestedInput
@@ -294,6 +309,7 @@ export type BIRSettingsUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   employee_id?: Prisma.IntFieldUpdateOperationsInput | number
   tin_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  start_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -302,12 +318,14 @@ export type BIRSettingsCreateManyInput = {
   id?: number
   employee_id: number
   tin_no?: string | null
+  start_date?: Date | string
   created_at?: Date | string
   updated_at?: Date | string
 }
 
 export type BIRSettingsUpdateManyMutationInput = {
   tin_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  start_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -316,6 +334,7 @@ export type BIRSettingsUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   employee_id?: Prisma.IntFieldUpdateOperationsInput | number
   tin_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  start_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -329,6 +348,7 @@ export type BIRSettingsCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   employee_id?: Prisma.SortOrder
   tin_no?: Prisma.SortOrder
+  start_date?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -342,6 +362,7 @@ export type BIRSettingsMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   employee_id?: Prisma.SortOrder
   tin_no?: Prisma.SortOrder
+  start_date?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -350,6 +371,7 @@ export type BIRSettingsMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   employee_id?: Prisma.SortOrder
   tin_no?: Prisma.SortOrder
+  start_date?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -393,6 +415,7 @@ export type BIRSettingsUncheckedUpdateOneWithoutEmployeeNestedInput = {
 
 export type BIRSettingsCreateWithoutEmployeeInput = {
   tin_no?: string | null
+  start_date?: Date | string
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -400,6 +423,7 @@ export type BIRSettingsCreateWithoutEmployeeInput = {
 export type BIRSettingsUncheckedCreateWithoutEmployeeInput = {
   id?: number
   tin_no?: string | null
+  start_date?: Date | string
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -422,6 +446,7 @@ export type BIRSettingsUpdateToOneWithWhereWithoutEmployeeInput = {
 
 export type BIRSettingsUpdateWithoutEmployeeInput = {
   tin_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  start_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -429,6 +454,7 @@ export type BIRSettingsUpdateWithoutEmployeeInput = {
 export type BIRSettingsUncheckedUpdateWithoutEmployeeInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   tin_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  start_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -439,6 +465,7 @@ export type BIRSettingsSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   id?: boolean
   employee_id?: boolean
   tin_no?: boolean
+  start_date?: boolean
   created_at?: boolean
   updated_at?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
@@ -448,6 +475,7 @@ export type BIRSettingsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   id?: boolean
   employee_id?: boolean
   tin_no?: boolean
+  start_date?: boolean
   created_at?: boolean
   updated_at?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
@@ -457,6 +485,7 @@ export type BIRSettingsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   id?: boolean
   employee_id?: boolean
   tin_no?: boolean
+  start_date?: boolean
   created_at?: boolean
   updated_at?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
@@ -466,11 +495,12 @@ export type BIRSettingsSelectScalar = {
   id?: boolean
   employee_id?: boolean
   tin_no?: boolean
+  start_date?: boolean
   created_at?: boolean
   updated_at?: boolean
 }
 
-export type BIRSettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employee_id" | "tin_no" | "created_at" | "updated_at", ExtArgs["result"]["bIRSettings"]>
+export type BIRSettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employee_id" | "tin_no" | "start_date" | "created_at" | "updated_at", ExtArgs["result"]["bIRSettings"]>
 export type BIRSettingsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
 }
@@ -490,6 +520,7 @@ export type $BIRSettingsPayload<ExtArgs extends runtime.Types.Extensions.Interna
     id: number
     employee_id: number
     tin_no: string | null
+    start_date: Date
     created_at: Date
     updated_at: Date
   }, ExtArgs["result"]["bIRSettings"]>
@@ -919,6 +950,7 @@ export interface BIRSettingsFieldRefs {
   readonly id: Prisma.FieldRef<"BIRSettings", 'Int'>
   readonly employee_id: Prisma.FieldRef<"BIRSettings", 'Int'>
   readonly tin_no: Prisma.FieldRef<"BIRSettings", 'String'>
+  readonly start_date: Prisma.FieldRef<"BIRSettings", 'DateTime'>
   readonly created_at: Prisma.FieldRef<"BIRSettings", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"BIRSettings", 'DateTime'>
 }

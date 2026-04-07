@@ -18,6 +18,7 @@ type TEmployeeRelative = {
 	occupation: string;
 	birth_date: string;
 	birth_place: string;
+	hire_date?: string;
 };
 
 type TSalaryHistory = {
@@ -28,20 +29,24 @@ type TSalaryHistory = {
 type TSSSSettings = {
 	employee_id?: number;
 	ee_share: number;
+	start_date: string;
 	sss_no: string;
 };
 type TPhilhealthSettings = {
 	employee_id?: number;
 	ee_share: number;
+	start_date: string;
 	philhealth_no: string;
 };
 type TPagIBIGSettings = {
 	employee_id?: number;
 	ee_share: number;
+	start_date: string;
 	pagibig_no: string;
 };
 type TBIRSettings = {
 	employee_id?: number;
+	start_date: string;
 	tin_no: string;
 };
 
@@ -51,6 +56,7 @@ type TEmployee = {
 	last_name: string;
 	email: string;
 	contact_no: string;
+	hire_date: Date;
 	birth_place: string;
 	birth_date: string;
 	religion: string;
@@ -202,7 +208,9 @@ router.get('/payroll', checkAuth, async (req: Request, res: Response) => {
 				first_name: true,
 				middle_name: true,
 				last_name: true,
-				salary_history: true,
+				salary_history: {
+					orderBy: { created_at: 'desc' },
+				},
 				sss_settings: true,
 				philhealth_settings: true,
 				pagibig_settings: true,
@@ -216,34 +224,46 @@ router.get('/payroll', checkAuth, async (req: Request, res: Response) => {
 
 		const employer_share = await prisma.employerShare.findFirst();
 
-		const payload = employees
-			.filter((employee) => {
-				if (sss === 'true' && !employee.sss_settings) return false;
-				if (philhealth === 'true' && !employee.philhealth_settings) return false;
-				if (pagibig === 'true' && !employee.pagibig_settings) return false;
-				if (!shouldCheckPaidBenefits || !employee.payroll_logs) return true;
+		const filteredEmployees = employees.filter((employee) => {
+			if (sss === 'true' && !employee.sss_settings) return false;
+			if (philhealth === 'true' && !employee.philhealth_settings) return false;
+			if (pagibig === 'true' && !employee.pagibig_settings) return false;
+			if (!shouldCheckPaidBenefits || !employee.payroll_logs) return true;
 
-				const monthBenefits = new Map<string, Set<string>>();
+			const monthBenefits = new Map<string, Set<string>>();
 
-				employee.payroll_logs.forEach((log) => {
-					const benefitSet = monthBenefits.get(log.payroll_month) ?? new Set<string>();
-					log.benefits.forEach((benefit) => benefitSet.add(benefit.benefit_key));
-					monthBenefits.set(log.payroll_month, benefitSet);
-				});
+			employee.payroll_logs.forEach((log) => {
+				const benefitSet = monthBenefits.get(log.payroll_month) ?? new Set<string>();
+				log.benefits.forEach((benefit) => benefitSet.add(benefit.benefit_key));
+				monthBenefits.set(log.payroll_month, benefitSet);
+			});
 
-				const isFullyPaidForSelection = monthNamesFilter.every((monthName) => {
-					const benefitSet = monthBenefits.get(monthName);
-					return benefitSet ? selectedBenefitKeys.every((key) => benefitSet.has(key)) : false;
-				});
+			const isFullyPaidForSelection = monthNamesFilter.every((monthName) => {
+				const benefitSet = monthBenefits.get(monthName);
+				return benefitSet ? selectedBenefitKeys.every((key) => benefitSet.has(key)) : false;
+			});
 
-				return !isFullyPaidForSelection;
-			})
-			.map((employee) => {
+			return !isFullyPaidForSelection;
+		});
+
+		const payload = await Promise.all(
+			filteredEmployees.map(async (employee) => {
 				const { payroll_logs: _payrollLogs, ...rest } = employee;
 				const salaryHistory = employee.salary_history ?? [];
 				const salary = salaryHistory.length > 0 ? (salaryHistory[0]?.amount ?? 0) : 0;
 
-				const sss_contribution = SSS_CONTRIBUTION_RATES(salary);
+				const sss_table = await prisma.sSSTable.findFirst({
+					where: {
+						salary_range_from: { lte: salary },
+						salary_range_to: { gte: salary },
+					},
+				});
+
+				const sss_contribution = sss_table
+					? {
+							total_contribution: sss_table.er_ss + sss_table.er_mpf + sss_table.er_ec + sss_table.ee_ss + sss_table.ee_mpf,
+						}
+					: null;
 
 				const philhealth_contribution = {
 					total: (salary * ((employer_share?.philhealth_share ?? 0) + (employee.philhealth_settings?.ee_share ?? 0))) / 100,
@@ -261,7 +281,8 @@ router.get('/payroll', checkAuth, async (req: Request, res: Response) => {
 					philhealth_settings: employee.philhealth_settings ? { ...employee.philhealth_settings, contribution: philhealth_contribution } : null,
 					pagibig_settings: employee.pagibig_settings ? { ...employee.pagibig_settings, contribution: pagibig_contribution } : null,
 				};
-			});
+			}),
+		);
 
 		return res.status(200).json(payload);
 	} catch (error) {
@@ -387,9 +408,20 @@ router.get('/:id', checkAuth, async (req: Request, res: Response) => {
 
 		const employer_share = await prisma.employerShare.findFirst();
 
-		const current_salary = (employee.salary_history ?? []).length > 0 ? ((employee.salary_history ?? [])[0]?.amount ?? 0) : 0;
+		const current_salary = employee.salary_history[0]?.amount ?? 0;
 
-		const sss_contribution = SSS_CONTRIBUTION_RATES(current_salary);
+		const sss_table = await prisma.sSSTable.findFirst({
+			where: {
+				salary_range_from: { lte: current_salary },
+				salary_range_to: { gte: current_salary },
+			},
+		});
+
+		const sss_contribution = sss_table
+			? {
+					total: sss_table.er_ss + sss_table.er_mpf + sss_table.er_ec + sss_table.ee_ss + sss_table.ee_mpf,
+				}
+			: null;
 
 		// const philhealth_contribution = PHILHEALTH_RATE(current_salary);
 		const philhealth_contribution = {
@@ -410,7 +442,6 @@ router.get('/:id', checkAuth, async (req: Request, res: Response) => {
 
 		const payload = {
 			...employee,
-
 			sss_settings: employee.sss_settings ? { ...employee.sss_settings, ...sss_contribution, no_sss_contributions } : null,
 			philhealth_settings: employee.philhealth_settings ? { ...employee.philhealth_settings, contribution: philhealth_contribution, no_philhealth_contributions } : null,
 			pagibig_settings: employee.pagibig_settings ? { ...employee.pagibig_settings, contribution: pagibig_contribution, no_pagibig_contributions } : null,
@@ -448,6 +479,7 @@ router.post('/', checkAuth, async (req: Request, res: Response) => {
 				religion: body.religion,
 				citizenship: body.citizenship,
 				civil_status: body.civil_status,
+				hire_date: new Date(body.hire_date),
 				relatives: {
 					createMany: {
 						data: body.relatives.map((relative) => ({
@@ -538,6 +570,7 @@ router.put('/:id', checkAuth, async (req: Request, res: Response) => {
 					religion: body.religion,
 					citizenship: body.citizenship,
 					civil_status: body.civil_status,
+					hire_date: new Date(body.hire_date),
 				},
 			});
 

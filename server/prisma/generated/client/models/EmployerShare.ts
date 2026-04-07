@@ -386,6 +386,10 @@ export type EmployerShareSumOrderByAggregateInput = {
   pagibig_share?: Prisma.SortOrder
 }
 
+export type DateTimeFieldUpdateOperationsInput = {
+  set?: Date | string
+}
+
 
 
 export type EmployerShareSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{

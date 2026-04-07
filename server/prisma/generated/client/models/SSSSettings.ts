@@ -43,6 +43,7 @@ export type SSSSettingsMinAggregateOutputType = {
   employee_id: number | null
   sss_no: string | null
   ee_share: number | null
+  start_date: Date | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -52,6 +53,7 @@ export type SSSSettingsMaxAggregateOutputType = {
   employee_id: number | null
   sss_no: string | null
   ee_share: number | null
+  start_date: Date | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -61,6 +63,7 @@ export type SSSSettingsCountAggregateOutputType = {
   employee_id: number
   sss_no: number
   ee_share: number
+  start_date: number
   created_at: number
   updated_at: number
   _all: number
@@ -84,6 +87,7 @@ export type SSSSettingsMinAggregateInputType = {
   employee_id?: true
   sss_no?: true
   ee_share?: true
+  start_date?: true
   created_at?: true
   updated_at?: true
 }
@@ -93,6 +97,7 @@ export type SSSSettingsMaxAggregateInputType = {
   employee_id?: true
   sss_no?: true
   ee_share?: true
+  start_date?: true
   created_at?: true
   updated_at?: true
 }
@@ -102,6 +107,7 @@ export type SSSSettingsCountAggregateInputType = {
   employee_id?: true
   sss_no?: true
   ee_share?: true
+  start_date?: true
   created_at?: true
   updated_at?: true
   _all?: true
@@ -198,6 +204,7 @@ export type SSSSettingsGroupByOutputType = {
   employee_id: number
   sss_no: string | null
   ee_share: number
+  start_date: Date
   created_at: Date
   updated_at: Date
   _count: SSSSettingsCountAggregateOutputType | null
@@ -230,6 +237,7 @@ export type SSSSettingsWhereInput = {
   employee_id?: Prisma.IntFilter<"SSSSettings"> | number
   sss_no?: Prisma.StringNullableFilter<"SSSSettings"> | string | null
   ee_share?: Prisma.FloatFilter<"SSSSettings"> | number
+  start_date?: Prisma.DateTimeFilter<"SSSSettings"> | Date | string
   created_at?: Prisma.DateTimeFilter<"SSSSettings"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"SSSSettings"> | Date | string
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
@@ -240,6 +248,7 @@ export type SSSSettingsOrderByWithRelationInput = {
   employee_id?: Prisma.SortOrder
   sss_no?: Prisma.SortOrderInput | Prisma.SortOrder
   ee_share?: Prisma.SortOrder
+  start_date?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   employee?: Prisma.EmployeeOrderByWithRelationInput
@@ -253,6 +262,7 @@ export type SSSSettingsWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.SSSSettingsWhereInput | Prisma.SSSSettingsWhereInput[]
   sss_no?: Prisma.StringNullableFilter<"SSSSettings"> | string | null
   ee_share?: Prisma.FloatFilter<"SSSSettings"> | number
+  start_date?: Prisma.DateTimeFilter<"SSSSettings"> | Date | string
   created_at?: Prisma.DateTimeFilter<"SSSSettings"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"SSSSettings"> | Date | string
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
@@ -263,6 +273,7 @@ export type SSSSettingsOrderByWithAggregationInput = {
   employee_id?: Prisma.SortOrder
   sss_no?: Prisma.SortOrderInput | Prisma.SortOrder
   ee_share?: Prisma.SortOrder
+  start_date?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   _count?: Prisma.SSSSettingsCountOrderByAggregateInput
@@ -280,6 +291,7 @@ export type SSSSettingsScalarWhereWithAggregatesInput = {
   employee_id?: Prisma.IntWithAggregatesFilter<"SSSSettings"> | number
   sss_no?: Prisma.StringNullableWithAggregatesFilter<"SSSSettings"> | string | null
   ee_share?: Prisma.FloatWithAggregatesFilter<"SSSSettings"> | number
+  start_date?: Prisma.DateTimeWithAggregatesFilter<"SSSSettings"> | Date | string
   created_at?: Prisma.DateTimeWithAggregatesFilter<"SSSSettings"> | Date | string
   updated_at?: Prisma.DateTimeWithAggregatesFilter<"SSSSettings"> | Date | string
 }
@@ -287,6 +299,7 @@ export type SSSSettingsScalarWhereWithAggregatesInput = {
 export type SSSSettingsCreateInput = {
   sss_no?: string | null
   ee_share?: number
+  start_date?: Date | string
   created_at?: Date | string
   updated_at?: Date | string
   employee: Prisma.EmployeeCreateNestedOneWithoutSss_settingsInput
@@ -297,6 +310,7 @@ export type SSSSettingsUncheckedCreateInput = {
   employee_id: number
   sss_no?: string | null
   ee_share?: number
+  start_date?: Date | string
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -304,6 +318,7 @@ export type SSSSettingsUncheckedCreateInput = {
 export type SSSSettingsUpdateInput = {
   sss_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ee_share?: Prisma.FloatFieldUpdateOperationsInput | number
+  start_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutSss_settingsNestedInput
@@ -314,6 +329,7 @@ export type SSSSettingsUncheckedUpdateInput = {
   employee_id?: Prisma.IntFieldUpdateOperationsInput | number
   sss_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ee_share?: Prisma.FloatFieldUpdateOperationsInput | number
+  start_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -323,6 +339,7 @@ export type SSSSettingsCreateManyInput = {
   employee_id: number
   sss_no?: string | null
   ee_share?: number
+  start_date?: Date | string
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -330,6 +347,7 @@ export type SSSSettingsCreateManyInput = {
 export type SSSSettingsUpdateManyMutationInput = {
   sss_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ee_share?: Prisma.FloatFieldUpdateOperationsInput | number
+  start_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -339,6 +357,7 @@ export type SSSSettingsUncheckedUpdateManyInput = {
   employee_id?: Prisma.IntFieldUpdateOperationsInput | number
   sss_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ee_share?: Prisma.FloatFieldUpdateOperationsInput | number
+  start_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -353,6 +372,7 @@ export type SSSSettingsCountOrderByAggregateInput = {
   employee_id?: Prisma.SortOrder
   sss_no?: Prisma.SortOrder
   ee_share?: Prisma.SortOrder
+  start_date?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -368,6 +388,7 @@ export type SSSSettingsMaxOrderByAggregateInput = {
   employee_id?: Prisma.SortOrder
   sss_no?: Prisma.SortOrder
   ee_share?: Prisma.SortOrder
+  start_date?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -377,6 +398,7 @@ export type SSSSettingsMinOrderByAggregateInput = {
   employee_id?: Prisma.SortOrder
   sss_no?: Prisma.SortOrder
   ee_share?: Prisma.SortOrder
+  start_date?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -422,6 +444,7 @@ export type SSSSettingsUncheckedUpdateOneWithoutEmployeeNestedInput = {
 export type SSSSettingsCreateWithoutEmployeeInput = {
   sss_no?: string | null
   ee_share?: number
+  start_date?: Date | string
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -430,6 +453,7 @@ export type SSSSettingsUncheckedCreateWithoutEmployeeInput = {
   id?: number
   sss_no?: string | null
   ee_share?: number
+  start_date?: Date | string
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -453,6 +477,7 @@ export type SSSSettingsUpdateToOneWithWhereWithoutEmployeeInput = {
 export type SSSSettingsUpdateWithoutEmployeeInput = {
   sss_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ee_share?: Prisma.FloatFieldUpdateOperationsInput | number
+  start_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -461,6 +486,7 @@ export type SSSSettingsUncheckedUpdateWithoutEmployeeInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   sss_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ee_share?: Prisma.FloatFieldUpdateOperationsInput | number
+  start_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -472,6 +498,7 @@ export type SSSSettingsSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   employee_id?: boolean
   sss_no?: boolean
   ee_share?: boolean
+  start_date?: boolean
   created_at?: boolean
   updated_at?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
@@ -482,6 +509,7 @@ export type SSSSettingsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   employee_id?: boolean
   sss_no?: boolean
   ee_share?: boolean
+  start_date?: boolean
   created_at?: boolean
   updated_at?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
@@ -492,6 +520,7 @@ export type SSSSettingsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   employee_id?: boolean
   sss_no?: boolean
   ee_share?: boolean
+  start_date?: boolean
   created_at?: boolean
   updated_at?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
@@ -502,11 +531,12 @@ export type SSSSettingsSelectScalar = {
   employee_id?: boolean
   sss_no?: boolean
   ee_share?: boolean
+  start_date?: boolean
   created_at?: boolean
   updated_at?: boolean
 }
 
-export type SSSSettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employee_id" | "sss_no" | "ee_share" | "created_at" | "updated_at", ExtArgs["result"]["sSSSettings"]>
+export type SSSSettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employee_id" | "sss_no" | "ee_share" | "start_date" | "created_at" | "updated_at", ExtArgs["result"]["sSSSettings"]>
 export type SSSSettingsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
 }
@@ -527,6 +557,7 @@ export type $SSSSettingsPayload<ExtArgs extends runtime.Types.Extensions.Interna
     employee_id: number
     sss_no: string | null
     ee_share: number
+    start_date: Date
     created_at: Date
     updated_at: Date
   }, ExtArgs["result"]["sSSSettings"]>
@@ -957,6 +988,7 @@ export interface SSSSettingsFieldRefs {
   readonly employee_id: Prisma.FieldRef<"SSSSettings", 'Int'>
   readonly sss_no: Prisma.FieldRef<"SSSSettings", 'String'>
   readonly ee_share: Prisma.FieldRef<"SSSSettings", 'Float'>
+  readonly start_date: Prisma.FieldRef<"SSSSettings", 'DateTime'>
   readonly created_at: Prisma.FieldRef<"SSSSettings", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"SSSSettings", 'DateTime'>
 }

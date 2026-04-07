@@ -1,14 +1,14 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createBrowserRouter } from 'react-router';
 import { RouterProvider } from 'react-router/dom';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-import Login from './pages/LoginPage';
-import Employees from './pages/Employees';
-import CreateEmployee from './pages/CreateEmployee';
-import AdminLayout from './components/layouts/AdminLayout';
-import Employee from '@/pages/Employee';
-import Payroll from './pages/Payroll';
 import BenefitSetting from '@/pages/BenefitSetting';
+import Employee from '@/pages/Employee';
+import AdminLayout from './components/layouts/AdminLayout';
+import CreateEmployee from './pages/CreateEmployee';
+import Employees from './pages/Employees';
+import Login from './pages/LoginPage';
+import Payroll from './pages/Payroll';
 
 const queryClient = new QueryClient();
 
