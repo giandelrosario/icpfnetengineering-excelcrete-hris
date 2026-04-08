@@ -28,16 +28,22 @@ type TSalaryHistory = {
 
 type TSSSSettings = {
 	sss_no: string;
+	start_date: string;
+	ee_share: number;
 };
 type TPhilhealthSettings = {
 	philhealth_no: string;
+	start_date: string;
+	ee_share: number;
 };
 type TPagIBIGSettings = {
 	pagibig_no: string;
-	ee_share_rate: number;
+	start_date: string;
+	ee_share: number;
 };
 type TBIRSettings = {
 	tin_no: string;
+	start_date: string;
 };
 
 const initialRelative: TEmployeeRelative = {
@@ -81,7 +87,7 @@ const initialEmployeeDetails: TEmployeeDetails = {
 };
 
 const CreateEmployee = () => {
-	const [step, setStep] = useState(1);
+	const [step, setStep] = useState(3);
 	const [showSummaryModal, setShowSummaryModal] = useState(false);
 	const [validationModal, setValidationModal] = useState({
 		isOpen: false,
@@ -102,10 +108,10 @@ const CreateEmployee = () => {
 
 	// Step 3: Statutory Benefits Form Data
 	const [salaryHistory, setSalaryHistory] = useState<TSalaryHistory>({ amount: 0 });
-	const [sssSettings, setSSSSettings] = useState<TSSSSettings>({ sss_no: '' });
-	const [philhealthSettings, setPhilhealthSettings] = useState<TPhilhealthSettings>({ philhealth_no: '' });
-	const [pagibigSettings, setPagIBIGSettings] = React.useState<TPagIBIGSettings>({ pagibig_no: '', ee_share_rate: 2 });
-	const [birSettings, setBIRSettings] = useState<TBIRSettings>({ tin_no: '' });
+	const [sssSettings, setSSSSettings] = useState<TSSSSettings>({ sss_no: '', ee_share: 5, start_date: new Date().toISOString() });
+	const [philhealthSettings, setPhilhealthSettings] = useState<TPhilhealthSettings>({ philhealth_no: '', start_date: new Date().toISOString(), ee_share: 2.5 });
+	const [pagibigSettings, setPagIBIGSettings] = React.useState<TPagIBIGSettings>({ pagibig_no: '', ee_share: 200, start_date: new Date().toISOString() });
+	const [birSettings, setBIRSettings] = useState<TBIRSettings>({ tin_no: '', start_date: new Date().toISOString() });
 
 	const [showErrorModal, setShowErrorModal] = useState(false);
 	const [errorMessage, setErrorMessage] = useState('Something went wrong. Please try again later.');
@@ -161,10 +167,10 @@ const CreateEmployee = () => {
 				hasBIR: false,
 			});
 			setSalaryHistory({ amount: 0 });
-			setSSSSettings({ sss_no: '' });
-			setPhilhealthSettings({ philhealth_no: '' });
-			setPagIBIGSettings({ pagibig_no: '', ee_share_rate: 0 });
-			setBIRSettings({ tin_no: '' });
+			setSSSSettings({ sss_no: '', ee_share: 5, start_date: new Date().toISOString() });
+			setPhilhealthSettings({ philhealth_no: '', start_date: new Date().toISOString(), ee_share: 2.5 });
+			setPagIBIGSettings({ pagibig_no: '', ee_share: 200, start_date: new Date().toISOString() });
+			setBIRSettings({ tin_no: '', start_date: new Date().toISOString() });
 			setShowSummaryModal(false);
 		},
 	});
@@ -209,8 +215,6 @@ const CreateEmployee = () => {
 					{ key: 'citizenship', label: 'Citizenship' },
 					{ key: 'civil_status', label: 'Civil Status' },
 					{ key: 'religion', label: 'Religion' },
-					{ key: 'email', label: 'Email' },
-					{ key: 'contact_no', label: 'Contact No.' },
 					{ key: 'birth_date', label: 'Birth Date' },
 					{ key: 'birth_place', label: 'Birth Place' },
 					{ key: 'hire_date', label: 'Hire Date' },
@@ -323,7 +327,7 @@ const CreateEmployee = () => {
 	const handlePagIBIGChange = (field: keyof TPagIBIGSettings, value: string) => {
 		setPagIBIGSettings((prev) => ({
 			...prev,
-			[field]: field === 'ee_share_rate' ? parseFloat(value) : value,
+			[field]: field === 'ee_share' ? parseFloat(value) : value,
 		}));
 	};
 
@@ -386,7 +390,7 @@ const CreateEmployee = () => {
 			payload.philhealth_settings = philhealthSettings;
 		}
 		if (selectedBenefits.hasPagIBIG) {
-			payload.pagibig_settings = { ...pagibigSettings, ee_share_rate: 2 };
+			payload.pagibig_settings = { ...pagibigSettings, ee_share: 200 };
 		}
 		if (selectedBenefits.hasBIR) {
 			payload.bir_settings = birSettings;
@@ -933,6 +937,32 @@ const CreateEmployee = () => {
 												className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
 											/>
 										</div>
+										<div className="flex flex-col gap-2">
+											<label htmlFor="sss_ee_share" className="block text-sm font-medium text-slate-700">
+												SSS Employee Share Rate (%)
+											</label>
+											<input
+												type="text"
+												id="ee_share"
+												value={sssSettings.ee_share}
+												onChange={(e) => handleSSSChange('ee_share', e.target.value)}
+												placeholder="XX-XXXXXXX-X"
+												className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
+											/>
+										</div>
+										<div className="flex flex-col gap-2">
+											<label htmlFor="sss_start_date" className="block text-sm font-medium text-slate-700">
+												Start Date
+											</label>
+											<input
+												type="date"
+												id="sss_start_date"
+												value={sssSettings.start_date}
+												onChange={(e) => handleSSSChange('start_date', e.target.value)}
+												placeholder="YYYY-MM-DD"
+												className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
+											/>
+										</div>
 									</div>
 								</div>
 							)}
@@ -952,6 +982,32 @@ const CreateEmployee = () => {
 												value={philhealthSettings.philhealth_no}
 												onChange={(e) => handlePhilhealthChange('philhealth_no', e.target.value)}
 												placeholder="12-XXXXXXXXXXXX-X"
+												className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
+											/>
+										</div>
+										<div className="flex flex-col gap-2">
+											<label htmlFor="ee_share" className="block text-sm font-medium text-slate-700">
+												PhilHealth Employee Share
+											</label>
+											<input
+												type="text"
+												id="ee_share"
+												value={philhealthSettings.ee_share}
+												onChange={(e) => handlePhilhealthChange('ee_share', e.target.value)}
+												placeholder="+200"
+												className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
+											/>
+										</div>
+										<div className="flex flex-col gap-2">
+											<label htmlFor="start_date" className="block text-sm font-medium text-slate-700">
+												Start Date
+											</label>
+											<input
+												type="date"
+												id="start_date"
+												value={philhealthSettings.start_date}
+												onChange={(e) => handlePhilhealthChange('start_date', e.target.value)}
+												placeholder="YYYY-MM-DD"
 												className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
 											/>
 										</div>
@@ -979,16 +1035,29 @@ const CreateEmployee = () => {
 										</div>
 										<div className="flex flex-col gap-2">
 											<label htmlFor="pagibig_ee_share" className="block text-sm font-medium text-slate-700">
-												Employee Share Rate (%)
+												Employee Share
 											</label>
 											<input
 												type="number"
 												id="pagibig_ee_share"
-												value={pagibigSettings.ee_share_rate}
-												onChange={(e) => handlePagIBIGChange('ee_share_rate', e.target.value)}
+												value={pagibigSettings.ee_share}
+												onChange={(e) => handlePagIBIGChange('ee_share', e.target.value)}
 												placeholder="2"
 												step="1"
 												min={0}
+												className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
+											/>
+										</div>
+										<div className="flex flex-col gap-2">
+											<label htmlFor="start_date" className="block text-sm font-medium text-slate-700">
+												Start Date
+											</label>
+											<input
+												type="date"
+												id="start_date"
+												value={pagibigSettings.start_date}
+												onChange={(e) => handlePagIBIGChange('start_date', e.target.value)}
+												placeholder="YYYY-MM-DD"
 												className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
 											/>
 										</div>
@@ -1011,6 +1080,19 @@ const CreateEmployee = () => {
 												value={birSettings.tin_no}
 												onChange={(e) => handleBIRChange('tin_no', e.target.value)}
 												placeholder="XXX-XXX-XXX-XXX"
+												className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
+											/>
+										</div>
+										<div className="flex flex-col gap-2">
+											<label htmlFor="bir_tin" className="block text-sm font-medium text-slate-700">
+												Start Date
+											</label>
+											<input
+												type="date"
+												id="bir_start_date"
+												value={birSettings.start_date}
+												onChange={(e) => handleBIRChange('start_date', e.target.value)}
+												placeholder="YYYY-MM-DD"
 												className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
 											/>
 										</div>
@@ -1098,6 +1180,18 @@ const CreateEmployee = () => {
 							}}
 						/>
 					)}
+
+					<Button
+						onClick={() => {
+							console.log(philhealthSettings);
+						}}
+						theme="default"
+						text="Log"
+						icon={{
+							position: 'left',
+							content: <Plus size={16} className="text-white" />,
+						}}
+					/>
 				</div>
 			</div>
 
@@ -1251,7 +1345,7 @@ const CreateEmployee = () => {
 													</div>
 													<div>
 														<p className="text-slate-500">EE Share Rate</p>
-														<p className="text-slate-900 font-medium">{pagibigSettings.ee_share_rate}%</p>
+														<p className="text-slate-900 font-medium">PHP {pagibigSettings.ee_share}</p>
 													</div>
 												</div>
 											</div>

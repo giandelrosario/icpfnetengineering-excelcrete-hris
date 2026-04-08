@@ -490,7 +490,7 @@ router.post('/', checkAuth, async (req: Request, res: Response) => {
 							contact_no: relative.contact_no,
 							address: relative.address,
 							occupation: relative.occupation,
-							birth_date: new Date(relative.birth_date),
+							birth_date: relative.birth_date ? new Date(relative.birth_date) : new Date(),
 							birth_place: relative.birth_place,
 						})),
 					},
@@ -508,6 +508,8 @@ router.post('/', checkAuth, async (req: Request, res: Response) => {
 					sss_settings: {
 						create: {
 							sss_no: body.sss_settings.sss_no,
+							ee_share: body.sss_settings.ee_share,
+							start_date: new Date(body.sss_settings.start_date),
 						},
 					},
 				}),
@@ -515,6 +517,8 @@ router.post('/', checkAuth, async (req: Request, res: Response) => {
 					philhealth_settings: {
 						create: {
 							philhealth_no: body.philhealth_settings.philhealth_no,
+							ee_share: body.philhealth_settings.ee_share,
+							start_date: new Date(body.philhealth_settings.start_date),
 						},
 					},
 				}),
@@ -522,6 +526,8 @@ router.post('/', checkAuth, async (req: Request, res: Response) => {
 					pagibig_settings: {
 						create: {
 							pagibig_no: body.pagibig_settings.pagibig_no,
+							ee_share: body.pagibig_settings.ee_share,
+							start_date: new Date(body.pagibig_settings.start_date),
 						},
 					},
 				}),
@@ -529,6 +535,7 @@ router.post('/', checkAuth, async (req: Request, res: Response) => {
 					bir_settings: {
 						create: {
 							tin_no: body.bir_settings.tin_no,
+							start_date: new Date(body.bir_settings.start_date),
 						},
 					},
 				}),
@@ -618,7 +625,7 @@ router.put('/:id', checkAuth, async (req: Request, res: Response) => {
 					contact_no: relative.contact_no,
 					address: relative.address,
 					occupation: relative.occupation,
-					birth_date: new Date(relative.birth_date),
+					birth_date: relative.birth_date ? new Date(relative.birth_date) : new Date(),
 					birth_place: relative.birth_place,
 				})),
 			});
@@ -664,6 +671,7 @@ router.put('/:id', checkAuth, async (req: Request, res: Response) => {
 						data: {
 							sss_no: sssBody.sss_no,
 							ee_share: sssBody.ee_share,
+							start_date: new Date(sssBody.start_date),
 						},
 					});
 					return res.status(200).json(updatedSettings);
@@ -674,6 +682,7 @@ router.put('/:id', checkAuth, async (req: Request, res: Response) => {
 							employee_id: Number(id),
 							sss_no: sssBody.sss_no,
 							ee_share: sssBody.ee_share,
+							start_date: new Date(sssBody.start_date),
 						},
 					});
 					return res.status(201).json(newSettings);
@@ -698,6 +707,7 @@ router.put('/:id', checkAuth, async (req: Request, res: Response) => {
 						data: {
 							philhealth_no: philhealthBody.philhealth_no,
 							ee_share: philhealthBody.ee_share,
+							start_date: new Date(philhealthBody.start_date),
 						},
 					});
 					return res.status(200).json(updatedSettings);
@@ -708,6 +718,7 @@ router.put('/:id', checkAuth, async (req: Request, res: Response) => {
 							employee_id: Number(id),
 							philhealth_no: philhealthBody.philhealth_no,
 							ee_share: philhealthBody.ee_share,
+							start_date: new Date(philhealthBody.start_date),
 						},
 					});
 					return res.status(201).json(newSettings);
@@ -732,6 +743,7 @@ router.put('/:id', checkAuth, async (req: Request, res: Response) => {
 						data: {
 							pagibig_no: pagibigBody.pagibig_no,
 							ee_share: pagibigBody.ee_share,
+							start_date: new Date(pagibigBody.start_date),
 						},
 					});
 					return res.status(200).json(updatedSettings);
@@ -742,6 +754,7 @@ router.put('/:id', checkAuth, async (req: Request, res: Response) => {
 							employee_id: Number(id),
 							pagibig_no: pagibigBody.pagibig_no,
 							ee_share: pagibigBody.ee_share,
+							start_date: new Date(pagibigBody.start_date),
 						},
 					});
 					return res.status(201).json(newSettings);
@@ -765,6 +778,7 @@ router.put('/:id', checkAuth, async (req: Request, res: Response) => {
 						where: { employee_id: Number(id) },
 						data: {
 							tin_no: birBody.tin_no,
+							start_date: new Date(birBody.start_date),
 						},
 					});
 					return res.status(200).json(updatedSettings);
@@ -774,6 +788,7 @@ router.put('/:id', checkAuth, async (req: Request, res: Response) => {
 						data: {
 							employee_id: Number(id),
 							tin_no: birBody.tin_no,
+							start_date: new Date(birBody.start_date),
 						},
 					});
 					return res.status(201).json(newSettings);
@@ -835,6 +850,8 @@ router.post('/:id/pagibig', checkAuth, async (req: Request, res: Response) => {
 				where: { employee_id: Number(id) },
 				data: {
 					pagibig_no: body.pagibig_no,
+					ee_share: body.ee_share,
+					start_date: new Date(body.start_date),
 				},
 			});
 			return res.status(200).json(updatedSettings);
@@ -844,6 +861,8 @@ router.post('/:id/pagibig', checkAuth, async (req: Request, res: Response) => {
 				data: {
 					employee_id: Number(id),
 					pagibig_no: body.pagibig_no,
+					ee_share: body.ee_share,
+					start_date: new Date(body.start_date),
 				},
 			});
 			return res.status(201).json(newSettings);
@@ -869,6 +888,8 @@ router.post('/:id/sss', checkAuth, async (req: Request, res: Response) => {
 				where: { employee_id: Number(id) },
 				data: {
 					sss_no: body.sss_no,
+					ee_share: body.ee_share,
+					start_date: new Date(body.start_date),
 				},
 			});
 			return res.status(200).json(updatedSettings);
@@ -878,6 +899,8 @@ router.post('/:id/sss', checkAuth, async (req: Request, res: Response) => {
 				data: {
 					employee_id: Number(id),
 					sss_no: body.sss_no,
+					ee_share: body.ee_share,
+					start_date: new Date(body.start_date),
 				},
 			});
 			return res.status(201).json(newSettings);
@@ -903,6 +926,8 @@ router.post('/:id/philhealth', checkAuth, async (req: Request, res: Response) =>
 				where: { employee_id: Number(id) },
 				data: {
 					philhealth_no: body.philhealth_no,
+					ee_share: body.ee_share,
+					start_date: new Date(body.start_date),
 				},
 			});
 			return res.status(200).json(updatedSettings);
@@ -912,6 +937,8 @@ router.post('/:id/philhealth', checkAuth, async (req: Request, res: Response) =>
 				data: {
 					employee_id: Number(id),
 					philhealth_no: body.philhealth_no,
+					ee_share: body.ee_share,
+					start_date: new Date(body.start_date),
 				},
 			});
 			return res.status(201).json(newSettings);
@@ -937,6 +964,7 @@ router.post('/:id/bir', checkAuth, async (req: Request, res: Response) => {
 				where: { employee_id: Number(id) },
 				data: {
 					tin_no: body.tin_no,
+					start_date: new Date(body.start_date),
 				},
 			});
 			return res.status(200).json(updatedSettings);
@@ -946,6 +974,7 @@ router.post('/:id/bir', checkAuth, async (req: Request, res: Response) => {
 				data: {
 					employee_id: Number(id),
 					tin_no: body.tin_no,
+					start_date: new Date(body.start_date),
 				},
 			});
 			return res.status(201).json(newSettings);

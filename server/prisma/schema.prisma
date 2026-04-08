@@ -63,9 +63,9 @@ model Employee {
 model EmployeeRelative {
   id           Int      @id @default(autoincrement())
   employee_id  Int
-  first_name   String
+  first_name   String?
   middle_name  String?
-  last_name    String
+  last_name    String?
   relationship String?
   contact_no   String?
   address      String?

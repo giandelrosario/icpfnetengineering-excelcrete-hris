@@ -234,10 +234,10 @@ export type EmployeeRelativeGroupByArgs<ExtArgs extends runtime.Types.Extensions
 export type EmployeeRelativeGroupByOutputType = {
   id: number
   employee_id: number
-  first_name: string
+  first_name: string | null
   middle_name: string | null
-  last_name: string
-  relationship: string
+  last_name: string | null
+  relationship: string | null
   contact_no: string | null
   address: string | null
   occupation: string
@@ -273,10 +273,10 @@ export type EmployeeRelativeWhereInput = {
   NOT?: Prisma.EmployeeRelativeWhereInput | Prisma.EmployeeRelativeWhereInput[]
   id?: Prisma.IntFilter<"EmployeeRelative"> | number
   employee_id?: Prisma.IntFilter<"EmployeeRelative"> | number
-  first_name?: Prisma.StringFilter<"EmployeeRelative"> | string
+  first_name?: Prisma.StringNullableFilter<"EmployeeRelative"> | string | null
   middle_name?: Prisma.StringNullableFilter<"EmployeeRelative"> | string | null
-  last_name?: Prisma.StringFilter<"EmployeeRelative"> | string
-  relationship?: Prisma.StringFilter<"EmployeeRelative"> | string
+  last_name?: Prisma.StringNullableFilter<"EmployeeRelative"> | string | null
+  relationship?: Prisma.StringNullableFilter<"EmployeeRelative"> | string | null
   contact_no?: Prisma.StringNullableFilter<"EmployeeRelative"> | string | null
   address?: Prisma.StringNullableFilter<"EmployeeRelative"> | string | null
   occupation?: Prisma.StringFilter<"EmployeeRelative"> | string
@@ -290,10 +290,10 @@ export type EmployeeRelativeWhereInput = {
 export type EmployeeRelativeOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   employee_id?: Prisma.SortOrder
-  first_name?: Prisma.SortOrder
+  first_name?: Prisma.SortOrderInput | Prisma.SortOrder
   middle_name?: Prisma.SortOrderInput | Prisma.SortOrder
-  last_name?: Prisma.SortOrder
-  relationship?: Prisma.SortOrder
+  last_name?: Prisma.SortOrderInput | Prisma.SortOrder
+  relationship?: Prisma.SortOrderInput | Prisma.SortOrder
   contact_no?: Prisma.SortOrderInput | Prisma.SortOrder
   address?: Prisma.SortOrderInput | Prisma.SortOrder
   occupation?: Prisma.SortOrder
@@ -310,10 +310,10 @@ export type EmployeeRelativeWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.EmployeeRelativeWhereInput[]
   NOT?: Prisma.EmployeeRelativeWhereInput | Prisma.EmployeeRelativeWhereInput[]
   employee_id?: Prisma.IntFilter<"EmployeeRelative"> | number
-  first_name?: Prisma.StringFilter<"EmployeeRelative"> | string
+  first_name?: Prisma.StringNullableFilter<"EmployeeRelative"> | string | null
   middle_name?: Prisma.StringNullableFilter<"EmployeeRelative"> | string | null
-  last_name?: Prisma.StringFilter<"EmployeeRelative"> | string
-  relationship?: Prisma.StringFilter<"EmployeeRelative"> | string
+  last_name?: Prisma.StringNullableFilter<"EmployeeRelative"> | string | null
+  relationship?: Prisma.StringNullableFilter<"EmployeeRelative"> | string | null
   contact_no?: Prisma.StringNullableFilter<"EmployeeRelative"> | string | null
   address?: Prisma.StringNullableFilter<"EmployeeRelative"> | string | null
   occupation?: Prisma.StringFilter<"EmployeeRelative"> | string
@@ -327,10 +327,10 @@ export type EmployeeRelativeWhereUniqueInput = Prisma.AtLeast<{
 export type EmployeeRelativeOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   employee_id?: Prisma.SortOrder
-  first_name?: Prisma.SortOrder
+  first_name?: Prisma.SortOrderInput | Prisma.SortOrder
   middle_name?: Prisma.SortOrderInput | Prisma.SortOrder
-  last_name?: Prisma.SortOrder
-  relationship?: Prisma.SortOrder
+  last_name?: Prisma.SortOrderInput | Prisma.SortOrder
+  relationship?: Prisma.SortOrderInput | Prisma.SortOrder
   contact_no?: Prisma.SortOrderInput | Prisma.SortOrder
   address?: Prisma.SortOrderInput | Prisma.SortOrder
   occupation?: Prisma.SortOrder
@@ -351,10 +351,10 @@ export type EmployeeRelativeScalarWhereWithAggregatesInput = {
   NOT?: Prisma.EmployeeRelativeScalarWhereWithAggregatesInput | Prisma.EmployeeRelativeScalarWhereWithAggregatesInput[]
   id?: Prisma.IntWithAggregatesFilter<"EmployeeRelative"> | number
   employee_id?: Prisma.IntWithAggregatesFilter<"EmployeeRelative"> | number
-  first_name?: Prisma.StringWithAggregatesFilter<"EmployeeRelative"> | string
+  first_name?: Prisma.StringNullableWithAggregatesFilter<"EmployeeRelative"> | string | null
   middle_name?: Prisma.StringNullableWithAggregatesFilter<"EmployeeRelative"> | string | null
-  last_name?: Prisma.StringWithAggregatesFilter<"EmployeeRelative"> | string
-  relationship?: Prisma.StringWithAggregatesFilter<"EmployeeRelative"> | string
+  last_name?: Prisma.StringNullableWithAggregatesFilter<"EmployeeRelative"> | string | null
+  relationship?: Prisma.StringNullableWithAggregatesFilter<"EmployeeRelative"> | string | null
   contact_no?: Prisma.StringNullableWithAggregatesFilter<"EmployeeRelative"> | string | null
   address?: Prisma.StringNullableWithAggregatesFilter<"EmployeeRelative"> | string | null
   occupation?: Prisma.StringWithAggregatesFilter<"EmployeeRelative"> | string
@@ -365,10 +365,10 @@ export type EmployeeRelativeScalarWhereWithAggregatesInput = {
 }
 
 export type EmployeeRelativeCreateInput = {
-  first_name: string
+  first_name?: string | null
   middle_name?: string | null
-  last_name: string
-  relationship: string
+  last_name?: string | null
+  relationship?: string | null
   contact_no?: string | null
   address?: string | null
   occupation?: string
@@ -382,10 +382,10 @@ export type EmployeeRelativeCreateInput = {
 export type EmployeeRelativeUncheckedCreateInput = {
   id?: number
   employee_id: number
-  first_name: string
+  first_name?: string | null
   middle_name?: string | null
-  last_name: string
-  relationship: string
+  last_name?: string | null
+  relationship?: string | null
   contact_no?: string | null
   address?: string | null
   occupation?: string
@@ -396,10 +396,10 @@ export type EmployeeRelativeUncheckedCreateInput = {
 }
 
 export type EmployeeRelativeUpdateInput = {
-  first_name?: Prisma.StringFieldUpdateOperationsInput | string
+  first_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   middle_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  relationship?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  relationship?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contact_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   occupation?: Prisma.StringFieldUpdateOperationsInput | string
@@ -413,10 +413,10 @@ export type EmployeeRelativeUpdateInput = {
 export type EmployeeRelativeUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   employee_id?: Prisma.IntFieldUpdateOperationsInput | number
-  first_name?: Prisma.StringFieldUpdateOperationsInput | string
+  first_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   middle_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  relationship?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  relationship?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contact_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   occupation?: Prisma.StringFieldUpdateOperationsInput | string
@@ -429,10 +429,10 @@ export type EmployeeRelativeUncheckedUpdateInput = {
 export type EmployeeRelativeCreateManyInput = {
   id?: number
   employee_id: number
-  first_name: string
+  first_name?: string | null
   middle_name?: string | null
-  last_name: string
-  relationship: string
+  last_name?: string | null
+  relationship?: string | null
   contact_no?: string | null
   address?: string | null
   occupation?: string
@@ -443,10 +443,10 @@ export type EmployeeRelativeCreateManyInput = {
 }
 
 export type EmployeeRelativeUpdateManyMutationInput = {
-  first_name?: Prisma.StringFieldUpdateOperationsInput | string
+  first_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   middle_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  relationship?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  relationship?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contact_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   occupation?: Prisma.StringFieldUpdateOperationsInput | string
@@ -459,10 +459,10 @@ export type EmployeeRelativeUpdateManyMutationInput = {
 export type EmployeeRelativeUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   employee_id?: Prisma.IntFieldUpdateOperationsInput | number
-  first_name?: Prisma.StringFieldUpdateOperationsInput | string
+  first_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   middle_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  relationship?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  relationship?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contact_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   occupation?: Prisma.StringFieldUpdateOperationsInput | string
@@ -583,10 +583,10 @@ export type EmployeeRelativeUncheckedUpdateManyWithoutEmployeeNestedInput = {
 }
 
 export type EmployeeRelativeCreateWithoutEmployeeInput = {
-  first_name: string
+  first_name?: string | null
   middle_name?: string | null
-  last_name: string
-  relationship: string
+  last_name?: string | null
+  relationship?: string | null
   contact_no?: string | null
   address?: string | null
   occupation?: string
@@ -598,10 +598,10 @@ export type EmployeeRelativeCreateWithoutEmployeeInput = {
 
 export type EmployeeRelativeUncheckedCreateWithoutEmployeeInput = {
   id?: number
-  first_name: string
+  first_name?: string | null
   middle_name?: string | null
-  last_name: string
-  relationship: string
+  last_name?: string | null
+  relationship?: string | null
   contact_no?: string | null
   address?: string | null
   occupation?: string
@@ -643,10 +643,10 @@ export type EmployeeRelativeScalarWhereInput = {
   NOT?: Prisma.EmployeeRelativeScalarWhereInput | Prisma.EmployeeRelativeScalarWhereInput[]
   id?: Prisma.IntFilter<"EmployeeRelative"> | number
   employee_id?: Prisma.IntFilter<"EmployeeRelative"> | number
-  first_name?: Prisma.StringFilter<"EmployeeRelative"> | string
+  first_name?: Prisma.StringNullableFilter<"EmployeeRelative"> | string | null
   middle_name?: Prisma.StringNullableFilter<"EmployeeRelative"> | string | null
-  last_name?: Prisma.StringFilter<"EmployeeRelative"> | string
-  relationship?: Prisma.StringFilter<"EmployeeRelative"> | string
+  last_name?: Prisma.StringNullableFilter<"EmployeeRelative"> | string | null
+  relationship?: Prisma.StringNullableFilter<"EmployeeRelative"> | string | null
   contact_no?: Prisma.StringNullableFilter<"EmployeeRelative"> | string | null
   address?: Prisma.StringNullableFilter<"EmployeeRelative"> | string | null
   occupation?: Prisma.StringFilter<"EmployeeRelative"> | string
@@ -658,10 +658,10 @@ export type EmployeeRelativeScalarWhereInput = {
 
 export type EmployeeRelativeCreateManyEmployeeInput = {
   id?: number
-  first_name: string
+  first_name?: string | null
   middle_name?: string | null
-  last_name: string
-  relationship: string
+  last_name?: string | null
+  relationship?: string | null
   contact_no?: string | null
   address?: string | null
   occupation?: string
@@ -672,10 +672,10 @@ export type EmployeeRelativeCreateManyEmployeeInput = {
 }
 
 export type EmployeeRelativeUpdateWithoutEmployeeInput = {
-  first_name?: Prisma.StringFieldUpdateOperationsInput | string
+  first_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   middle_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  relationship?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  relationship?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contact_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   occupation?: Prisma.StringFieldUpdateOperationsInput | string
@@ -687,10 +687,10 @@ export type EmployeeRelativeUpdateWithoutEmployeeInput = {
 
 export type EmployeeRelativeUncheckedUpdateWithoutEmployeeInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  first_name?: Prisma.StringFieldUpdateOperationsInput | string
+  first_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   middle_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  relationship?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  relationship?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contact_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   occupation?: Prisma.StringFieldUpdateOperationsInput | string
@@ -702,10 +702,10 @@ export type EmployeeRelativeUncheckedUpdateWithoutEmployeeInput = {
 
 export type EmployeeRelativeUncheckedUpdateManyWithoutEmployeeInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  first_name?: Prisma.StringFieldUpdateOperationsInput | string
+  first_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   middle_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  relationship?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  relationship?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contact_no?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   occupation?: Prisma.StringFieldUpdateOperationsInput | string
@@ -803,10 +803,10 @@ export type $EmployeeRelativePayload<ExtArgs extends runtime.Types.Extensions.In
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     employee_id: number
-    first_name: string
+    first_name: string | null
     middle_name: string | null
-    last_name: string
-    relationship: string
+    last_name: string | null
+    relationship: string | null
     contact_no: string | null
     address: string | null
     occupation: string

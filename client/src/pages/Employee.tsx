@@ -6,7 +6,7 @@ import useAxios from '@/hooks/useAxios';
 import { FormatAsMoney } from '@/utils/lib';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
-import { format } from 'date-fns';
+import { format, set } from 'date-fns';
 import { Archive, ArrowLeft, Calendar, CalendarCheck, Church, Contact, FileText, History, Mail, MapPin, Pen, Phone, Plus, SquarePen, Trash, User, Users, X, XCircle } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
@@ -40,6 +40,7 @@ type TSSSSettings = {
 	employee_id?: number;
 	sss_no: string;
 	ee_share: number;
+	start_date: string;
 	salary_range: [number, number];
 	msc: {
 		ss: number;
@@ -63,6 +64,7 @@ type TPhilhealthSettings = {
 	philhealth_no: string;
 	total_contribution: number;
 	ee_share: number;
+	start_date: string;
 	contribution: {
 		total: number;
 		rate: number;
@@ -75,6 +77,7 @@ type TPagIBIGSettings = {
 	id: number;
 	employee_id?: number;
 	pagibig_no: string;
+	start_date: string;
 	ee_share: number;
 	contribution: {
 		employer_rate: number;
@@ -91,6 +94,7 @@ type TBIRSettings = {
 	employee_id?: number;
 	tin_no: string;
 	ee_share_rate: number;
+	start_date: string;
 	updated_at: string;
 	created_at: string;
 };
@@ -178,19 +182,23 @@ const Employee = () => {
 
 	const sssEditNoInputRef = useRef<HTMLInputElement>(null);
 	const sssEditRateInputRef = useRef<HTMLInputElement>(null);
+	const sssStartDateRef = useRef<HTMLInputElement>(null);
 
 	const philHealthNoEditInputRef = useRef<HTMLInputElement>(null);
 	const philHealthRateInputRef = useRef<HTMLInputElement>(null);
+	const philHealthStartDateRef = useRef<HTMLInputElement>(null);
 
 	const pagibigNoEditInputRef = useRef<HTMLInputElement>(null);
 	const pagibigRateInputRef = useRef<HTMLInputElement>(null);
+	const pagibigStartDateRef = useRef<HTMLInputElement>(null);
 
 	const tinEditInputRef = useRef<HTMLInputElement>(null);
+	const tinEditStartDateRef = useRef<HTMLInputElement>(null);
 
-	const [philhealthSettings, setPhilhealthSettings] = useState({ philhealth_no: '', ee_share: 0 });
-	const [pagibigSettings, setPagIBIGSettings] = useState({ pagibig_no: '', ee_share: 0 });
-	const [sssSettings, setSSSSettings] = useState({ sss_no: '', ee_share: 0 });
-	const [birSettings, setBIRSettings] = useState({ tin_no: '' });
+	const [philhealthSettings, setPhilhealthSettings] = useState({ philhealth_no: '', ee_share: 2.5, start_date: '' });
+	const [pagibigSettings, setPagIBIGSettings] = useState({ pagibig_no: '', ee_share: 200, start_date: '' });
+	const [sssSettings, setSSSSettings] = useState({ sss_no: '', ee_share: 5, start_date: '' });
+	const [birSettings, setBIRSettings] = useState({ tin_no: '', start_date: '' });
 
 	const [showDeleteModal, setShowDeleteModal] = useState(false);
 	const [showArchiveModal, setShowArchiveModal] = useState(false);
@@ -635,6 +643,7 @@ const Employee = () => {
 
 	const handlePagIBIGSave = () => {
 		if (!pagibigSettings.pagibig_no || pagibigSettings.ee_share <= 0) {
+			setOpenPagIBIGModal(false);
 			setErrorMessage('Please fill in all required fields for Pag-IBIG settings.');
 			setShowErrorModal(true);
 			return;
@@ -644,14 +653,17 @@ const Employee = () => {
 
 	const handleSSSSave = () => {
 		if (!sssSettings.sss_no || sssSettings.ee_share <= 0) {
+			setOpenSSSModal(false);
 			setErrorMessage('Please fill in all required fields for SSS settings.');
 			setShowErrorModal(true);
+			return;
 		}
 		add_sss_mutation.mutate(sssSettings);
 	};
 
 	const handlePhilHealthSave = () => {
 		if (!philhealthSettings.philhealth_no || philhealthSettings.ee_share <= 0) {
+			setOpenPhilHealthModal(false);
 			setErrorMessage('Please fill in all required fields for PhilHealth settings.');
 			setShowErrorModal(true);
 			return;
@@ -660,7 +672,8 @@ const Employee = () => {
 	};
 
 	const handleBIRSave = () => {
-		if (!birSettings.tin_no || birSettings.tin_no.length !== 9) {
+		if (!birSettings.tin_no || birSettings.start_date === '') {
+			setOpenBIRModal(false);
 			setErrorMessage('Please fill in all required fields for BIR settings.');
 			setShowErrorModal(true);
 			return;
@@ -669,18 +682,22 @@ const Employee = () => {
 	};
 	const handleEditPagIBIGSave = () => {
 		if (!pagibigNoEditInputRef.current?.value || !pagibigRateInputRef.current || parseFloat(pagibigRateInputRef.current?.value) <= 0) {
+			setOpenEditPagIBIGModal(false);
 			setErrorMessage('Please fill in all required fields for Pag-IBIG settings.');
 			setShowErrorModal(true);
 			return;
 		}
+
 		edit_pagibig_mutation.mutate({
 			pagibig_no: pagibigNoEditInputRef.current?.value || '',
 			ee_share: pagibigRateInputRef.current ? parseFloat(pagibigRateInputRef.current.value) : 0,
+			start_date: pagibigStartDateRef.current?.value || '',
 		});
 	};
 
 	const handleEditSSSSave = () => {
 		if (!sssEditNoInputRef.current?.value) {
+			setOpenEditSSSModal(false);
 			setErrorMessage('Please fill in all required fields for SSS settings.');
 			setShowErrorModal(true);
 			return;
@@ -688,11 +705,13 @@ const Employee = () => {
 		edit_sss_mutation.mutate({
 			sss_no: sssEditNoInputRef.current?.value || '',
 			ee_share: sssEditRateInputRef.current ? parseFloat(sssEditRateInputRef.current.value) : 0,
+			start_date: sssStartDateRef.current?.value || '',
 		});
 	};
 
 	const handleEditPhilHealthSave = () => {
 		if (!philHealthNoEditInputRef.current?.value) {
+			setOpenEditPhilHealthModal(false);
 			setErrorMessage('Please fill in all required fields for PhilHealth settings.');
 			setShowErrorModal(true);
 			return;
@@ -700,17 +719,20 @@ const Employee = () => {
 		edit_philhealth_mutation.mutate({
 			philhealth_no: philHealthNoEditInputRef.current?.value || '',
 			ee_share: philHealthRateInputRef.current ? parseFloat(philHealthRateInputRef.current.value) : 0,
+			start_date: philHealthStartDateRef.current?.value || '',
 		});
 	};
 
 	const handleEditBIRSave = () => {
 		if (!tinEditInputRef.current?.value) {
+			setOpenEditBIRModal(false);
 			setErrorMessage('Please fill in all required fields for BIR settings.');
 			setShowErrorModal(true);
 			return;
 		}
 		edit_bir_mutation.mutate({
 			tin_no: tinEditInputRef.current?.value || '',
+			start_date: tinEditStartDateRef.current?.value || '',
 		});
 	};
 
@@ -970,6 +992,10 @@ const Employee = () => {
 											<p className="text-xs text-slate-600 uppercase font-semibold">No. of Contribution</p>
 											<p className="text-sm font-medium text-slate-900 mt-1">{employee?.sss_settings?.no_sss_contributions}</p>
 										</div>
+										<div>
+											<p className="text-xs text-slate-600 uppercase font-semibold">Start Date</p>
+											<p className="text-sm font-medium text-slate-900 mt-1">{formatDate(employee?.sss_settings?.start_date) || 'N/A'}</p>
+										</div>
 									</div>
 								</div>
 							) : (
@@ -1016,6 +1042,10 @@ const Employee = () => {
 										<div>
 											<p className="text-xs text-slate-600 uppercase font-semibold">No. of Contribution</p>
 											<p className="text-sm font-medium text-slate-900 mt-1">{employee?.philhealth_settings.no_philhealth_contributions}</p>
+										</div>
+										<div>
+											<p className="text-xs text-slate-600 uppercase font-semibold">Start Date</p>
+											<p className="text-sm font-medium text-slate-900 mt-1">{formatDate(employee?.philhealth_settings.start_date) || 'N/A'}</p>
 										</div>
 									</div>
 								</div>
@@ -1064,6 +1094,10 @@ const Employee = () => {
 											<p className="text-xs text-slate-600 uppercase font-semibold">No. of Contribution</p>
 											<p className="text-sm font-medium text-slate-900 mt-1">{employee?.pagibig_settings.no_pagibig_contributions}</p>
 										</div>
+										<div>
+											<p className="text-xs text-slate-600 uppercase font-semibold">Start Date</p>
+											<p className="text-sm font-medium text-slate-900 mt-1">{formatDate(employee?.pagibig_settings.start_date) || 'N/A'}</p>
+										</div>
 									</div>
 								</div>
 							) : (
@@ -1098,6 +1132,10 @@ const Employee = () => {
 										<div>
 											<p className="text-xs text-slate-600 uppercase font-semibold">TIN Number</p>
 											<p className="text-sm font-medium text-slate-900 mt-1">{employee?.bir_settings.tin_no || 'N/A'}</p>
+										</div>
+										<div>
+											<p className="text-xs text-slate-600 uppercase font-semibold">Start Date</p>
+											<p className="text-sm font-medium text-slate-900 mt-1">{formatDate(employee?.bir_settings.start_date) || 'N/A'}</p>
 										</div>
 									</div>
 								</div>
@@ -1781,7 +1819,7 @@ const Employee = () => {
 								</button>
 							</div>
 
-							<div className="grid grid-cols-1 gap-4 px-6 py-4">
+							<div className="grid grid-cols-2 gap-4 px-6 py-4">
 								<div className="flex flex-col gap-2">
 									<label htmlFor="sss_no" className="block text-sm font-medium text-slate-700">
 										SSS No.
@@ -1792,6 +1830,31 @@ const Employee = () => {
 										value={sssSettings.sss_no}
 										onChange={(e) => handleSSSChange('sss_no', e.target.value)}
 										placeholder="XX-XXXXXXX-X"
+										className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
+									/>
+								</div>
+								<div className="flex flex-col gap-2">
+									<label htmlFor="ee_share" className="block text-sm font-medium text-slate-700">
+										Employee Share Rate (%)
+									</label>
+									<input
+										type="text"
+										id="ee_share"
+										value={sssSettings.ee_share}
+										onChange={(e) => handleSSSChange('ee_share', e.target.value)}
+										placeholder="X"
+										className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
+									/>
+								</div>
+								<div className="flex flex-col gap-2">
+									<label htmlFor="start_date" className="block text-sm font-medium text-slate-700">
+										Start Date
+									</label>
+									<input
+										type="date"
+										id="start_date"
+										value={sssSettings.start_date ? sssSettings.start_date.split('T')[0] : ''}
+										onChange={(e) => handleSSSChange('start_date', e.target.value)}
 										className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
 									/>
 								</div>
@@ -1828,6 +1891,31 @@ const Employee = () => {
 										value={philhealthSettings.philhealth_no}
 										onChange={(e) => handlePhilhealthChange('philhealth_no', e.target.value)}
 										placeholder="12-XXXXXXXXXXXX-X"
+										className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
+									/>
+								</div>
+								<div className="flex flex-col gap-2">
+									<label htmlFor="ee_share" className="block text-sm font-medium text-slate-700">
+										Employee Share Rate (%)
+									</label>
+									<input
+										type="number"
+										id="ee_share"
+										value={philhealthSettings.ee_share}
+										onChange={(e) => handlePhilhealthChange('ee_share', e.target.value)}
+										placeholder="2.5"
+										className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
+									/>
+								</div>
+								<div className="flex flex-col gap-2">
+									<label htmlFor="start_date" className="block text-sm font-medium text-slate-700">
+										Start Date
+									</label>
+									<input
+										type="date"
+										id="start_date"
+										value={philhealthSettings.start_date ? philhealthSettings.start_date.split('T')[0] : ''}
+										onChange={(e) => handlePhilhealthChange('start_date', e.target.value)}
 										className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
 									/>
 								</div>
@@ -1879,6 +1967,18 @@ const Employee = () => {
 										className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
 									/>
 								</div>
+								<div className="flex flex-col gap-2">
+									<label htmlFor="start_date" className="block text-sm font-medium text-slate-700">
+										Start Date
+									</label>
+									<input
+										type="date"
+										id="start_date"
+										value={pagibigSettings.start_date ? pagibigSettings.start_date.split('T')[0] : ''}
+										onChange={(e) => handlePagIBIGChange('start_date', e.target.value)}
+										className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
+									/>
+								</div>
 							</div>
 
 							<div className="flex justify-end items-center gap-2 mt-2 p-4">
@@ -1915,6 +2015,18 @@ const Employee = () => {
 										className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
 									/>
 								</div>
+								<div className="flex flex-col gap-2">
+									<label htmlFor="start_date" className="block text-sm font-medium text-slate-700">
+										Start Date
+									</label>
+									<input
+										type="date"
+										id="start_date"
+										value={birSettings.start_date ? birSettings.start_date.split('T')[0] : ''}
+										onChange={(e) => handleBIRChange('start_date', e.target.value)}
+										className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
+									/>
+								</div>
 							</div>
 
 							<div className="flex justify-end items-center gap-2 mt-2 px-6 py-4">
@@ -1937,7 +2049,7 @@ const Employee = () => {
 								</button>
 							</div>
 
-							<div className="grid grid-cols-1  gap-4 px-6 py-4">
+							<div className="grid grid-cols-2 gap-4 px-6 py-4">
 								<div className="flex flex-col gap-2">
 									<label htmlFor="sss_no" className="block text-sm font-medium text-slate-700">
 										SSS No.
@@ -1960,6 +2072,19 @@ const Employee = () => {
 										id="sss_rate"
 										ref={sssEditRateInputRef}
 										defaultValue={employee?.sss_settings?.ee_share || 0}
+										placeholder="XX"
+										className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
+									/>
+								</div>
+								<div className="flex flex-col gap-2">
+									<label htmlFor="start_date" className="block text-sm font-medium text-slate-700">
+										Start Date
+									</label>
+									<input
+										type="date"
+										id="start_date"
+										ref={sssStartDateRef}
+										defaultValue={employee?.sss_settings?.start_date ? employee.sss_settings.start_date.split('T')[0] : ''}
 										placeholder="XX"
 										className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
 									/>
@@ -2013,6 +2138,18 @@ const Employee = () => {
 										className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
 									/>
 								</div>
+								<div className="flex flex-col gap-2">
+									<label htmlFor="start_date" className="block text-sm font-medium text-slate-700">
+										Start Date
+									</label>
+									<input
+										type="date"
+										id="start_date"
+										ref={philHealthStartDateRef}
+										defaultValue={employee.philhealth_settings?.start_date ? employee.philhealth_settings.start_date.split('T')[0] : ''}
+										className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
+									/>
+								</div>
 							</div>
 
 							<div className="flex justify-end items-center gap-2 mt-2 px-6 py-4">
@@ -2061,6 +2198,18 @@ const Employee = () => {
 										className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
 									/>
 								</div>
+								<div className="flex flex-col gap-2">
+									<label htmlFor="start_date" className="block text-sm font-medium text-slate-700">
+										Start Date
+									</label>
+									<input
+										type="date"
+										id="start_date"
+										defaultValue={employee.pagibig_settings?.start_date ? employee.pagibig_settings.start_date.split('T')[0] : ''}
+										ref={pagibigStartDateRef}
+										className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
+									/>
+								</div>
 							</div>
 
 							<div className="flex justify-end items-center gap-2 mt-2 p-4">
@@ -2094,6 +2243,19 @@ const Employee = () => {
 										id="bir_tin"
 										defaultValue={employee.bir_settings?.tin_no || ''}
 										placeholder="XXX-XXX-XXX-XXX"
+										className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
+									/>
+								</div>
+								<div className="flex flex-col gap-2">
+									<label htmlFor="start_date" className="block text-sm font-medium text-slate-700">
+										Start Date
+									</label>
+									<input
+										ref={tinEditStartDateRef}
+										type="date"
+										id="start_date"
+										defaultValue={employee.bir_settings?.start_date ? employee.bir_settings.start_date.split('T')[0] : ''}
+										placeholder="XX"
 										className="bg-white text-sm py-2 px-3 placeholder:text-slate-400 border border-slate-200 rounded-lg"
 									/>
 								</div>
